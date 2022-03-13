@@ -360,10 +360,10 @@ export default class Cytoscape extends Component {
             >
               chane a to omar
             </button>
-            <button id="start">Start on selected</button>
-            <button id="draw-on">Draw mode on</button>
-            <button id="draw-off">Draw mode off</button>
-            <button id="popper">Use custom popper handles</button>
+            {/* <button id="start">Start on selected</button> */}
+            {/* <button id="draw-on">Draw mode on</button> */}
+            {/* <button id="draw-off">Draw mode off</button> */}
+            {/* <button id="popper">Use custom popper handles</button> */}
             <button
               onClick={() => {
                 console.log("click enable");
@@ -379,6 +379,14 @@ export default class Cytoscape extends Component {
               }}
             >
               disable adding
+            </button>
+            <button
+              onClick={() => {
+                console.log("click cy.fit");
+                cy.fit();
+              }}
+            >
+              fit to screen
             </button>
           </div>
         </>
