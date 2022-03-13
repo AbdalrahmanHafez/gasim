@@ -1,23 +1,30 @@
-import logo from './logo.svg';
-import './App.css';
+import { useEffect, useState } from "react";
+import Cytoscape from "./components/Cytoscape";
+
+// cytoscape.use(popper);
+// cytoscape.use(edgehandles);
 
 function App() {
+  const [value, setValue] = useState("khaled");
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
+      <h1>cytoscape-popper demo</h1>
+
+      <Cytoscape value={value} />
+
+      <div id="buttons">
+        <button
+          onClick={() => {
+            setValue("omar");
+          }}
         >
-          Learn React
-        </a>
-      </header>
+          chane to omar
+        </button>
+        <button id="start">Start on selected</button>
+        <button id="draw-on">Draw mode on</button>
+        <button id="draw-off">Draw mode off</button>
+        <button id="popper">Use custom popper handles</button>
+      </div>
     </div>
   );
 }
