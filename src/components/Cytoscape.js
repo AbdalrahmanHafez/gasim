@@ -9,10 +9,27 @@ export default class Cytoscape extends Component {
   componentWillReceiveProps(nextProps) {
     // evnthouh it will not rerender, a change in props will call this function
     console.log("next props: ", nextProps);
-    this.cy.$("#a").data({ name: nextProps.value });
+    this.cy.$("#a").data({ name: nextProps.namevalue });
   }
 
   // cy.$("#a").data({name:'ahmed'})
+
+  handleMouseClick(event) {
+    // target holds a reference to the originator
+    // of the event (core or element)
+    var evtTarget = event.target;
+    console.log(evtTarget);
+    if (evtTarget === cy) {
+      console.log("tap on background");
+      cy.add({
+        data: { id: "n" + cy.nodes().length },
+        position: { x: event.position.x, y: event.position.y },
+      });
+    } else {
+      console.log("tap on some element");
+    }
+  }
+
   componentDidMount() {
     this.cy = window.cy = cytoscape({
       container: this.refs.cy,
@@ -148,8 +165,224 @@ export default class Cytoscape extends Component {
         // rows: 1,
       },
     });
+
+    var a = cy.getElementById("a");
+    var b = cy.getElementById("b");
+    var ab = cy.getElementById("ab");
+
+    var makeDiv = function (text) {
+      var div = document.createElement("div");
+
+      div.classList.add("popper-div");
+
+      div.innerHTML = text;
+
+      document.body.appendChild(div);
+
+      return div;
+    };
+
+    var popperA = a.popper({
+      content: function () {
+        return makeDiv("Sticky position div A");
+      },
+    });
+
+    var updateA = function () {
+      popperA.update();
+    };
+
+    a.on("position", updateA);
+    cy.on("pan zoom resize", updateA);
+
+    var popperB = b.popper({
+      content: function () {
+        return makeDiv("One time position div B");
+      },
+    });
+
+    var popperAB = ab.popper({
+      content: function () {
+        return makeDiv("Sticky position div AB");
+      },
+    });
+
+    var updateAB = function () {
+      popperAB.update();
+    };
+
+    ab.connectedNodes().on("position", updateAB);
+    cy.on("pan zoom resize", updateAB);
+
+    var eh = cy.edgehandles();
+
+    // document
+    //   .querySelector("#draw-on")
+    //   .addEventListener("click", function () {
+    //     eh.enableDrawMode();
+    //   });
+
+    // document
+    //   .querySelector("#draw-off")
+    //   .addEventListener("click", function () {
+    //     eh.disableDrawMode();
+    //   });
+
+    // document.querySelector("#start").addEventListener("click", function () {
+    //   eh.start(cy.$("node:selected"));
+    // });
+
+    var popperEnabled = false;
+
+    // document
+    //   .querySelector("#popper")
+    //   .addEventListener("click", function () {
+    if (popperEnabled) {
+      return;
+    }
+
+    popperEnabled = true;
+
+    // example code for making your own handles -- customise events and presentation where fitting
+    // var popper;
+    var popperNode;
+    var popper;
+    var popperDiv;
+    var started = false;
+
+    function start() {
+      eh.start(popperNode);
+    }
+
+    function stop() {
+      eh.stop();
+    }
+
+    function setHandleOn(node) {
+      if (started) {
+        return;
+      }
+
+      removeHandle(); // rm old handle
+
+      popperNode = node;
+
+      popperDiv = document.createElement("div");
+      popperDiv.classList.add("popper-handle");
+      popperDiv.addEventListener("mousedown", start);
+      document.body.appendChild(popperDiv);
+
+      popper = node.popper({
+        content: popperDiv,
+        popper: {
+          placement: "top",
+          modifiers: [
+            {
+              name: "offset",
+              options: {
+                offset: [0, -10],
+              },
+            },
+          ],
+        },
+      });
+    }
+
+    function removeHandle() {
+      if (popper) {
+        popper.destroy();
+        popper = null;
+      }
+
+      if (popperDiv) {
+        document.body.removeChild(popperDiv);
+        popperDiv = null;
+      }
+
+      popperNode = null;
+    }
+
+    cy.on("mouseover", "node", function (e) {
+      setHandleOn(e.target);
+    });
+
+    cy.on("grab", "node", function () {
+      removeHandle();
+    });
+
+    cy.on("tap", function (e) {
+      if (e.target === cy) {
+        removeHandle();
+      }
+    });
+
+    cy.on("zoom pan", function () {
+      removeHandle();
+    });
+
+    window.addEventListener("mouseup", function (e) {
+      stop();
+    });
+
+    cy.on("ehstart", function () {
+      started = true;
+    });
+
+    cy.on("ehstop", function () {
+      started = false;
+    });
+
+    if (this.props.cyEvents) {
+      console.log("here1");
+      this.props.cyEvents.setClickable = (value) => {
+        console.log("called set clickable");
+        if (value) {
+          cy.on("click", this.handleMouseClick);
+          console.log("called cy.on(click)");
+        } else {
+          cy.off("click", this.handleMouseClick);
+          console.log("called cy.off(click)");
+        }
+      };
+    }
   }
+
   render() {
-    return <div id="cy" ref="cy" />;
+    return (
+      <>
+        <>
+          <div id="cy" ref="cy" />
+          <div id="buttons">
+            <button
+              onClick={() => {
+                this.cy.$("#a").data({ name: "omar" });
+              }}
+            >
+              chane a to omar
+            </button>
+            <button id="start">Start on selected</button>
+            <button id="draw-on">Draw mode on</button>
+            <button id="draw-off">Draw mode off</button>
+            <button id="popper">Use custom popper handles</button>
+            <button
+              onClick={() => {
+                console.log("click enable");
+                cy.on("click", this.handleMouseClick);
+              }}
+            >
+              enable adding
+            </button>
+            <button
+              onClick={() => {
+                console.log("click disable");
+                cy.off("click", this.handleMouseClick);
+              }}
+            >
+              disable adding
+            </button>
+          </div>
+        </>
+      </>
+    );
   }
 }

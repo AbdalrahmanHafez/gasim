@@ -1,30 +1,39 @@
-import { useEffect, useState } from "react";
+import { createRef, useEffect, useState } from "react";
 import Cytoscape from "./components/Cytoscape";
 
 // cytoscape.use(popper);
 // cytoscape.use(edgehandles);
 
 function App() {
-  const [value, setValue] = useState("khaled");
+  const [namevalue, setnamevalue] = useState("khaled");
+  const cyEvents = {
+    setClickable: () => {
+      console.log("calling the original");
+    },
+  };
+
   return (
     <div className="App">
       <h1>cytoscape-popper demo</h1>
 
-      <Cytoscape value={value} />
+      <Cytoscape namevalue={namevalue} cyEvents={cyEvents} />
 
-      <div id="buttons">
-        <button
+      {/* <button
           onClick={() => {
-            setValue("omar");
+            console.log("click enable");
+            cyEvents.setClickable(true);
           }}
         >
-          chane to omar
+          Enable Adding new
         </button>
-        <button id="start">Start on selected</button>
-        <button id="draw-on">Draw mode on</button>
-        <button id="draw-off">Draw mode off</button>
-        <button id="popper">Use custom popper handles</button>
-      </div>
+        <button
+          onClick={() => {
+            console.log("click disable");
+            cyEvents.setClickable(false);
+          }}
+        >
+          Disable Adding new
+        </button> */}
     </div>
   );
 }
