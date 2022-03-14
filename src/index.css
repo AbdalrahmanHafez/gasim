@@ -47,7 +47,7 @@ h1 {
 .popper-handle {
   width: 20px;
   height: 20px;
-  background: red;
+  background: darkred;
   border-radius: 20px;
   z-index: 9999;
 }

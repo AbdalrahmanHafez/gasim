@@ -1,5 +1,11 @@
 /* eslint-disable no-undef */
 import React, { Component } from "react";
+import cytoscape from "cytoscape";
+import popper from "cytoscape-popper";
+import edgehandles from "cytoscape-edgehandles";
+
+cytoscape.use(popper);
+cytoscape.use(edgehandles);
 
 export default class Cytoscape extends Component {
   shouldComponentUpdate() {
@@ -155,6 +161,7 @@ export default class Cytoscape extends Component {
           { data: { id: "d" } },
         ],
         edges: [
+          // { data: { id: "aa", source: "a", target: "a" } },
           { data: { id: "ab", source: "a", target: "b" } },
           { data: { id: "ba", source: "b", target: "a" } },
           { data: { id: "ac", source: "a", target: "c" } },
@@ -216,7 +223,24 @@ export default class Cytoscape extends Component {
     ab.connectedNodes().on("position", updateAB);
     cy.on("pan zoom resize", updateAB);
 
-    var eh = cy.edgehandles();
+    var eh = (window.eh = cy.edgehandles({
+      canConnect: function (sourceNode, targetNode) {
+        // whether an edge can be created between source and target
+        // return !sourceNode.same(targetNode); // e.g. disallow loops
+        return true;
+      },
+      edgeParams: function (sourceNode, targetNode) {
+        // for edges between the specified source and target
+        // return element object to be passed to cy.add() for edge
+        return {};
+      },
+      hoverDelay: 150, // time spent hovering over a target node before it is considered selected
+      snap: true, // when enabled, the edge can be drawn by just moving close to a target node (can be confusing on compound graphs)
+      snapThreshold: 50, // the target node must be less than or equal to this many pixels away from the cursor/finger
+      snapFrequency: 15, // the number of times per second (Hz) that snap checks done (lower is less expensive)
+      noEdgeEventsInDraw: true, // set events:no to edges during draws, prevents mouseouts on compounds
+      disableBrowserGestures: true, // during an edge drawing gesture, disable browser gestures such as two-finger trackpad swipe and pinch-to-zoom
+    }));
 
     // document
     //   .querySelector("#draw-on")
@@ -257,7 +281,8 @@ export default class Cytoscape extends Component {
     }
 
     function stop() {
-      eh.stop();
+      var rtn = eh.stop();
+      console.log(rtn);
     }
 
     function setHandleOn(node) {
