@@ -281,8 +281,7 @@ export default class Cytoscape extends Component {
     }
 
     function stop() {
-      var rtn = eh.stop();
-      console.log(rtn);
+      eh.stop();
     }
 
     function setHandleOn(node) {
