@@ -38,12 +38,14 @@ export default class Cytoscape extends Component {
           selector: "node",
           style: {
             "background-color": "#666",
+            "foreground-color": "white",
             content: "data(id)",
             "border-width": 2,
             "border-style": "solid",
-            "border-color": "yellow",
+            "border-color": "black",
             "text-valign": "center",
             "text-halign": "center",
+            color: "white",
             height: "60px",
             width: "60px",
           },
@@ -55,7 +57,7 @@ export default class Cytoscape extends Component {
             content: "data(name)",
             "border-width": 2,
             "border-style": "solid",
-            "border-color": "yellow",
+            "border-color": "black",
             "text-valign": "center",
             "text-halign": "center",
             height: "60px",
@@ -74,9 +76,9 @@ export default class Cytoscape extends Component {
         {
           selector: "edge",
           style: {
-            width: 3,
-            "line-color": "#ccc",
-            "target-arrow-color": "#ccc",
+            width: 5,
+            "line-color": "#9dbaea",
+            "target-arrow-color": "DarkRed",
             "target-arrow-shape": "triangle",
             "curve-style": "bezier",
           },
@@ -138,7 +140,7 @@ export default class Cytoscape extends Component {
       elements: {
         nodes: [
           {
-            data: { id: "a", name: this.props.value },
+            data: { id: "a", name: "Node A" },
             position: { x: 0, y: 0 },
             selected: true,
             locked: false,
@@ -355,10 +357,10 @@ export default class Cytoscape extends Component {
           <div id="buttons">
             <button
               onClick={() => {
-                this.cy.$("#a").data({ name: "omar" });
+                this.cy.$("#a").data({ name: "Node K" });
               }}
             >
-              chane a to omar
+              change A to K
             </button>
             {/* <button id="start">Start on selected</button> */}
             {/* <button id="draw-on">Draw mode on</button> */}
@@ -367,7 +369,7 @@ export default class Cytoscape extends Component {
             <button
               onClick={() => {
                 console.log("click enable");
-                cy.on("click", this.handleMouseClick);
+                cy.on("tap", this.handleMouseClick);
               }}
             >
               enable adding
@@ -375,7 +377,7 @@ export default class Cytoscape extends Component {
             <button
               onClick={() => {
                 console.log("click disable");
-                cy.off("click", this.handleMouseClick);
+                cy.off("tap", this.handleMouseClick);
               }}
             >
               disable adding
