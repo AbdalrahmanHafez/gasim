@@ -3,9 +3,11 @@ import React, { Component } from "react";
 import cytoscape from "cytoscape";
 import popper from "cytoscape-popper";
 import edgehandles from "cytoscape-edgehandles";
+// import toolbar from "cytoscape.js-toolbar-2";
 
 cytoscape.use(popper);
 cytoscape.use(edgehandles);
+// cytoscape.use(toolbar);
 
 export default class Cytoscape extends Component {
   shouldComponentUpdate() {
@@ -173,6 +175,9 @@ export default class Cytoscape extends Component {
         // name: "preset",
         // rows: 1,
       },
+      // ready: function () {
+      //   cy.toolbar();
+      // },
     });
 
     var a = cy.getElementById("a");
@@ -378,6 +383,7 @@ export default class Cytoscape extends Component {
       <>
         <>
           <div id="cy" ref="cy" />
+          <div id="cy-default" class="row cy"></div>
           <div id="buttons">
             <button
               onClick={() => {
