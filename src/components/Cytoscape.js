@@ -61,9 +61,9 @@ export default class Cytoscape extends Component {
         {
           selector: "node",
           style: {
+            content: "data(id)",
             "background-color": "#666",
             "foreground-color": "white",
-            content: "data(id)",
             "border-width": 2,
             "border-style": "solid",
             "border-color": "black",
@@ -100,6 +100,7 @@ export default class Cytoscape extends Component {
         {
           selector: "edge",
           style: {
+            content: "data(label)",
             width: 5,
             "line-color": "#9dbaea",
             "target-arrow-color": "DarkRed",
@@ -183,7 +184,7 @@ export default class Cytoscape extends Component {
           { data: { id: "ab", source: "a", target: "b" } },
           { data: { id: "ba", source: "b", target: "a" } },
           { data: { id: "ac", source: "a", target: "c" } },
-          { data: { id: "cd", source: "c", target: "d" } },
+          { data: { id: "cd", source: "c", target: "d", label: "ABCD" } },
         ],
       },
       layout: {
@@ -248,11 +249,13 @@ export default class Cytoscape extends Component {
       canConnect: function (sourceNode, targetNode) {
         // whether an edge can be created between source and target
         // return !sourceNode.same(targetNode); // e.g. disallow loops
+
         return true;
       },
       edgeParams: function (sourceNode, targetNode) {
         // for edges between the specified source and target
         // return element object to be passed to cy.add() for edge
+
         return {};
       },
       hoverDelay: 150, // time spent hovering over a target node before it is considered selected
@@ -381,6 +384,15 @@ export default class Cytoscape extends Component {
 
     // Event Handles
     cy.on("tap", this.handleMouseClick);
+    cy.on("ehcomplete", (event, sourceNode, targetNode, addedEdge) => {
+      let { position } = event;
+      const transitionLabel = prompt("Enter transition label");
+      if (transitionLabel == null) {
+        addedEdge.remove();
+        return;
+      }
+      addedEdge.data("label", transitionLabel || "ε");
+    });
   }
 
   render() {
