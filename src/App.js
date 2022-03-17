@@ -2,10 +2,14 @@ import { createRef, useEffect, useState } from "react";
 import Cytoscape from "./components/Cytoscape";
 import TestPage from "./components/TestPage";
 import TabsController from "./components/TabsController";
+import CyToolBar from "./components/CyToolBar";
+
 // cytoscape.use(popper);
 // cytoscape.use(edgehandles);
 
 function App() {
+  const [tbEnableAdding, setTbEnableAdding] = useState(false);
+  const [tbEnableDeleting, setTbEnableDeleting] = useState(false);
   const [namevalue, setnamevalue] = useState("khaled");
   const cyEvents = {
     setClickable: () => {
@@ -48,7 +52,16 @@ function App() {
           </li>
         </ul>
         <div id="tabs-1">
-          <Cytoscape namevalue={namevalue} cyEvents={cyEvents} />
+          <CyToolBar
+            tbEnableAdding={tbEnableAdding}
+            setTbEnableAdding={setTbEnableAdding}
+            tbEnableDeleting={tbEnableDeleting}
+            setTbEnableDeleting={setTbEnableDeleting}
+          />
+          <Cytoscape
+            tbEnableAdding={tbEnableAdding}
+            tbEnableDeleting={tbEnableDeleting}
+          />
         </div>
         <div id="tabs-2">
           {/* <Cytoscape namevalue={namevalue} cyEvents={cyEvents} /> */}

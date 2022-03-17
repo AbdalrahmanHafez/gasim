@@ -18,6 +18,9 @@ code {
     monospace;
 }
 
+.btnHighlight {
+  background-color: #306cb9;
+}
 /* #cy {  
    from the demo   
   position: absolute;

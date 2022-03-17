@@ -3,6 +3,7 @@ import React, { Component } from "react";
 import cytoscape from "cytoscape";
 import popper from "cytoscape-popper";
 import edgehandles from "cytoscape-edgehandles";
+
 // import toolbar from "cytoscape.js-toolbar-2";
 
 cytoscape.use(popper);
@@ -10,31 +11,46 @@ cytoscape.use(edgehandles);
 // cytoscape.use(toolbar);
 
 export default class Cytoscape extends Component {
+  constructor(props) {
+    super(props);
+    // this.state = { addingStatesActive: false };
+    this.tbEnableAdding = React.createRef();
+    this.tbEnableDeleting = React.createRef();
+    this.tbEnableAdding.current = false;
+    this.tbEnableDeleting.current = false;
+
+    this.handleMouseClick = this.handleMouseClick.bind(this);
+  }
+
   shouldComponentUpdate() {
+    console.log("attempt to rerender shouldComponentUpdate !");
+
     return false;
   }
 
   componentWillReceiveProps(nextProps) {
     // evnthouh it will not rerender, a change in props will call this function
+    console.log("attempt to rerender componentWillReceiveProps !");
     console.log("next props: ", nextProps);
-    this.cy.$("#a").data({ name: nextProps.namevalue });
+    this.tbEnableAdding.current = nextProps.tbEnableAdding;
+    this.tbEnableDeleting.current = nextProps.tbEnableDeleting;
   }
-
-  // cy.$("#a").data({name:'ahmed'})
 
   handleMouseClick(event) {
     // target holds a reference to the originator
     // of the event (core or element)
     var evtTarget = event.target;
-    console.log(evtTarget);
     if (evtTarget === cy) {
       console.log("tap on background");
+      if (!this.tbEnableAdding.current) return;
       cy.add({
         data: { id: "n" + cy.nodes().length },
         position: { x: event.position.x, y: event.position.y },
       });
     } else {
       console.log("tap on some element");
+      if (!this.tbEnableDeleting.current) return;
+      cy.remove(evtTarget);
     }
   }
 
@@ -363,19 +379,8 @@ export default class Cytoscape extends Component {
       started = false;
     });
 
-    if (this.props.cyEvents) {
-      console.log("here1");
-      this.props.cyEvents.setClickable = (value) => {
-        console.log("called set clickable");
-        if (value) {
-          cy.on("click", this.handleMouseClick);
-          console.log("called cy.on(click)");
-        } else {
-          cy.off("click", this.handleMouseClick);
-          console.log("called cy.off(click)");
-        }
-      };
-    }
+    // Event Handles
+    cy.on("tap", this.handleMouseClick);
   }
 
   render() {
@@ -383,7 +388,6 @@ export default class Cytoscape extends Component {
       <>
         <>
           <div id="cy" ref="cy" />
-          <div id="cy-default" class="row cy"></div>
           <div id="buttons">
             <button
               onClick={() => {
@@ -396,22 +400,7 @@ export default class Cytoscape extends Component {
             {/* <button id="draw-on">Draw mode on</button> */}
             {/* <button id="draw-off">Draw mode off</button> */}
             {/* <button id="popper">Use custom popper handles</button> */}
-            <button
-              onClick={() => {
-                console.log("click enable");
-                cy.on("tap", this.handleMouseClick);
-              }}
-            >
-              enable adding
-            </button>
-            <button
-              onClick={() => {
-                console.log("click disable");
-                cy.off("tap", this.handleMouseClick);
-              }}
-            >
-              disable adding
-            </button>
+
             <button
               onClick={() => {
                 console.log("click cy.fit");
