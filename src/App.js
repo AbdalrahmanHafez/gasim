@@ -31,7 +31,7 @@ function App() {
     var $ = window.jQuery;
     $("#tabs").tabs();
   }, []);
-  const [p, setp] = useState(0);
+
   return (
     <div className="App">
       <h1>cytoscape-popper demo</h1>
@@ -71,13 +71,10 @@ function App() {
           /> */}
 
           <Cytoscape3
-            p={p}
             tabId={1}
             tbEnableAdding={tbEnableAdding}
             tbEnableDeleting={tbEnableDeleting}
           />
-
-          <button onClick={() => setp(p + 1)}>update props</button>
         </div>
         <div id="tab-2">
           <h1>tab 2</h1>
