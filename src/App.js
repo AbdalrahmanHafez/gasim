@@ -1,5 +1,7 @@
 import { createRef, useEffect, useState } from "react";
 import Cytoscape from "./components/Cytoscape";
+import Cytoscape2 from "./components/Cytoscape2";
+import Cytoscape3 from "./components/Cytoscape3";
 import TestPage from "./components/TestPage";
 import TabsController from "./components/TabsController";
 import CyToolBar from "./components/CyToolBar";
@@ -27,11 +29,9 @@ function App() {
 
   useEffect(() => {
     var $ = window.jQuery;
-    $(function () {
-      $("#tabs").tabs();
-    });
+    $("#tabs").tabs();
   }, []);
-
+  const [p, setp] = useState(0);
   return (
     <div className="App">
       <h1>cytoscape-popper demo</h1>
@@ -39,34 +39,53 @@ function App() {
       {/* <TestPage /> */}
       {/* <TabsController data={tabsData} /> */}
 
+      <CyToolBar
+        tbEnableAdding={tbEnableAdding}
+        setTbEnableAdding={setTbEnableAdding}
+        tbEnableDeleting={tbEnableDeleting}
+        setTbEnableDeleting={setTbEnableDeleting}
+      />
       <div id="tabs">
         <ul>
           <li>
-            <a href="#tabs-1">Tab1</a>
+            <a href="#tab-1">Tab1</a>
           </li>
           <li>
-            <a href="#tabs-2">Tab2</a>
+            <a href="#tab-2">Tab2</a>
           </li>
           <li>
-            <a href="#tabs-3">Tab3</a>
+            <a href="#tab-3">Tab3</a>
           </li>
         </ul>
-        <div id="tabs-1">
-          <CyToolBar
-            tbEnableAdding={tbEnableAdding}
-            setTbEnableAdding={setTbEnableAdding}
-            tbEnableDeleting={tbEnableDeleting}
-            setTbEnableDeleting={setTbEnableDeleting}
-          />
-          <Cytoscape
+        <div id="tab-1">
+          {/* <Cytoscape
+            tabId={1}
             tbEnableAdding={tbEnableAdding}
             tbEnableDeleting={tbEnableDeleting}
+          /> */}
+          {/* <Cytoscape2
+            p={p}
+            tabId={1}
+            tbEnableAdding={tbEnableAdding}
+            tbEnableDeleting={tbEnableDeleting}
+          /> */}
+
+          <Cytoscape3
+            p={p}
+            tabId={1}
+            tbEnableAdding={tbEnableAdding}
+            tbEnableDeleting={tbEnableDeleting}
           />
+
+          <button onClick={() => setp(p + 1)}>update props</button>
         </div>
-        <div id="tabs-2">
+        <div id="tab-2">
+          <h1>tab 2</h1>
           {/* <Cytoscape namevalue={namevalue} cyEvents={cyEvents} /> */}
         </div>
-        <div id="tabs-3">{/* <p>Hello from 3</p> */}</div>
+        <div id="tab-3">
+          <h1>tab 3</h1>
+        </div>
       </div>
     </div>
   );

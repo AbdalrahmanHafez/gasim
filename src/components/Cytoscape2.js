@@ -1,62 +1,45 @@
 /* eslint-disable no-undef */
-import React, { Component } from "react";
+
+import React, { useEffect, useState, useRef } from "react";
 import cytoscape from "cytoscape";
 import popper from "cytoscape-popper";
 import edgehandles from "cytoscape-edgehandles";
 
-// import toolbar from "cytoscape.js-toolbar-2";
-
 cytoscape.use(popper);
 cytoscape.use(edgehandles);
-// cytoscape.use(toolbar);
 
-export default class Cytoscape extends Component {
-  constructor(props) {
-    super(props);
-    // this.state = { addingStatesActive: false };
-    this.tbEnableAdding = React.createRef();
-    this.tbEnableDeleting = React.createRef();
-    this.tbEnableAdding.current = false;
-    this.tbEnableDeleting.current = false;
+const Cytoscape2 = (props) => {
+  console.count("render");
+  const renderCounter = useRef(0);
+  renderCounter.current = renderCounter.current + 1;
 
-    this.handleMouseClick = this.handleMouseClick.bind(this);
-  }
+  const [, forceRerender] = useState();
 
-  shouldComponentUpdate() {
-    console.log("attempt to rerender shouldComponentUpdate !");
+  const cyRef = useRef();
 
-    return false;
-  }
-
-  componentWillReceiveProps(nextProps) {
-    // evnthouh it will not rerender, a change in props will call this function
-    console.log("attempt to rerender componentWillReceiveProps !");
-    console.log("next props: ", nextProps);
-    this.tbEnableAdding.current = nextProps.tbEnableAdding;
-    this.tbEnableDeleting.current = nextProps.tbEnableDeleting;
-  }
-
-  handleMouseClick(event) {
+  const handleMouseClick = (event) => {
     // target holds a reference to the originator
     // of the event (core or element)
     var evtTarget = event.target;
     if (evtTarget === cy) {
-      console.log("tap on background");
-      if (!this.tbEnableAdding.current) return;
+      console.log("tap on background 1");
+      console.log("enable  adding", props.tbEnableAdding);
+      if (!props.tbEnableAdding) return;
+      console.log("adding new node");
       cy.add({
         data: { id: "n" + cy.nodes().length },
         position: { x: event.position.x, y: event.position.y },
       });
     } else {
       console.log("tap on some element");
-      if (!this.tbEnableDeleting.current) return;
+      if (!props.tbEnableDeleting) return;
       cy.remove(evtTarget);
     }
-  }
+  };
 
-  componentDidMount() {
-    this.cy = window.cy = cytoscape({
-      container: this.refs.cy,
+  useEffect(() => {
+    window.cy = cytoscape({
+      container: cyRef.current,
       style: [
         {
           selector: "node",
@@ -210,8 +193,8 @@ export default class Cytoscape extends Component {
 
       // TODO
       // document.body.appendChild(div);
-      console.log(this.props);
-      document.getElementById(`tab-${this.props.tabId}`).appendChild(div);
+      // console.log(props);
+      document.getElementById(`tab-${props.tabId}`).appendChild(div);
 
       return div;
     };
@@ -390,7 +373,7 @@ export default class Cytoscape extends Component {
     });
 
     // Event Handles
-    cy.on("tap", this.handleMouseClick);
+    cy.on("tap", handleMouseClick);
     cy.on("ehcomplete", (event, sourceNode, targetNode, addedEdge) => {
       let { position } = event;
       const transitionLabel = prompt("Enter transition label");
@@ -400,37 +383,64 @@ export default class Cytoscape extends Component {
       }
       addedEdge.data("label", transitionLabel || "ε");
     });
-  }
+  }, [handleMouseClick]);
 
-  render() {
-    return (
+  return (
+    <>
       <>
-        <>
-          <div id="cy" ref="cy" />
-          <div id="buttons">
-            <button
-              onClick={() => {
-                this.cy.$("#a").data({ name: "Node K" });
-              }}
-            >
-              change A to K
-            </button>
-            {/* <button id="start">Start on selected</button> */}
-            {/* <button id="draw-on">Draw mode on</button> */}
-            {/* <button id="draw-off">Draw mode off</button> */}
-            {/* <button id="popper">Use custom popper handles</button> */}
+        <div id="cy" ref={cyRef} />
+        <div id="buttons">
+          <button
+            onClick={() => {
+              this.cy.$("#a").data({ name: "Node K" });
+            }}
+          >
+            change A to K
+          </button>
+          {/* <button id="start">Start on selected</button> */}
+          {/* <button id="draw-on">Draw mode on</button> */}
+          {/* <button id="draw-off">Draw mode off</button> */}
+          {/* <button id="popper">Use custom popper handles</button> */}
 
-            <button
-              onClick={() => {
-                console.log("click cy.fit");
-                cy.fit();
-              }}
-            >
-              fit to screen
-            </button>
-          </div>
-        </>
+          <button
+            onClick={() => {
+              console.log("click cy.fit");
+              cy.fit();
+            }}
+          >
+            fit to screen
+          </button>
+        </div>
+        <h1>Renders: {renderCounter.current}</h1>
+        <button
+          onClick={() => {
+            forceRerender({});
+          }}
+        >
+          Rerender
+        </button>
       </>
-    );
-  }
+    </>
+  );
+};
+
+const cmp = React.memo(Cytoscape2, areEqual);
+// const Ifchange = React.memo(Cytoscape2);
+
+function areEqual(prevProps, nextProps) {
+  /*
+  return true if passing nextProps to render would return
+  the same result as passing prevProps to render,
+  otherwise return false
+  True => don't rerender if same props
+  False => rerender if props changed
+  */
+  console.log("nextProps", nextProps);
+  // prevProps = nextProps || {};
+  console.dir(cmp);
+  console.dir(cmp.type);
+  console.dir(Cytoscape2);
+  // cmp.props = nextProps;
+  return true;
 }
+export default cmp;
