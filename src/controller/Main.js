@@ -28,18 +28,42 @@ class Main {
     var $ = window.jQuery;
     $("#tabs").tabs({ active: tabNum });
   }
-
+  jqueryExtentions() {
+    var $ = window.jQuery;
+    // for more see: https://www.javatpoint.com/jquery-ui-tabs
+    // jQuery extentions
+    $.fn.tabCount = function () {
+      return $(this).find("ul").children().length;
+    };
+    $.fn.addTab = function (name) {
+      var id = this.tabCount();
+      $("ul", this).append(
+        '<li><a href="#tab-' + id + '">' + name + "</a></li>"
+      );
+      $(this).append("<div id='tab-" + id + "'></div>");
+      $(this).tabs("refresh");
+    };
+    $.fn.removeTab = function (index) {
+      $("ul li:eq(" + index + ")", this).remove();
+      $("div:eq(" + index + ")", this).remove();
+      $(this).tabs("refresh");
+    };
+  }
   initialize() {
     console.log("Initialzing Maing");
-    window.instances = this.cyinstances;
     var $ = window.jQuery;
-    $(document).ready(() => {
-      console.log("Document is ready now ");
+    window.instances = this.cyinstances;
+    this.jqueryExtentions();
+    $("#tabs").tabs();
+    $("#tabs").tabs({ active: 1 });
 
-      this.addTab();
-      this.addTab();
-      this.addTab();
-    });
+    // $(document).ready(() => {
+    console.log("Document is ready now ");
+
+    this.addTab();
+    this.addTab();
+    this.addTab();
+    // });
   }
 
   addTab() {

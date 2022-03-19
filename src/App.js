@@ -26,12 +26,12 @@ function App() {
     console.log("useEffect App");
     var $ = window.jQuery;
 
-    $("#tabs").tabs();
-    $("#tabs").tabs({ active: 1 });
-
     Main.current = new MainClass();
     Main.current.sayhi();
     Main.current.initialize(); // WARN: cy nodes stack on each other, if tabs is not active
+
+    $("#tabs").addTab("TEST");
+    $("#tabs").removeTab(3);
   }, []);
 
   return (
@@ -73,8 +73,8 @@ function App() {
           <div id="cy-1" className="cy" />
         </div>
         <div id="tab-2">
-          <div id="cy-2" className="cy" />
           <h1>Tab 2</h1>
+          <div id="cy-2" className="cy" />
         </div>
       </div>
     </div>
