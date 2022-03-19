@@ -10,6 +10,7 @@ class config {
     this.strDone = "";
     this.winstate = undefined; // 0 lost no other options, 1 won
     this.curNode = initalNode;
+    this.choosenEdge = undefined;
   }
 
   nextSymbol() {
@@ -153,6 +154,7 @@ class Main {
       const choosenEdge = outEdges.filter(
         (edge) => edge.data("label") === c.nextSymbol()
       )[0];
+      this.simConfig.choosenEdge = choosenEdge;
       if (choosenEdge) {
         c.read(c.nextSymbol());
         c.curNode = choosenEdge.target();
@@ -174,6 +176,13 @@ class Main {
     }
   }
   updateSimUI() {
+    // highlight graph
+    // TODO: fix cyinstances, make generic
+    this.cyinstances[0].nodes().classes([]);
+    this.simConfig.curNode.addClass("highlighted");
+    this.cyinstances[0].edges().classes([]);
+    this.simConfig.choosenEdge?.addClass("highlighted");
+
     const strCurState = this.simConfig.curNode.data("id");
     const winstate = this.simConfig.winstate;
     this.setTest((test) => ({
@@ -337,6 +346,14 @@ class Main {
             opacity: 0,
           },
         },
+
+        {
+          selector: ".highlighted",
+          style: {
+            "background-color": "red",
+            "line-color": "red",
+          },
+        },
       ],
       elements: {
         nodes: [
@@ -349,7 +366,8 @@ class Main {
           {
             data: { id: "b", name: "B", inital: false, final: true },
             parent: "a",
-            renderedPosition: { x: 0, y: 0 },
+            position: { x: 100, y: 100 },
+            renderedPosition: { x: 100, y: 100 },
           },
           {
             data: { id: "c", name: "C", inital: false, final: false },
@@ -366,7 +384,8 @@ class Main {
         ],
       },
       layout: {
-        name: "grid",
+        // name: "grid",
+        name: "random",
         // name: "preset",
         // rows: 1,
       },
