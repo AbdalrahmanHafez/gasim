@@ -1,54 +1,55 @@
-import React, { useEffect, useState, useRef, useCallback } from "react";
 import cytoscape from "cytoscape";
 import popper from "cytoscape-popper";
 import edgehandles from "cytoscape-edgehandles";
 import contextMenus from "cytoscape-context-menus";
-import MainClass from "../controller/Main.js";
 
-cytoscape.use(popper);
-cytoscape.use(edgehandles);
-cytoscape.use(contextMenus);
+class Main {
+  constructor() {
+    this.saved = "SAVED!";
+    this.tbEnableAdding = false;
+    this.tbEnableDeleting = false;
+    this.curInstanceNum = undefined; //todo
+    this.cyinstances = [];
+  }
 
-const Cytoscape3 = (props) => {
-  const cyRef = useRef(null);
-  const Main = useRef(null);
-  console.log("render Cytoscape3");
+  sayhi() {
+    console.log("Main says hi!1");
+  }
+  #getCyId(tabNum) {
+    return "cy-" + tabNum;
+  }
+  #getTabId(tabNum) {
+    return "tab-" + tabNum;
+  }
+  #getCurrentInstance() {
+    return this.cyinstances[this.curInstanceNum];
+  }
+  #activateTab(tabNum) {
+    var $ = window.jQuery;
+    $("#tabs").tabs({ active: tabNum });
+  }
 
-  useEffect(() => {
-    Main.current = new MainClass();
-    Main.current.sayhi();
-  }, []);
+  initialize() {
+    console.log("Initialzing Maing");
+    window.instances = this.cyinstances;
+    var $ = window.jQuery;
+    $(document).ready(() => {
+      console.log("Document is ready now ");
 
-  const handleMouseClick = useCallback(
-    (event) => {
-      // target holds a reference to the originator
-      // of the event (core or element)
-      var evtTarget = event.target;
-      // console.log("evtTarget", evtTarget);
-      var cy = window.cy;
-      if (evtTarget === cy) {
-        console.log("tap on background 1");
-        // console.log("props inside tapp on bg", props);
-        // console.log("enable  adding", props.tbEnableAdding);
-        if (!props.tbEnableAdding) return;
-        console.log("adding new node");
-        cy.add({
-          data: { id: "n" + cy.nodes().length },
-          position: { x: event.position.x, y: event.position.y },
-        });
-      } else {
-        console.log("tap on some element");
-        if (!props.tbEnableDeleting) return;
-        cy.remove(evtTarget);
-      }
-    },
-    [props]
-  );
+      this.addTab();
+      this.addTab();
+      this.addTab();
+    });
+  }
 
-  useEffect(() => {
-    console.log("render inside useEffect");
-    window.cy = cytoscape({
-      container: cyRef.current,
+  addTab() {
+    const tabNum = (this.curInstanceNum = this.curInstanceNum + 1 || 0); //todo
+    this.#activateTab(tabNum);
+
+    console.log("current Instance Num: " + this.curInstanceNum);
+
+    var cy = cytoscape({
+      container: document.getElementById(this.#getCyId(tabNum)),
       style: [
         {
           selector: "node",
@@ -214,18 +215,17 @@ const Cytoscape3 = (props) => {
       // ready: function () {
       //   cy.toolbar();
       // },
-      ready: function () {
-        window.cy = this;
+      ready: (e) => {
+        // console.log("what is that", e);
+        this.cyinstances.push(e.cy);
       },
     });
-
-    var cy = window.cy;
 
     var a = cy.getElementById("a");
     var b = cy.getElementById("b");
     var ab = cy.getElementById("ab");
 
-    var makeDiv = function (text) {
+    const makeDiv = (text) => {
       var div = document.createElement("div");
 
       div.classList.add("popper-div");
@@ -233,7 +233,7 @@ const Cytoscape3 = (props) => {
       div.innerHTML = text;
 
       // document.body.appendChild(div);
-      document.getElementById(`tab-${props.tabId}`).appendChild(div);
+      document.getElementById(this.#getTabId(tabNum)).appendChild(div);
 
       return div;
     };
@@ -270,7 +270,7 @@ const Cytoscape3 = (props) => {
     ab.connectedNodes().on("position", updateAB);
     cy.on("pan zoom resize", updateAB);
 
-    var eh = (window.eh = cy.edgehandles({
+    var eh = cy.edgehandles({
       canConnect: function (sourceNode, targetNode) {
         // whether an edge can be created between source and target
         // return !sourceNode.same(targetNode); // e.g. disallow loops
@@ -289,7 +289,7 @@ const Cytoscape3 = (props) => {
       snapFrequency: 15, // the number of times per second (Hz) that snap checks done (lower is less expensive)
       noEdgeEventsInDraw: true, // set events:no to edges during draws, prevents mouseouts on compounds
       disableBrowserGestures: true, // during an edge drawing gesture, disable browser gestures such as two-finger trackpad swipe and pinch-to-zoom
-    }));
+    });
 
     // document
     //   .querySelector("#draw-on")
@@ -325,15 +325,15 @@ const Cytoscape3 = (props) => {
     var popperDiv;
     var started = false;
 
-    function start() {
+    const start = () => {
       eh.start(popperNode);
-    }
+    };
 
-    function stop() {
+    const stop = () => {
       eh.stop();
-    }
+    };
 
-    function setHandleOn(node) {
+    const setHandleOn = (node) => {
       if (started) {
         return;
       }
@@ -346,7 +346,7 @@ const Cytoscape3 = (props) => {
       popperDiv.classList.add("popper-handle");
       popperDiv.addEventListener("mousedown", start);
       // document.body.appendChild(popperDiv);
-      document.getElementById(`tab-${props.tabId}`).appendChild(popperDiv);
+      document.getElementById(this.#getTabId(tabNum)).appendChild(popperDiv);
 
       popper = node.popper({
         content: popperDiv,
@@ -362,9 +362,9 @@ const Cytoscape3 = (props) => {
           ],
         },
       });
-    }
+    };
 
-    function removeHandle() {
+    const removeHandle = () => {
       if (popper) {
         popper.destroy();
         popper = null;
@@ -372,13 +372,13 @@ const Cytoscape3 = (props) => {
 
       if (popperDiv) {
         // document.body.removeChild(popperDiv);
-        document.getElementById(`tab-${props.tabId}`).removeChild(popperDiv);
+        document.getElementById(this.#getTabId(tabNum)).removeChild(popperDiv);
 
         popperDiv = null;
       }
 
       popperNode = null;
-    }
+    };
 
     cy.on("mouseover", "node", function (e) {
       setHandleOn(e.target);
@@ -398,7 +398,7 @@ const Cytoscape3 = (props) => {
       removeHandle();
     });
 
-    window.addEventListener("mouseup", function (e) {
+    cy.container().addEventListener("mouseup", function (e) {
       stop();
     });
 
@@ -504,7 +504,7 @@ const Cytoscape3 = (props) => {
           selector: "node, edge",
           onClickFunction: function (event) {
             var target = event.target || event.cyTarget;
-            window.removedEle = target.remove();
+            cy.container().removedEle = target.remove();
 
             contextMenu.showMenuItem("undo-last-remove");
           },
@@ -517,8 +517,8 @@ const Cytoscape3 = (props) => {
           show: false,
           coreAsWell: true,
           onClickFunction: function (event) {
-            if (window.removedEle) {
-              window.removedEle.restore();
+            if (cy.container().removedEle) {
+              cy.container().removedEle.restore();
             }
             contextMenu.hideMenuItem("undo-last-remove");
           },
@@ -656,22 +656,33 @@ const Cytoscape3 = (props) => {
         },
       ],
     });
-  }, []);
 
-  useEffect(() => {
-    window.cy.on("tap", handleMouseClick);
+    cy.on("tap", this.handleMouseClick);
+  }
 
-    return () => {
-      window.cy.off("tap", handleMouseClick);
-    };
-  }, [handleMouseClick]);
+  handleMouseClick = (event) => {
+    // target holds a reference to the originator
+    // of the event (core or element)
+    var evtTarget = event.target;
+    // console.log("evtTarget", evtTarget);
+    // var cy = window.cy;
+    var cy = this.#getCurrentInstance();
+    if (evtTarget === cy) {
+      console.log("tap on background 1");
+      // console.log("props inside tapp on bg", props);
+      // console.log("enable  adding", props.tbEnableAdding);
+      if (!this.tbEnableAdding) return;
+      console.log("adding new node");
+      cy.add({
+        data: { id: "n" + cy.nodes().length },
+        position: { x: event.position.x, y: event.position.y },
+      });
+    } else {
+      console.log("tap on some element");
+      if (!this.tbEnableDeleting) return;
+      cy.remove(evtTarget);
+    }
+  };
+}
 
-  return (
-    <>
-      <h1>{JSON.stringify(Main.current?.saved)}</h1>
-      <div id="cy" ref={cyRef} />
-    </>
-  );
-};
-
-export default Cytoscape3;
+export default Main;

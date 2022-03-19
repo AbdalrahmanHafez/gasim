@@ -30,8 +30,15 @@ code {
   right: 0;
   z-index: 1;
 } */
-
+/* 
 #cy {
+  width: 100%;
+  height: 82vh;
+  border: 1px solid #949494;
+  overflow: hidden;
+  background-color: #e9e9e9;
+} */
+.cy {
   width: 100%;
   height: 82vh;
   /* position: relative; */

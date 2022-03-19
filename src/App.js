@@ -1,10 +1,11 @@
-import { createRef, useEffect, useState } from "react";
+import { useRef, useEffect, useState } from "react";
 import Cytoscape from "./components/Cytoscape";
 import Cytoscape2 from "./components/Cytoscape2";
 import Cytoscape3 from "./components/Cytoscape3";
 import TestPage from "./components/TestPage";
 import TabsController from "./components/TabsController";
 import CyToolBar from "./components/CyToolBar";
+import MainClass from "./controller/Main.js";
 
 // cytoscape.use(popper);
 // cytoscape.use(edgehandles);
@@ -12,24 +13,25 @@ import CyToolBar from "./components/CyToolBar";
 function App() {
   const [tbEnableAdding, setTbEnableAdding] = useState(false);
   const [tbEnableDeleting, setTbEnableDeleting] = useState(false);
-  const [namevalue, setnamevalue] = useState("khaled");
-  const cyEvents = {
-    setClickable: () => {
-      console.log("calling the original");
-    },
-  };
+  const Main = useRef(null);
+
+  console.log("render App");
+
   const [tabsData, settabsData] = useState({
     labels: ["one", "two", "three"],
-    Content: [
-      <h1>hello</h1>,
-      <Cytoscape namevalue={namevalue} cyEvents={cyEvents} />,
-      "cthree",
-    ],
+    Content: [<h1>hello</h1>, <Cytoscape3 tabId={1} />, "cthree"],
   });
 
   useEffect(() => {
+    console.log("useEffect App");
     var $ = window.jQuery;
+
     $("#tabs").tabs();
+    $("#tabs").tabs({ active: 1 });
+
+    Main.current = new MainClass();
+    Main.current.sayhi();
+    Main.current.initialize(); // WARN: cy nodes stack on each other, if tabs is not active
   }, []);
 
   return (
@@ -48,40 +50,31 @@ function App() {
       <div id="tabs">
         <ul>
           <li>
-            <a href="#tab-1">Tab1</a>
+            <a href="#tab-0">Tab 0</a>
           </li>
           <li>
-            <a href="#tab-2">Tab2</a>
+            <a href="#tab-1">Tab 1</a>
           </li>
           <li>
-            <a href="#tab-3">Tab3</a>
+            <a href="#tab-2">Tab 2</a>
           </li>
         </ul>
+        <div id="tab-0">
+          <h1>Tab 0</h1>
+          <div id="cy-0" className="cy" />
+          {/* <Cytoscape3
+            tabId={1}
+            tbEnableAdding={tbEnableAdding}
+            tbEnableDeleting={tbEnableDeleting}
+          /> */}
+        </div>
         <div id="tab-1">
-          {/* <Cytoscape
-            tabId={1}
-            tbEnableAdding={tbEnableAdding}
-            tbEnableDeleting={tbEnableDeleting}
-          /> */}
-          {/* <Cytoscape2
-            p={p}
-            tabId={1}
-            tbEnableAdding={tbEnableAdding}
-            tbEnableDeleting={tbEnableDeleting}
-          /> */}
-
-          <Cytoscape3
-            tabId={1}
-            tbEnableAdding={tbEnableAdding}
-            tbEnableDeleting={tbEnableDeleting}
-          />
+          <h1>Tab 1</h1>
+          <div id="cy-1" className="cy" />
         </div>
         <div id="tab-2">
-          <h1>tab 2</h1>
-          {/* <Cytoscape namevalue={namevalue} cyEvents={cyEvents} /> */}
-        </div>
-        <div id="tab-3">
-          <h1>tab 3</h1>
+          <div id="cy-2" className="cy" />
+          <h1>Tab 2</h1>
         </div>
       </div>
     </div>
