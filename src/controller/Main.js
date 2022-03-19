@@ -3,6 +3,30 @@ import popper from "cytoscape-popper";
 import edgehandles from "cytoscape-edgehandles";
 import contextMenus from "cytoscape-context-menus";
 
+class config {
+  constructor(inputString, initalNode) {
+    this.inputString = inputString;
+    this.strRem = inputString;
+    this.strDone = "";
+    this.winstate = undefined; // 0 lost no other options, 1 won
+    this.curNode = initalNode;
+  }
+
+  nextSymbol() {
+    return this.strRem[0];
+  }
+  accepts(symbol) {
+    return this.nextSymbol() === symbol;
+  }
+  read(symbol) {
+    this.strDone += symbol;
+    this.strRem = this.strRem.slice(1);
+    if (this.strRem.length === 0) {
+      this.winstate = 1;
+    }
+  }
+}
+
 class Main {
   constructor() {
     this.saved = "SAVED!";
@@ -10,6 +34,9 @@ class Main {
     this.tbEnableDeleting = false;
     this.curInstanceNum = undefined; //todo
     this.cyinstances = [];
+
+    this.setTest = undefined;
+    this.simConfig = undefined;
   }
 
   sayhi() {
@@ -52,18 +79,125 @@ class Main {
   initialize() {
     console.log("Initialzing Maing");
     var $ = window.jQuery;
-    window.instances = this.cyinstances;
+    window.cyinstances = this.cyinstances;
     this.jqueryExtentions();
     $("#tabs").tabs();
     $("#tabs").tabs({ active: 1 });
 
-    // $(document).ready(() => {
-    console.log("Document is ready now ");
+    $(document).ready(() => {
+      console.log("Document is ready now ");
 
-    this.addTab();
-    this.addTab();
-    this.addTab();
-    // });
+      this.addTab(); //TODO: fix this name, and add proper tab managment
+      this.addTab();
+      this.addTab();
+      this.#activateTab(0);
+
+      //   this.startSimulation();
+    });
+  }
+
+  startSimulation() {
+    console.log("[SIM] Starting simulation");
+    // check that we have a inital node
+    // TODO: make for generic tab
+    const initalNode = this.cyinstances[0].$("node[?inital]")[0];
+    if (!initalNode) {
+      console.log("[SIM] no inital exiting");
+      return;
+    }
+
+    // const tick = (node) => {
+    //   // loop over edges, if matches string, add to done
+    //   //   debugger;
+    //   const outEdges = node.outgoers("edge");
+    //   const choosenEdge = outEdges.filter(
+    //     (edge) => edge.data("label") === c.nextSymbol()
+    //   )[0];
+    //   if (choosenEdge) {
+    //     c.read(c.nextSymbol());
+    //     c.curNode = choosenEdge.target();
+    //     return choosenEdge.target();
+    //   } else {
+    //     c.winstate = 0;
+    //     return undefined;
+    //   }
+    // };
+    const inputString = prompt("Enter input string");
+    // const inputString = "abcd";
+    const c = new config(inputString, initalNode);
+    this.simConfig = c;
+    this.updateSimUI();
+
+    // let curNode = initalNode;
+    // while (c.winstate === undefined) {
+    //   console.count("[SIM] tick");
+    //   curNode = tick(curNode);
+    //   console.log(curNode);
+    // }
+    this.setTest((test) => ({ ...test, shown: true }));
+
+    setTimeout(() => {
+      // TODO: WTF is this
+      this.cyinstances[0].resize();
+      this.cyinstances[0].fit();
+    }, 500);
+
+    // debugger;
+  }
+  simTick() {
+    console.count("called sim tick");
+    const tick = (node, c) => {
+      // loop over edges, if matches string, add to done
+      //   debugger;
+      const outEdges = node.outgoers("edge");
+      const choosenEdge = outEdges.filter(
+        (edge) => edge.data("label") === c.nextSymbol()
+      )[0];
+      if (choosenEdge) {
+        c.read(c.nextSymbol());
+        c.curNode = choosenEdge.target();
+        return choosenEdge.target();
+      } else {
+        c.winstate = 0;
+        return undefined;
+      }
+    };
+
+    tick(this.simConfig.curNode, this.simConfig);
+    this.updateSimUI();
+    console.log(this.simConfig);
+
+    const winstate = this.simConfig.winstate;
+    if (winstate !== undefined) {
+      console.log("[SIM] Simulation " + (winstate ? "won" : "lost"));
+      return;
+    }
+  }
+  updateSimUI() {
+    const strCurState = this.simConfig.curNode.data("id");
+    const winstate = this.simConfig.winstate;
+    this.setTest((test) => ({
+      ...test,
+      curState: strCurState,
+      strDone: this.simConfig.strDone,
+      strRem: this.simConfig.strRem,
+      winstate: winstate,
+    }));
+
+    this.cyinstances[0].fit();
+  }
+  simReset() {
+    const initalNode = this.cyinstances[0].$("node[?inital]")[0];
+    if (!initalNode) {
+      console.log("[SIM] no inital exiting");
+      return;
+    }
+    this.simConfig = new config(this.simConfig.inputString, initalNode);
+    this.updateSimUI();
+  }
+  setStateTest(setFunction) {
+    // setFunction("another Data");
+    this.setTest = setFunction;
   }
 
   addTab() {
@@ -225,10 +359,10 @@ class Main {
         ],
         edges: [
           // { data: { id: "aa", source: "a", target: "a" } },
-          { data: { id: "ab", source: "a", target: "b" } },
-          { data: { id: "ba", source: "b", target: "a" } },
-          { data: { id: "ac", source: "a", target: "c" } },
-          { data: { id: "cd", source: "c", target: "d", label: "ABCD" } },
+          { data: { id: "ab", source: "a", target: "b", label: "a" } },
+          { data: { id: "ba", source: "b", target: "a", label: "b" } },
+          { data: { id: "ac", source: "a", target: "c", label: "c" } },
+          { data: { id: "cd", source: "c", target: "d", label: "d" } },
         ],
       },
       layout: {
@@ -262,37 +396,38 @@ class Main {
       return div;
     };
 
-    var popperA = a.popper({
-      content: function () {
-        return makeDiv("Sticky position div A");
-      },
-    });
+    // TODO: fix popper, uncomment till cy.on("pan zoom resize", updateAB);
+    // var popperA = a.popper({
+    //   content: function () {
+    //     return makeDiv("Sticky position div A");
+    //   },
+    // });
 
-    var updateA = function () {
-      popperA.update();
-    };
+    // var updateA = function () {
+    //   popperA.update();
+    // };
 
-    a.on("position", updateA);
-    cy.on("pan zoom resize", updateA);
+    // a.on("position", updateA);
+    // cy.on("pan zoom resize", updateA);
 
-    var popperB = b.popper({
-      content: function () {
-        return makeDiv("One time position div B");
-      },
-    });
+    // var popperB = b.popper({
+    //   content: function () {
+    //     return makeDiv("One time position div B");
+    //   },
+    // });
 
-    var popperAB = ab.popper({
-      content: function () {
-        return makeDiv("Sticky position div AB");
-      },
-    });
+    // var popperAB = ab.popper({
+    //   content: function () {
+    //     return makeDiv("Sticky position div AB");
+    //   },
+    // });
 
-    var updateAB = function () {
-      popperAB.update();
-    };
+    // var updateAB = function () {
+    //   popperAB.update();
+    // };
 
-    ab.connectedNodes().on("position", updateAB);
-    cy.on("pan zoom resize", updateAB);
+    // ab.connectedNodes().on("position", updateAB);
+    // cy.on("pan zoom resize", updateAB);
 
     var eh = cy.edgehandles({
       canConnect: function (sourceNode, targetNode) {
@@ -677,6 +812,17 @@ class Main {
             contextMenu.showMenuItem("select-all-edges");
             contextMenu.hideMenuItem("unselect-all-edges");
           },
+        },
+        {
+          id: "fit",
+          content: "Fit Graph",
+          tooltipText: "Fit Graph",
+          coreAsWell: true,
+          onClickFunction: function (event) {
+            // TODO: make it dynamic? how
+            cy.fit();
+          },
+          hasTrailingDivider: true,
         },
       ],
     });

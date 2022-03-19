@@ -6,6 +6,7 @@
 
 body {
   margin: 0;
+  height: 100%;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
     "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
     sans-serif;
@@ -76,4 +77,53 @@ h1 {
   background: darkred;
   border-radius: 20px;
   z-index: 2;
+}
+#btnSimulate {
+  position: absolute;
+  right: 0;
+  top: 0;
+  z-index: 2;
+  margin: 0.2em;
+  background-color: #306cb9;
+  color: white;
+}
+#simContainer {
+  width: 500px;
+  background-color: #e9e9e9;
+  border: 1px solid #949494;
+  padding: 0.5em;
+  position: relative;
+}
+#simContainer > button {
+  border-radius: 50%;
+  position: absolute;
+  top: -15px;
+  right: -15px;
+  cursor: pointer;
+}
+.simCard {
+  margin: 5px;
+  height: 100px;
+  padding: 5px;
+  border: 1px solid #949494;
+  background-color: #d6d6d6;
+}
+.simCard.won {
+  background-color: rgb(132, 255, 132);
+}
+.simCard.lost {
+  background-color: rgb(255, 180, 180);
+}
+.simCardProgress {
+  width: 100%;
+  background-color: white;
+  text-align: center;
+  border-radius: 5px;
+  border: 1px solid #949494;
+}
+.simCardControles {
+  /* background-color: red; */
+  margin-top: 10px;
+}
+.simCardControles > button {
 }

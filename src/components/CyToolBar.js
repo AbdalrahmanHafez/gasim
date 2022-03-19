@@ -9,7 +9,7 @@ const CyToolBar = ({
 }) => {
   return (
     <div>
-      <Button
+      {/* <Button
         variant={tbEnableAdding ? "contained" : "outlined"}
         onClick={() => {
           setTbEnableDeleting(false);
@@ -26,7 +26,7 @@ const CyToolBar = ({
         }}
       >
         Remove
-      </Button>
+      </Button> */}
     </div>
   );
 };
