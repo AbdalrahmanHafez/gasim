@@ -161,10 +161,13 @@ class Main {
         return choosenEdge.target();
       } else {
         // check that curNode is standing on a final node
-        if (c.curNode.data("final")) {
-          c.winstate = 1;
-        } else c.winstate = 0;
-
+        if (c.strRem.length > 0) {
+          c.winstate = 0;
+        } else {
+          if (c.curNode.data("final")) {
+            c.winstate = 1;
+          } else c.winstate = 0;
+        }
         return undefined;
       }
     };
