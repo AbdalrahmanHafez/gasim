@@ -22,9 +22,9 @@ class config {
   read(symbol) {
     this.strDone += symbol;
     this.strRem = this.strRem.slice(1);
-    if (this.strRem.length === 0) {
-      this.winstate = 1;
-    }
+    // if (this.strRem.length === 0) {
+    //   this.winstate = 1;
+    // }
   }
 }
 
@@ -160,7 +160,11 @@ class Main {
         c.curNode = choosenEdge.target();
         return choosenEdge.target();
       } else {
-        c.winstate = 0;
+        // check that curNode is standing on a final node
+        if (c.curNode.data("final")) {
+          c.winstate = 1;
+        } else c.winstate = 0;
+
         return undefined;
       }
     };
