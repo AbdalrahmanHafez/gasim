@@ -21,10 +21,12 @@ const ContentContainer = ({ tabIdx }) => {
   const tabId = `tab-${tabIdx}`;
   const cyId = `cy-${tabIdx}`;
 
-  const setinfo = (newinfo) => {
+  const setinfo = (something) => {
+    const newInfo =
+      typeof something === "function" ? something(info) : something;
     setstore((prev) => {
       const newstore = [...prev];
-      newstore[tabIdx] = newinfo;
+      newstore[tabIdx] = newInfo;
       return newstore;
     });
   };
@@ -180,6 +182,9 @@ const ContentContainer = ({ tabIdx }) => {
             locked: false,
           },
           {
+            data: { id: "q4", name: "q4", inital: false, final: false },
+          },
+          {
             data: { id: "b", name: "B", inital: false, final: true },
             parent: "a",
             position: { x: 100, y: 100 },
@@ -190,6 +195,7 @@ const ContentContainer = ({ tabIdx }) => {
             parent: "a",
           },
           { data: { id: "d", name: "D", inital: false, final: true } },
+          { data: { id: "q5", name: "q5", inital: false, final: false } },
         ],
         edges: [
           // { data: { id: "aa", source: "a", target: "a" } },
@@ -197,6 +203,8 @@ const ContentContainer = ({ tabIdx }) => {
           { data: { id: "ba", source: "b", target: "a", label: "b" } },
           { data: { id: "ac", source: "a", target: "c", label: "c" } },
           { data: { id: "cd", source: "c", target: "d", label: "d" } },
+          { data: { id: "aq4", source: "a", target: "q4", label: "a" } },
+          { data: { id: "dq5", source: "d", target: "q5", label: "ε" } },
         ],
       },
       layout: {
@@ -583,8 +591,14 @@ const ContentContainer = ({ tabIdx }) => {
           image: { src: "assets/add.svg", width: 12, height: 12, x: 5, y: 6 },
           coreAsWell: true,
           onClickFunction: function (event) {
+            const nodesCount = cy.nodes().length;
+            const nodeName = "q" + nodesCount;
             var data = {
               group: "nodes",
+              id: nodeName,
+              label: nodeName,
+              inital: false,
+              final: false,
             };
 
             var pos = event.position || event.cyPosition;
@@ -668,6 +682,8 @@ const ContentContainer = ({ tabIdx }) => {
   };
 
   useEffect(() => {
+    console.log("useEffect injection");
+    // inject Cytoscape.js
     initCy();
   }, []);
 
@@ -678,8 +694,16 @@ const ContentContainer = ({ tabIdx }) => {
 
     newConfig.startSimulation();
   };
+
   const handleStep = () => {
     console.log("clicked start simulation");
+  };
+
+  const setconfigs = (something) => {
+    // const newConfigs = setFunc(info.configs);
+    const newConfigs =
+      typeof something === "function" ? something(info.configs) : something;
+    setinfo({ ...info, configs: newConfigs });
   };
 
   return (
@@ -693,7 +717,15 @@ const ContentContainer = ({ tabIdx }) => {
       </Button>
       <div style={{ display: "flex" }}>
         <div id={`cy-${tabIdx}`} className="cy" />
-        {info.shown && <SimPanel configs={info.configs} tabIdx={tabIdx} />}
+        {info.shown && (
+          <SimPanel
+            configs={info.configs}
+            setconfigs={setconfigs}
+            tabIdx={tabIdx}
+            cyinst={info.cyinst}
+            setinfo={setinfo}
+          />
+        )}
       </div>
     </>
   );

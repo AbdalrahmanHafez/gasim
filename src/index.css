@@ -94,7 +94,7 @@ h1 {
   padding: 0.5em;
   position: relative;
 }
-#simContainer > button {
+#simContainer > #btnCloseSim {
   border-radius: 50%;
   position: absolute;
   top: -15px;
@@ -120,10 +120,4 @@ h1 {
   text-align: center;
   border-radius: 5px;
   border: 1px solid #949494;
-}
-.simCardControles {
-  /* background-color: red; */
-  margin-top: 10px;
-}
-.simCardControles > button {
 }
