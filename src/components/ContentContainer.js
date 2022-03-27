@@ -180,6 +180,7 @@ const ContentContainer = ({ tabIdx }) => {
         // name: "preset",
         // rows: 1,
       },
+      wheelSensitivity: 0.3,
       // ready: function () {
       //   cy.toolbar();
       // },
@@ -648,14 +649,16 @@ const ContentContainer = ({ tabIdx }) => {
     });
 
     const handleDoubleTap = (e) => {
-      var evtTarget = e.target;
-      if (evtTarget !== cy) {
-        // a node
-        const node = e.target;
-        console.log(node);
-        const newName = prompt("Rename Node", node.data().name);
+      // a node or edge
+      const obj = e.target;
+      if (obj.isNode()) {
+        const newName = prompt("Rename Node", obj.data().name);
         if (!newName) return;
-        node.data("name", newName);
+        obj.data("name", newName);
+      } else {
+        const newName = prompt("Rename Edge", obj.data().label);
+        if (newName == null) return;
+        obj.data("label", newName || "ε");
       }
     };
     const handleWindowResize = () => {
@@ -667,8 +670,8 @@ const ContentContainer = ({ tabIdx }) => {
     // };
     //    EVENTS
     // cy.on("tap", this.handleMouseClick); // TODO: handlemouselclick
-    cy.on("dbltap ", handleDoubleTap);
-    cy.on("resize ", handleWindowResize);
+    cy.on("dbltap", "node, edge", handleDoubleTap);
+    cy.on("resize", handleWindowResize);
     // $(document).on("keydown", handleKeyPress);
   };
 
