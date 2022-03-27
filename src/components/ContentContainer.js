@@ -662,10 +662,14 @@ const ContentContainer = ({ tabIdx }) => {
       cy.fit();
       console.log("[event] resize");
     };
-
+    // const handleKeyPress = (e) => {
+    //   console.log(e);
+    // };
+    //    EVENTS
     // cy.on("tap", this.handleMouseClick); // TODO: handlemouselclick
     cy.on("dbltap ", handleDoubleTap);
     cy.on("resize ", handleWindowResize);
+    // $(document).on("keydown", handleKeyPress);
   };
 
   useEffect(() => {

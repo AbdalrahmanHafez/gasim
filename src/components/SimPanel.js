@@ -9,6 +9,8 @@ const SimCard = ({ id, config }) => {
     console.log("handleStep");
     config.tick();
   };
+  const formatPath = (configPath) => configPath.join("->");
+
   return (
     <div
       className={
@@ -21,6 +23,7 @@ const SimCard = ({ id, config }) => {
         {config.strDone}
         <strong>{config.strRem}</strong>
       </div>
+      {formatPath(config.path)}
     </div>
   );
 };

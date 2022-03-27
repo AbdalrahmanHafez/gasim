@@ -12,6 +12,7 @@ class Config {
     this.movedEdge = undefined;
 
     this.strCurState = this.curNode.data("id");
+    this.path = [this.strCurState];
   }
   startSimulation() {}
 
@@ -53,6 +54,8 @@ class Config {
               nnConfig.movedEdge?.addClass("highlighted");
 
               nnConfig.strCurState = nnConfig.curNode.data("id");
+              nnConfig.path = [...config.path, nnConfig.curNode.data("id")];
+
               console.log("new config", nnConfig);
               return nnConfig;
             })
@@ -107,11 +110,12 @@ class Config {
         this.cyinst,
         this.forceRender
       );
-      nextConfig.curNode = this.curNode;
+      nextConfig.curNode = edge.target();
       nextConfig.movedEdge = edge;
       nextConfig.strDone = this.strDone;
       nextConfig.strRem = this.strRem;
       nextConfig.winstate = this.winstate;
+      nextConfig.path = [...this.path, nextConfig.curNode.data("id")];
 
       // Advance each config to next node
       const consueValue = edge.data("label");
@@ -120,8 +124,6 @@ class Config {
       } else {
         nextConfig.read(nextConfig.nextSymbol());
       }
-
-      nextConfig.curNode = edge.target();
 
       nextConfig.curNode.addClass("highlighted");
       nextConfig.movedEdge?.addClass("highlighted");
