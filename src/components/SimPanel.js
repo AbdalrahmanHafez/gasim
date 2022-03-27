@@ -31,6 +31,7 @@ export default function SimPanel({
   setconfigs,
   cyinst,
   setinfo,
+  handleStartSimulation,
 }) {
   console.log("[SimPanel] Rendered");
 
@@ -38,7 +39,7 @@ export default function SimPanel({
     console.log("[SimPanel] useEffect");
   }, []);
 
-  const handleStepAll = () => {
+  const handleBtnStepAll = () => {
     console.log("handleStepAll");
     // the tick advances and colors the nodes and edges
     cyinst.nodes().classes([]);
@@ -50,6 +51,8 @@ export default function SimPanel({
     );
   };
   const handleBtnPanelClose = () => {
+    cyinst.nodes().classes([]);
+    cyinst.edges().classes([]);
     setinfo((info) => {
       console.log("close button info ");
       console.log(info);
@@ -59,14 +62,24 @@ export default function SimPanel({
       cyinst.fit(); // TODO: WTF is this
     }, 500);
   };
+  const handleBtnReset = () => {
+    cyinst.nodes().classes([]);
+    cyinst.edges().classes([]);
+    const inputString = configs[0].inputString; // since we're simulating somthing, it must have atlest a config
+    handleStartSimulation(inputString);
+  };
   return (
     <div id="simContainer">
       Simulation Panel
       <button id={"btnCloseSim"} onClick={handleBtnPanelClose}>
         &#10005;
       </button>
-      <button onClick={handleStepAll} className="ui-button">
+      <br />
+      <button onClick={handleBtnStepAll} className="ui-button">
         Step all
+      </button>
+      <button onClick={handleBtnReset} className="ui-button">
+        Reset
       </button>
       {configs.map((config, index) => (
         <SimCard key={index} id={index} config={config} />

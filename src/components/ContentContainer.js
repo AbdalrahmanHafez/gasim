@@ -31,7 +31,7 @@ const ContentContainer = ({ tabIdx }) => {
     });
   };
 
-  const initCy = () => {
+  const initCy = (elements) => {
     if (!window.cyinst) window.cyinst = [];
     var cy = cytoscape({
       container: document.getElementById(cyId),
@@ -173,40 +173,7 @@ const ContentContainer = ({ tabIdx }) => {
           },
         },
       ],
-      elements: {
-        nodes: [
-          {
-            data: { id: "a", name: "Node A", inital: true, final: false },
-            position: { x: 0, y: 0 },
-            selected: true,
-            locked: false,
-          },
-          {
-            data: { id: "q4", name: "q4", inital: false, final: false },
-          },
-          {
-            data: { id: "b", name: "B", inital: false, final: true },
-            parent: "a",
-            position: { x: 100, y: 100 },
-            renderedPosition: { x: 100, y: 100 },
-          },
-          {
-            data: { id: "c", name: "C", inital: false, final: false },
-            parent: "a",
-          },
-          { data: { id: "d", name: "D", inital: false, final: true } },
-          { data: { id: "q5", name: "q5", inital: false, final: false } },
-        ],
-        edges: [
-          // { data: { id: "aa", source: "a", target: "a" } },
-          { data: { id: "ab", source: "a", target: "b", label: "a" } },
-          { data: { id: "ba", source: "b", target: "a", label: "b" } },
-          { data: { id: "ac", source: "a", target: "c", label: "c" } },
-          { data: { id: "cd", source: "c", target: "d", label: "d" } },
-          { data: { id: "aq4", source: "a", target: "q4", label: "a" } },
-          { data: { id: "dq5", source: "d", target: "q5", label: "ε" } },
-        ],
-      },
+      elements: elements,
       layout: {
         // name: "grid",
         name: "random",
@@ -684,19 +651,89 @@ const ContentContainer = ({ tabIdx }) => {
   useEffect(() => {
     console.log("useEffect injection");
     // inject Cytoscape.js
-    initCy();
+    const elm1 = {
+      nodes: [
+        {
+          data: { id: "a", name: "Node A", inital: true, final: false },
+          position: { x: 0, y: 0 },
+          selected: true,
+          locked: false,
+        },
+        {
+          data: { id: "q4", name: "q4", inital: false, final: false },
+        },
+        {
+          data: { id: "b", name: "B", inital: false, final: true },
+          parent: "a",
+          position: { x: 100, y: 100 },
+          renderedPosition: { x: 100, y: 100 },
+        },
+        {
+          data: { id: "c", name: "C", inital: false, final: false },
+          parent: "a",
+        },
+        { data: { id: "d", name: "D", inital: false, final: true } },
+        { data: { id: "q5", name: "q5", inital: false, final: false } },
+      ],
+      edges: [
+        { data: { id: "ab", source: "a", target: "b", label: "a" } },
+        { data: { id: "ba", source: "b", target: "a", label: "b" } },
+        { data: { id: "ac", source: "a", target: "c", label: "c" } },
+        { data: { id: "cd", source: "c", target: "d", label: "d" } },
+        { data: { id: "aq4", source: "a", target: "q4", label: "a" } },
+        { data: { id: "dq5", source: "d", target: "q5", label: "ε" } },
+      ],
+    };
+
+    const elm2 = {
+      nodes: [
+        {
+          data: { id: "a", name: "Node A", inital: true, final: false },
+        },
+        {
+          data: { id: "b", name: "B", inital: false, final: false },
+        },
+        {
+          data: { id: "c", name: "C", inital: false, final: false },
+        },
+        {
+          data: { id: "d", name: "D", inital: false, final: false },
+        },
+        { data: { id: "e", name: "E", inital: false, final: true } },
+      ],
+      edges: [
+        { data: { id: "ab", source: "a", target: "b", label: "a" } },
+        { data: { id: "bc", source: "b", target: "c", label: "ε" } },
+        { data: { id: "cd", source: "c", target: "d", label: "ε" } },
+        { data: { id: "db", source: "d", target: "b", label: "ε" } },
+        { data: { id: "de", source: "d", target: "e", label: "b" } },
+      ],
+    };
+
+    initCy(tabIdx === 0 ? elm1 : elm2);
   }, []);
 
-  const handleStartSimulation = () => {
-    console.log("clicked start simulation");
-    const newConfig = new Config("abcd", info.cyinst, () => forceRender({}));
+  const handleStartSimulation = (inputString) => {
+    const initalNode = info.cyinst.$("node[?inital]")[0];
+    if (!initalNode) {
+      console.log("[SIM] no inital exiting");
+      alert("No inital node found. right click on a node to spcifiy initial");
+      return;
+    }
+
+    const newConfig = new Config(inputString, info.cyinst, () =>
+      forceRender({})
+    );
     setinfo({ ...info, shown: true, configs: [newConfig] });
 
     newConfig.startSimulation();
   };
 
-  const handleStep = () => {
+  const handleBtnStartSimulation = () => {
     console.log("clicked start simulation");
+    const inputString = prompt("Enter input string", "abcd");
+    if (!inputString) return;
+    handleStartSimulation(inputString);
   };
 
   const setconfigs = (something) => {
@@ -711,7 +748,7 @@ const ContentContainer = ({ tabIdx }) => {
       <Button
         id="btnSimulate"
         variant="outlined"
-        onClick={handleStartSimulation}
+        onClick={handleBtnStartSimulation}
       >
         Simulate input
       </Button>
@@ -724,6 +761,7 @@ const ContentContainer = ({ tabIdx }) => {
             tabIdx={tabIdx}
             cyinst={info.cyinst}
             setinfo={setinfo}
+            handleStartSimulation={handleStartSimulation}
           />
         )}
       </div>

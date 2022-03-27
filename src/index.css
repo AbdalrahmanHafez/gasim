@@ -102,9 +102,9 @@ h1 {
   cursor: pointer;
 }
 .simCard {
-  margin: 5px;
-  height: 100px;
-  padding: 5px;
+  margin: 5px 0px;
+  height: 70px;
+  padding: 7px;
   border: 1px solid #949494;
   background-color: #d6d6d6;
 }
