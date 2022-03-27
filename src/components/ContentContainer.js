@@ -407,7 +407,8 @@ const ContentContainer = ({ tabIdx }) => {
         contextMenu.showMenuItem("unselect-all-edges");
       } else {
         contextMenu.hideMenuItem("unselect-all-edges");
-        contextMenu.showMenuItem("select-all-edges");
+        // removed the ability to select all edges
+        // contextMenu.showMenuItem("select-all-edges");
       }
     });
 
@@ -610,7 +611,7 @@ const ContentContainer = ({ tabIdx }) => {
           content: "select all edges",
           selector: "edge",
           coreAsWell: true,
-          show: true,
+          show: false,
           onClickFunction: function (event) {
             selectAllOfTheSameType("edge");
 
@@ -631,6 +632,7 @@ const ContentContainer = ({ tabIdx }) => {
             contextMenu.hideMenuItem("unselect-all-edges");
           },
         },
+
         {
           id: "fit",
           content: "Fit Graph",
@@ -645,7 +647,25 @@ const ContentContainer = ({ tabIdx }) => {
       ],
     });
 
+    const handleDoubleTap = (e) => {
+      var evtTarget = e.target;
+      if (evtTarget !== cy) {
+        // a node
+        const node = e.target;
+        console.log(node);
+        const newName = prompt("Rename Node", node.data().name);
+        if (!newName) return;
+        node.data("name", newName);
+      }
+    };
+    const handleWindowResize = () => {
+      cy.fit();
+      console.log("[event] resize");
+    };
+
     // cy.on("tap", this.handleMouseClick); // TODO: handlemouselclick
+    cy.on("dbltap ", handleDoubleTap);
+    cy.on("resize ", handleWindowResize);
   };
 
   useEffect(() => {
@@ -724,7 +744,12 @@ const ContentContainer = ({ tabIdx }) => {
     const newConfig = new Config(inputString, info.cyinst, () =>
       forceRender({})
     );
-    setinfo({ ...info, shown: true, configs: [newConfig] });
+    setinfo({
+      ...info,
+      shown: true,
+      inputString: inputString,
+      configs: [newConfig],
+    });
 
     newConfig.startSimulation();
   };
@@ -761,6 +786,7 @@ const ContentContainer = ({ tabIdx }) => {
             tabIdx={tabIdx}
             cyinst={info.cyinst}
             setinfo={setinfo}
+            info={info}
             handleStartSimulation={handleStartSimulation}
           />
         )}

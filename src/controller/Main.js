@@ -137,12 +137,6 @@ class Main {
     // }
     this.setTest((test) => ({ ...test, shown: true }));
 
-    setTimeout(() => {
-      // TODO: WTF is this
-      this.cyinstances[0].resize();
-      this.cyinstances[0].fit();
-    }, 500);
-
     // debugger;
   }
   simTick() {

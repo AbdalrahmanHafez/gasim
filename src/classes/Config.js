@@ -13,13 +13,7 @@ class Config {
 
     this.strCurState = this.curNode.data("id");
   }
-  startSimulation() {
-    setTimeout(() => {
-      // TODO: WTF is this
-      this.cyinst.resize();
-      this.cyinst.fit();
-    }, 500);
-  }
+  startSimulation() {}
 
   tick() {
     // if winstate is determeind, deadend reached, will be filtered ouT

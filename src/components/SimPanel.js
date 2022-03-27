@@ -32,6 +32,7 @@ export default function SimPanel({
   cyinst,
   setinfo,
   handleStartSimulation,
+  info,
 }) {
   console.log("[SimPanel] Rendered");
 
@@ -65,7 +66,7 @@ export default function SimPanel({
   const handleBtnReset = () => {
     cyinst.nodes().classes([]);
     cyinst.edges().classes([]);
-    const inputString = configs[0].inputString; // since we're simulating somthing, it must have atlest a config
+    const inputString = info.inputString;
     handleStartSimulation(inputString);
   };
   return (

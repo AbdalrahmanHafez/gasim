@@ -1,7 +1,7 @@
 import React, { useState, useRef } from "react";
 const initialState = [
-  { shown: false, cyinst: undefined, configs: [] },
-  { shown: false, cyinst: undefined, configs: [] },
+  { shown: false, cyinst: undefined, inputString: undefined, configs: [] },
+  { shown: false, cyinst: undefined, inputString: undefined, configs: [] },
 ];
 
 export const StoreContext = React.createContext();
@@ -13,7 +13,7 @@ const Store = ({ children }) => {
     console.log("[Utility] addTab");
     setstore((prev) => [
       ...prev,
-      { shown: false, cyinst: undefined, configs: [] },
+      { shown: false, cyinst: undefined, inputString: undefined, configs: [] },
     ]);
   };
 
