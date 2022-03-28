@@ -14,9 +14,18 @@ function App() {
 
   return (
     <div className="App">
-      <h1>cytoscape-popper demo</h1>
-
-      <Button onClick={addTab}>Add Tab</Button>
+      <h1>Graphical Automata Simulator</h1>
+      <Button
+        style={{
+          position: "absolute",
+          top: "45px",
+          right: "0",
+          "z-index": "2",
+        }}
+        onClick={addTab}
+      >
+        Add Tab
+      </Button>
       <TabsController />
     </div>
   );

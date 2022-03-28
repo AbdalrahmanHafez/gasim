@@ -176,7 +176,8 @@ const ContentContainer = ({ tabIdx }) => {
       elements: elements,
       layout: {
         // name: "grid",
-        name: "random",
+        // name: "random",
+        name: "cose",
         // name: "preset",
         // rows: 1,
       },
@@ -736,8 +737,29 @@ const ContentContainer = ({ tabIdx }) => {
         { data: { id: "de", source: "d", target: "e", label: "b" } },
       ],
     };
-
-    initCy(tabIdx === 0 ? elm1 : elm2);
+    const elm3 = {
+      nodes: [
+        {
+          data: { id: "a", name: "Node A", inital: true, final: false },
+        },
+        {
+          data: { id: "b", name: "B", inital: false, final: false },
+        },
+        {
+          data: { id: "c", name: "C", inital: false, final: false },
+        },
+        {
+          data: { id: "d", name: "D", inital: false, final: false },
+        },
+      ],
+      edges: [
+        { data: { id: "ab", source: "a", target: "b", label: "a" } },
+        { data: { id: "bb", source: "b", target: "b", label: "ε" } },
+        { data: { id: "bc", source: "b", target: "c", label: "ε" } },
+        { data: { id: "cd", source: "c", target: "d", label: "b" } },
+      ],
+    };
+    initCy(tabIdx === 0 ? elm1 : tabIdx === 1 ? elm2 : elm3);
   }, []);
 
   const handleStartSimulation = (inputString) => {

@@ -27,7 +27,11 @@ export default function TabsController() {
   console.log("[TabsController] Rendered");
 
   return (
-    <Tabs defaultActiveKey={"0"} onChange={callback}>
+    <Tabs
+      defaultActiveKey={"0"}
+      onChange={callback}
+      style={{ margin: "0px 7px" }}
+    >
       {store.map((tab, index) => (
         <TabPane tab={"Tab " + index} key={index}>
           <div id={"tab-" + index}>

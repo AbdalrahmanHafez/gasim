@@ -2,6 +2,7 @@ import React, { useState, useRef } from "react";
 const initialState = [
   { shown: false, cyinst: undefined, inputString: undefined, configs: [] },
   { shown: false, cyinst: undefined, inputString: undefined, configs: [] },
+  { shown: false, cyinst: undefined, inputString: undefined, configs: [] },
 ];
 
 export const StoreContext = React.createContext();
