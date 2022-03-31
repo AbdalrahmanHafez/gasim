@@ -1,7 +1,7 @@
 /* eslint-disable no-undef */
 import { useEffect } from "react";
 
-const TestPage = () => {
+const Zim = () => {
   useEffect(() => {
     console.log("hello");
     // SCALING OPTIONS
@@ -112,4 +112,4 @@ const TestPage = () => {
   return <h1> hello </h1>;
 };
 
-export default TestPage;
+export default Zim;

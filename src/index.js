@@ -7,6 +7,7 @@ import { useRef, useEffect, useState } from "react";
 import { StoreProvider, createStore } from "easy-peasy";
 import model from "./model";
 import Store from "./Store";
+import TestPage from "./TestPages/index.js";
 
 const store = createStore(model);
 
@@ -14,7 +15,7 @@ ReactDOM.render(
   <React.StrictMode>
     <StoreProvider store={store}>
       <Store>
-        <App />
+        {window.location.pathname === "/test" ? <TestPage /> : <App />}
       </Store>
     </StoreProvider>
   </React.StrictMode>,
