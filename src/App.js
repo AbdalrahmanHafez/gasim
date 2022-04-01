@@ -20,7 +20,7 @@ function App() {
           position: "absolute",
           top: "45px",
           right: "0",
-          "z-index": "2",
+          zIndex: 2,
         }}
         onClick={addTab}
       >

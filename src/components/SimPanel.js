@@ -28,15 +28,9 @@ const SimCard = ({ id, config }) => {
   );
 };
 
-export default function SimPanel({
-  tabIdx,
-  configs,
-  setconfigs,
-  cyinst,
-  setinfo,
-  handleStartSimulation,
-  info,
-}) {
+export default function SimPanel({ tabIdx, ui }) {
+  const getCy = () => ui.getCy();
+  const getConfigs = () => ui.getConfigs();
   console.log("[SimPanel] Rendered");
 
   useEffect(() => {
@@ -46,31 +40,29 @@ export default function SimPanel({
   const handleBtnStepAll = () => {
     console.log("handleStepAll");
     // the tick advances and colors the nodes and edges
-    cyinst.nodes().classes([]);
-    cyinst.edges().classes([]);
+    getCy().nodes().classes([]);
+    getCy().edges().classes([]);
 
     // Replace current config with new config from each config tick function
-    setconfigs((oldConfigs) =>
-      oldConfigs.flatMap((config) => config.tick()).filter(Boolean)
-    );
-  };
-  const handleBtnPanelClose = () => {
-    cyinst.nodes().classes([]);
-    cyinst.edges().classes([]);
-    setinfo((info) => {
-      console.log("close button info ");
-      console.log(info);
-      return { ...info, shown: false };
-    });
-    setTimeout(() => {
-      cyinst.fit(); // TODO: WTF is this
-    }, 500);
+    // setconfigs((oldConfigs) =>
+    //   oldConfigs.flatMap((config) => config.tick()).filter(Boolean)
+    // );
   };
   const handleBtnReset = () => {
-    cyinst.nodes().classes([]);
-    cyinst.edges().classes([]);
-    const inputString = info.inputString;
-    handleStartSimulation(inputString);
+    getCy().nodes().classes([]);
+    getCy().edges().classes([]);
+    // const inputString = info.inputString;
+    // handleStartSimulation(inputString);
+  };
+  const handleBtnPanelClose = () => {
+    getCy().nodes().classes([]);
+    getCy().edges().classes([]);
+    // setinfo((info) => {
+    //   console.log("close button info ");
+    //   console.log(info);
+    //   return { ...info, shown: false };
+    // });
+    ui.helpers.setShowSim(false);
   };
   return (
     <div id="simContainer">
@@ -85,7 +77,7 @@ export default function SimPanel({
       <button onClick={handleBtnReset} className="ui-button">
         Reset
       </button>
-      {configs.map((config, index) => (
+      {getConfigs().map((config, index) => (
         <SimCard key={index} id={index} config={config} />
       ))}
       {/* <SimCard id={1} view={view} handleStep={handleStep} /> */}
