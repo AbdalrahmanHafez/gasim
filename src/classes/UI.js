@@ -2,10 +2,15 @@ import cytoscape from "cytoscape";
 import popper from "cytoscape-popper";
 import edgehandles from "cytoscape-edgehandles";
 import contextMenus from "cytoscape-context-menus";
+import Simulation from "./Simulation";
+import NFASimulation from "./NFASimulation";
+import { getNodeFromId } from "../Helpers/hlpGraph";
 
 cytoscape.use(edgehandles);
 cytoscape.use(contextMenus);
 cytoscape.use(popper);
+
+const log = (msg) => console.log(`[UI] ${msg}`);
 
 export default class UI {
   constructor(tabIdx) {
@@ -13,21 +18,64 @@ export default class UI {
     this.tabId = `tab-${tabIdx}`;
     this.cyId = `cy-${tabIdx}`;
     this.showSim = false;
-
+    this.cy = undefined;
+    this.sim = undefined;
     this.handleStartSimulation = this.handleStartSimulation.bind(this);
     this.helpers = {};
   }
-  getCy() {
-    return this.cy;
+  test() {
+    // this.cy.json({ elements: elm2 });
   }
+  clearHighlighted() {
+    this.cy
+      .$("node")
+      .toArray()
+      .forEach((n) => n.removeClass("highlighted"));
+  }
+  #highlightConfigs(configs) {
+    // debugger;
+    // this.cy.nodes().classes([]);
+    this.clearHighlighted();
+    configs.forEach((config) => {
+      getNodeFromId(this.cy, config.stateId).addClass("highlighted");
+    });
+  }
+  actionSimulationStepAll() {
+    // this.cy.nodes().classes([]);
+    this.clearHighlighted();
+    this.sim.actionStepAll();
+    this.#highlightConfigs(this.sim.configs);
 
-  handleStartSimulation() {
-    console.log("[UI] clicked start simulation");
+    this.helpers.forceRender({});
+  }
+  handleStartSimulation(steppingStrategy) {
+    log("clicked start simulation");
+    // const inputString = "abc";
+    const inputString = prompt("Enter input string", "abcd");
+    if (inputString === null) return; // this will allow empty string ''
+
+    const initalNode = this.cy.$("node[?inital]")[0];
+    if (!initalNode) {
+      console.log("[SIM] no inital exiting");
+      alert("No inital node found. right click on a node to spcifiy initial");
+      return;
+    }
+
+    this.sim = new NFASimulation(this, inputString, steppingStrategy);
+    // Highlight the inital nodes
+    this.#highlightConfigs(this.sim.configs);
+
     this.helpers.setShowSim(true);
   }
-
-  getConfigs() {
-    return [];
+  actionSimulationReset() {
+    this.clearHighlighted();
+    this.sim = new NFASimulation(
+      this,
+      this.sim.inputString,
+      this.sim.steppingStrategy
+    );
+    this.#highlightConfigs(this.sim.configs);
+    this.helpers.forceRender({});
   }
 
   injectCy(elements) {
@@ -673,5 +721,12 @@ export default class UI {
     cy.on("dbltap", "node, edge", handleDoubleTap);
     cy.on("resize", handleWindowResize);
     // $(document).on("keydown", handleKeyPress);
+  }
+
+  getCy() {
+    return this.cy;
+  }
+  getConfigs() {
+    return this.sim.getConfigs();
   }
 }

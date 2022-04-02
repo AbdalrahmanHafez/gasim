@@ -4,12 +4,11 @@ import { StoreContext } from "../Store.js";
 const $ = window.jQuery;
 
 const SimCard = ({ id, config }) => {
-  const [, forceRender] = useState({});
   const handleStep = () => {
     console.log("handleStep");
     config.tick();
   };
-  const formatPath = (configPath) => configPath.join("->");
+  // const formatPath = (configPath) => configPath.join("->");
 
   return (
     <div
@@ -18,12 +17,12 @@ const SimCard = ({ id, config }) => {
         (config.winstate ? "won" : config.winstate === undefined ? "" : "lost")
       }
     >
-      <div className="simCardHeader">state: {config.strCurState}</div>
+      <div className="simCardHeader">state: {config.stateId}</div>
       <div className="simCardProgress">
         {config.strDone}
         <strong>{config.strRem}</strong>
       </div>
-      {formatPath(config.path)}
+      {/* {formatPath(config.path)} */}
     </div>
   );
 };
@@ -40,28 +39,18 @@ export default function SimPanel({ tabIdx, ui }) {
   const handleBtnStepAll = () => {
     console.log("handleStepAll");
     // the tick advances and colors the nodes and edges
-    getCy().nodes().classes([]);
-    getCy().edges().classes([]);
 
     // Replace current config with new config from each config tick function
     // setconfigs((oldConfigs) =>
     //   oldConfigs.flatMap((config) => config.tick()).filter(Boolean)
-    // );
+    // )t;
+    ui.actionSimulationStepAll();
   };
   const handleBtnReset = () => {
-    getCy().nodes().classes([]);
-    getCy().edges().classes([]);
-    // const inputString = info.inputString;
-    // handleStartSimulation(inputString);
+    ui.actionSimulationReset();
   };
   const handleBtnPanelClose = () => {
-    getCy().nodes().classes([]);
-    getCy().edges().classes([]);
-    // setinfo((info) => {
-    //   console.log("close button info ");
-    //   console.log(info);
-    //   return { ...info, shown: false };
-    // });
+    ui.clearHighlighted();
     ui.helpers.setShowSim(false);
   };
   return (
@@ -71,7 +60,7 @@ export default function SimPanel({ tabIdx, ui }) {
         &#10005;
       </button>
       <br />
-      <button onClick={handleBtnStepAll} className="ui-button">
+      <button id="testStepAll" onClick={handleBtnStepAll} className="ui-button">
         Step all
       </button>
       <button onClick={handleBtnReset} className="ui-button">

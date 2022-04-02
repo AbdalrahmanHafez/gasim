@@ -1,20 +1,24 @@
-import Button from "@mui/material/Button";
 import React, { useContext, useEffect, useState } from "react";
 import SimPanel from "./SimPanel";
 import { StoreContext } from "../Store.js";
 import UI from "../classes/UI";
+import { Menu, Dropdown } from "antd";
+import { DownOutlined } from "@ant-design/icons";
+import steppingStrategy from "../enums/steppingStrategy";
+
 const $ = window.jQuery;
 
 const log = (msg) => console.log(`[Content Container] ${msg}`);
 const ContentContainer = ({ tabIdx }) => {
   log("Render");
+  const [, forceRender] = useState({});
   const [store, setstore] = useContext(StoreContext);
   const [ui, setui] = useState(new UI(tabIdx));
 
   const info = store[tabIdx];
   const [showSim, setShowSim] = useState(false);
 
-  const helpers = { setShowSim };
+  const helpers = { forceRender, setShowSim };
   ui.helpers = helpers;
 
   const setinfo = (something) => {
@@ -28,7 +32,6 @@ const ContentContainer = ({ tabIdx }) => {
   };
 
   useEffect(() => {
-    console.log("useEffect injection");
     const elm1 = {
       nodes: [
         {
@@ -69,6 +72,18 @@ const ContentContainer = ({ tabIdx }) => {
           data: { id: "a", name: "Node A", inital: true, final: false },
         },
         {
+          data: { id: "f", name: "F", inital: false, final: false },
+        },
+        {
+          data: { id: "w", name: "W", inital: false, final: true },
+        },
+        {
+          data: { id: "g", name: "G", inital: false, final: false },
+        },
+        {
+          data: { id: "h", name: "H", inital: false, final: true },
+        },
+        {
           data: { id: "b", name: "B", inital: false, final: false },
         },
         {
@@ -81,6 +96,10 @@ const ContentContainer = ({ tabIdx }) => {
       ],
       edges: [
         { data: { id: "ab", source: "a", target: "b", label: "a" } },
+        { data: { id: "af", source: "a", target: "f", label: "ε" } },
+        { data: { id: "fg", source: "f", target: "g", label: "a" } },
+        { data: { id: "fw", source: "f", target: "w", label: "ε" } },
+        { data: { id: "gh", source: "g", target: "h", label: "b" } },
         { data: { id: "bc", source: "b", target: "c", label: "ε" } },
         { data: { id: "cd", source: "c", target: "d", label: "ε" } },
         { data: { id: "db", source: "d", target: "b", label: "ε" } },
@@ -110,22 +129,50 @@ const ContentContainer = ({ tabIdx }) => {
       ],
     };
 
-    ui.injectCy(elm1);
+    ui.injectCy(elm2);
   }, [ui]);
+
+  const menu = (
+    <Menu>
+      {Object.keys(steppingStrategy).map((key, idx) => (
+        <Menu.Item key={idx}>
+          <a
+            href="#"
+            onClick={() => {
+              ui.handleStartSimulation(steppingStrategy[key]);
+            }}
+          >
+            {steppingStrategy[key]}
+          </a>
+        </Menu.Item>
+      ))}
+    </Menu>
+  );
 
   return (
     <>
-      <Button
+      {/* <Button
         id="btnSimulate"
         variant="outlined"
         onClick={ui.handleStartSimulation}
       >
         Simulate input
-      </Button>
+      </Button> */}
+      <div id="btnSimulate">
+        <Dropdown overlay={menu}>
+          <a className="ant-dropdown-link" onClick={(e) => e.preventDefault()}>
+            Simulate
+            <DownOutlined />
+          </a>
+        </Dropdown>
+      </div>
       <button
+        id="testButton"
         onClick={() => {
           // callShow(true);
-          console.log("click");
+          console.log("[test btn] click");
+          // ui.test();
+          ui.handleStartSimulation(steppingStrategy.STEP_WITH_CLOSURE);
         }}
       >
         test
