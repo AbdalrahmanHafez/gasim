@@ -11,7 +11,7 @@ export default class Config {
     return this.strRem[0];
   }
   canConsume(sym) {
-    return this.strRem[0] === sym;
+    return this.strRem[0] === sym || "ε" === sym;
   }
   consume() {
     this.strDone += this.strRem[0];

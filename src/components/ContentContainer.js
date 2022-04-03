@@ -172,7 +172,7 @@ const ContentContainer = ({ tabIdx }) => {
           // callShow(true);
           console.log("[test btn] click");
           // ui.test();
-          ui.handleStartSimulation(steppingStrategy.STEP_WITH_CLOSURE);
+          ui.handleStartSimulation(steppingStrategy.RANDOM);
         }}
       >
         test
