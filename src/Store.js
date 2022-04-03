@@ -1,5 +1,5 @@
 import React, { useState, useRef } from "react";
-const initialState = [{}];
+const initialState = [{}, {}, {}, {}];
 
 export const StoreContext = React.createContext();
 export const UtilityContext = React.createContext();

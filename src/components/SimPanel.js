@@ -3,7 +3,7 @@ import { StoreContext } from "../Store.js";
 
 const $ = window.jQuery;
 
-const SimCard = ({ id, config }) => {
+const SimCard = ({ id, config, tabIdx }) => {
   const handleStep = () => {
     console.log("handleStep");
     config.tick();
@@ -23,7 +23,10 @@ const SimCard = ({ id, config }) => {
         {config.strDone}
         <strong>{config.strRem}</strong>
       </div>
-      <div className="simCardProgress">{config.stack}</div>
+      {tabIdx === 4 && (
+        <div className="simCardProgress">{config.stack}</div>
+        
+      )}
       {/* {formatPath(config.path)} */}
     </div>
   );
@@ -62,7 +65,7 @@ export default function SimPanel({ tabIdx, ui }) {
         Reset
       </button>
       {getConfigs().map((config, index) => (
-        <SimCard key={index} id={index} config={config} />
+        <SimCard key={index} id={index} config={config} tabIdx={tabIdx} />
       ))}
       {/* <SimCard id={1} view={view} handleStep={handleStep} /> */}
     </div>

@@ -56,8 +56,8 @@ export default class UI {
   }
   handleStartSimulation(steppingStrategy) {
     log("clicked start simulation");
-    const inputString = "ab";
-    // const inputString = prompt("Enter input string", "abcd");
+    // const inputString = "ab";
+    const inputString = prompt("Enter input string", "abcd");
     if (inputString === null) return; // this will allow empty string ''
 
     const initalNode = this.cy.$("node[?inital]")[0];
@@ -68,28 +68,33 @@ export default class UI {
     }
 
     // TODO: Dynamic sim
-    // this.sim = new PDASimulation(this, inputString, steppingStrategy);
-    this.sim = new NFASimulation(this, inputString, steppingStrategy);
+    if (this.tabIdx === 3)
+      this.sim = new PDASimulation(this, inputString, steppingStrategy);
+    else this.sim = new NFASimulation(this, inputString, steppingStrategy);
 
     // Highlight the inital nodes
     this.#highlightConfigs(this.sim.configs);
 
     this.helpers.setShowSim(true);
+    this.helpers.forceRender({}); // this was added to rerender the configs on simpanel
   }
   actionSimulationReset() {
     this.clearHighlighted();
-    this.sim = new NFASimulation(
-      this,
-      this.sim.inputString,
-      this.sim.steppingStrategy
-    );
 
     // TODO: Dynamic sim
-    // this.sim = new PDASimulation(
-    //   this,
-    //   this.sim.inputString,
-    //   this.sim.steppingStrategy
-    // );
+    if (this.tabIdx === 3) {
+      this.sim = new PDASimulation(
+        this,
+        this.sim.inputString,
+        this.sim.steppingStrategy
+      );
+    } else {
+      this.sim = new NFASimulation(
+        this,
+        this.sim.inputString,
+        this.sim.steppingStrategy
+      );
+    }
 
     this.#highlightConfigs(this.sim.configs);
     this.helpers.forceRender({});

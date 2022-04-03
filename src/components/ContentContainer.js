@@ -170,8 +170,10 @@ const ContentContainer = ({ tabIdx }) => {
     };
 
     // TODO: Dynamic sim
-    ui.injectCy(elm2);
-    // ui.injectCy(elmPDA);
+    if (tabIdx === 0) ui.injectCy(elm1);
+    if (tabIdx === 1) ui.injectCy(elm2);
+    if (tabIdx === 2) ui.injectCy(elm3);
+    if (tabIdx === 3) ui.injectCy(elmPDA);
   }, [ui]);
 
   const menu = (
