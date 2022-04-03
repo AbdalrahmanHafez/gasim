@@ -4,11 +4,17 @@ import edgehandles from "cytoscape-edgehandles";
 import contextMenus from "cytoscape-context-menus";
 import Simulation from "./Simulation";
 import NFASimulation from "./NFASimulation";
+import PDASimulation from "./PDASimulation";
 import { getNodeFromId } from "../Helpers/hlpGraph";
+import edgeEditing from "cytoscape-edge-editing";
+import konva from "konva";
+import $ from "jquery";
 
 cytoscape.use(edgehandles);
 cytoscape.use(contextMenus);
 cytoscape.use(popper);
+// cytoscape.use(edgeEditing);
+// edgeEditing(cytoscape, $, konva); // register extension
 
 const log = (msg) => console.log(`[UI] ${msg}`);
 
@@ -50,7 +56,7 @@ export default class UI {
   }
   handleStartSimulation(steppingStrategy) {
     log("clicked start simulation");
-    const inputString = "abc";
+    const inputString = "ab";
     // const inputString = prompt("Enter input string", "abcd");
     if (inputString === null) return; // this will allow empty string ''
 
@@ -61,7 +67,10 @@ export default class UI {
       return;
     }
 
+    // TODO: Dynamic sim
+    // this.sim = new PDASimulation(this, inputString, steppingStrategy);
     this.sim = new NFASimulation(this, inputString, steppingStrategy);
+
     // Highlight the inital nodes
     this.#highlightConfigs(this.sim.configs);
 
@@ -74,6 +83,14 @@ export default class UI {
       this.sim.inputString,
       this.sim.steppingStrategy
     );
+
+    // TODO: Dynamic sim
+    // this.sim = new PDASimulation(
+    //   this,
+    //   this.sim.inputString,
+    //   this.sim.steppingStrategy
+    // );
+
     this.#highlightConfigs(this.sim.configs);
     this.helpers.forceRender({});
   }
@@ -156,6 +173,8 @@ export default class UI {
             "target-arrow-color": "DarkRed",
             "target-arrow-shape": "triangle",
             "curve-style": "bezier",
+            "control-point-step-size": 50,
+            "loop-sweep": 100,
           },
         },
         // some style for the extension
@@ -695,6 +714,75 @@ export default class UI {
         },
       ],
     });
+
+    // Edge Bending
+
+    // cy.edgeEditing({
+    //   undoable: false,
+    //   bendRemovalSensitivity: 16,
+    //   enableMultipleAnchorRemovalOption: true,
+    //   initAnchorsAutomatically: false,
+    //   useTrailingDividersAfterContextMenuOptions: false,
+    //   enableCreateAnchorOnDrag: true,
+    // });
+
+    // cy.edgeEditing({
+    //   // this function specifies the positions of bend points
+    //   // strictly name the property 'bendPointPositions' for the edge to be detected for bend point edititng
+    //   bendPositionsFunction: function (ele) {
+    //     return ele.data("bendPointPositions");
+    //   },
+    //   // this function specifies the poitions of control points
+    //   // strictly name the property 'controlPointPositions' for the edge to be detected for control point edititng
+    //   controlPositionsFunction: function (ele) {
+    //     return ele.data("controlPointPositions");
+    //   },
+    //   // whether to initilize bend and control points on creation of this extension automatically
+    //   initAnchorsAutomatically: true,
+    //   // the classes of those edges that should be ignored
+    //   ignoredClasses: [],
+    //   // whether the bend editing operations are undoable (requires cytoscape-undo-redo.js)
+    //   undoable: false,
+    //   // the size of bend and control point shape is obtained by multipling width of edge with this parameter
+    //   anchorShapeSizeFactor: 3,
+    //   // z-index value of the canvas in which bend points are drawn
+    //   zIndex: 999,
+    //   // whether to start the plugin in the enabled state
+    //   enabled: true,
+    //   /*An option that controls the distance (in pixels) within which a bend point is considered near the line segment between
+    //      its two neighbors and will be automatically removed
+    //      min value = 0 , max value = 20 , values less than 0 are set to 0 and values greater than 20 are set to 20
+    //    */
+    //   bendRemovalSensitivity: 8,
+    //   // title of add bend point menu item (User may need to adjust width of menu items according to length of this option)
+    //   addBendMenuItemTitle: "Add Bend Point",
+    //   // title of remove bend point menu item (User may need to adjust width of menu items according to length of this option)
+    //   removeBendMenuItemTitle: "Remove Bend Point",
+    //   // title of remove all bend points menu item
+    //   removeAllBendMenuItemTitle: "Remove All Bend Points",
+    //   // title of add control point menu item (User may need to adjust width of menu items according to length of this option)
+    //   addControlMenuItemTitle: "Add Control Point",
+    //   // title of remove control point menu item (User may need to adjust width of menu items according to length of this option)
+    //   removeControlMenuItemTitle: "Remove Control Point",
+    //   // title of remove all control points menu item
+    //   removeAllControlMenuItemTitle: "Remove All Control Points",
+    //   // whether 'Remove all bend points' and 'Remove all control points' options should be presented to the user
+    //   enableMultipleAnchorRemovalOption: false,
+    //   // whether the bend and control points can be moved by arrows
+    //   moveSelectedAnchorsOnKeyEvents: function () {
+    //     return true;
+    //   },
+    //   // this function handles reconnection of the edge, if undefined simply connect edge to its new source/target
+    //   // handleReconnectEdge (newSource.id(), newTarget.id(), edge.data())
+    //   handleReconnectEdge: undefined,
+    //   // this function checks validation of the edge and its new source/target
+    //   validateEdge: function (edge, newSource, newTarget) {
+    //     return "valid";
+    //   },
+    //   // this function is called if reconnected edge is not valid according to validateEdge function
+    //   actOnUnsuccessfulReconnection: undefined,
+    // });
+    // cy.style().update();
 
     const handleDoubleTap = (e) => {
       // a node or edge

@@ -65,7 +65,6 @@ const ContentContainer = ({ tabIdx }) => {
         { data: { id: "dq5", source: "d", target: "q5", label: "ε" } },
       ],
     };
-
     const elm2 = {
       nodes: [
         {
@@ -129,7 +128,50 @@ const ContentContainer = ({ tabIdx }) => {
       ],
     };
 
+    const elmPDA = {
+      nodes: [
+        {
+          data: { id: "a", name: "Node A", inital: true, final: false },
+        },
+        {
+          data: { id: "f", name: "F", inital: false, final: false },
+        },
+        {
+          data: { id: "w", name: "W", inital: false, final: true },
+        },
+        {
+          data: { id: "g", name: "G", inital: false, final: false },
+        },
+        {
+          data: { id: "h", name: "H", inital: false, final: true },
+        },
+        {
+          data: { id: "b", name: "B", inital: false, final: false },
+        },
+        {
+          data: { id: "c", name: "C", inital: false, final: false },
+        },
+        {
+          data: { id: "d", name: "D", inital: false, final: false },
+        },
+        { data: { id: "e", name: "E", inital: false, final: true } },
+      ],
+      edges: [
+        { data: { id: "ab", source: "a", target: "b", label: "aZX" } },
+        { data: { id: "af", source: "a", target: "f", label: "εεS" } },
+        { data: { id: "fg", source: "f", target: "g", label: "aεε" } },
+        { data: { id: "fw", source: "f", target: "w", label: "εSK" } },
+        { data: { id: "gh", source: "g", target: "h", label: "bSε" } },
+        { data: { id: "bc", source: "b", target: "c", label: "εεε" } },
+        { data: { id: "cd", source: "c", target: "d", label: "εεε" } },
+        { data: { id: "db", source: "d", target: "b", label: "εεε" } },
+        { data: { id: "de", source: "d", target: "e", label: "bXε" } },
+      ],
+    };
+
+    // TODO: Dynamic sim
     ui.injectCy(elm2);
+    // ui.injectCy(elmPDA);
   }, [ui]);
 
   const menu = (
@@ -171,7 +213,7 @@ const ContentContainer = ({ tabIdx }) => {
         onClick={() => {
           console.log("[test btn] click");
           // ui.test();
-          ui.handleStartSimulation(steppingStrategy.STEP_WITH_CLOSURE);
+          ui.handleStartSimulation(steppingStrategy.RANDOM);
         }}
       >
         test

@@ -10,6 +10,7 @@ const SimCard = ({ id, config }) => {
   };
   // const formatPath = (configPath) => configPath.join("->");
 
+  // TODO: Dynamic sim
   return (
     <div
       className={
@@ -22,6 +23,7 @@ const SimCard = ({ id, config }) => {
         {config.strDone}
         <strong>{config.strRem}</strong>
       </div>
+      <div className="simCardProgress">{config.stack}</div>
       {/* {formatPath(config.path)} */}
     </div>
   );

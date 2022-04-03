@@ -1,4 +1,5 @@
 import Config from "./Config";
+import PDAConfig from "./PDAConfig";
 import {
   getInitalNode,
   getNodeClosure,
@@ -15,7 +16,9 @@ export default class Simulation {
     this.inputString = inputString;
     this.cy = this.ui.cy;
     this.initalNode = getInitalNode(this.cy);
-    this.configs = [new Config(this.initalNode.id(), inputString)];
+    // TODO: Dynamic sim
+    this.configs = [new PDAConfig(this.initalNode.id(), inputString)];
+    // this.configs = [new Config(this.initalNode.id(), inputString)];
 
     this.steppingStrategy = steppingStrategy;
   }

@@ -21,3 +21,16 @@ export const getNodeClosure = (cynode) => {
 };
 
 export const getNodeFromId = (cy, id) => cy.$("#" + id)[0];
+
+function assert(condition, message) {
+  if (!condition) {
+    if (message) throw new Error(message);
+    else throw new Error("Assertion failed");
+  }
+}
+// TODO: PDA Label
+export const parsePDAEdgeLabel = (label) => {
+  assert(label.length === 3, "label must be a 3 characters");
+  const [symbol, pop, push] = label.split("");
+  return { symbol, pop, push };
+};

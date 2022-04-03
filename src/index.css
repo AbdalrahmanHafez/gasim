@@ -117,6 +117,8 @@ h1 {
 }
 .simCardProgress {
   width: 100%;
+  /* TODO: fix the hight to be max(max-content, somevalue) i guess */
+  height: 22px;
   background-color: white;
   text-align: center;
   border-radius: 5px;

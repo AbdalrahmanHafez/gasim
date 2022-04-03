@@ -73,22 +73,12 @@ export default class NFASimulation extends Simulation {
     return nextConfigs;
   }
   #getNextConfigsRandom(config) {
-    const node = getNodeFromId(this.cy, config.stateId);
+    const configs = this.#getNextConfigsStepByState(config);
 
-    const nextEdges = node
-      .outgoers("edge")
-      .filter((edge) => config.canConsume(edge.data("label")));
+    const choosenConfig = configs[Math.floor(Math.random() * configs.length)];
 
-    if (nextEdges.length === 0) return [];
-
-    const choosenEdge = nextEdges[Math.floor(Math.random() * nextEdges.length)];
-    const choosenNode = choosenEdge.target();
-
-    const newConfig = config.copy();
-    if (choosenEdge.data("label") !== "ε") newConfig.consume();
-    newConfig.stateId = choosenNode.id();
-
-    return [newConfig];
+    if (!choosenConfig) return [];
+    return [choosenConfig];
   }
 
   getNextConfigs(config) {
