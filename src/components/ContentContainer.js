@@ -169,10 +169,9 @@ const ContentContainer = ({ tabIdx }) => {
       <button
         id="testButton"
         onClick={() => {
-          // callShow(true);
           console.log("[test btn] click");
           // ui.test();
-          ui.handleStartSimulation(steppingStrategy.RANDOM);
+          ui.handleStartSimulation(steppingStrategy.STEP_WITH_CLOSURE);
         }}
       >
         test

@@ -32,6 +32,6 @@ export default class Simulation {
     this.configs = this.configs.flatMap((config) =>
       this.getNextConfigs(config)
     );
-    console.log("NEW CONFIGS AFTER STEP ALL", this.configs);
+    // console.log("NEW CONFIGS AFTER STEP ALL", this.configs);
   }
 }

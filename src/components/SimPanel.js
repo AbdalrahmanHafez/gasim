@@ -37,13 +37,6 @@ export default function SimPanel({ tabIdx, ui }) {
   }, []);
 
   const handleBtnStepAll = () => {
-    console.log("handleStepAll");
-    // the tick advances and colors the nodes and edges
-
-    // Replace current config with new config from each config tick function
-    // setconfigs((oldConfigs) =>
-    //   oldConfigs.flatMap((config) => config.tick()).filter(Boolean)
-    // )t;
     ui.actionSimulationStepAll();
   };
   const handleBtnReset = () => {

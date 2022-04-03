@@ -32,21 +32,8 @@ export default class NFASimulation extends Simulation {
   #getNextConfigsClosure(config) {
     const node = getNodeFromId(this.cy, config.stateId);
     // debugger;
-    // TODO: lift this the code of winning up to the switch statement
-    if (config.winstate !== undefined) {
-      console.log("Removing configs with winstate", config.stateId);
-      return [];
-    }
-    if (config.strRem.length === 0) {
-      if (node.data("final")) {
-        config.winstate = 1;
-      } else {
-        config.winstate = 0;
-      }
-      return config;
-    }
 
-    console.log("getting next config closure on config ", config.stateId);
+    // console.log("getting next config closure on config ", config.stateId);
     const nextSymbolNodes = node
       .outgoers("edge")
       .filter((edge) => config.nextSymbol === edge.data("label"))
@@ -55,7 +42,7 @@ export default class NFASimulation extends Simulation {
     const nnEpsilonNodes = nextSymbolNodes.flatMap((n) => getNodeClosure(n));
 
     let newNodes = [...new Set(nnEpsilonNodes.concat(nextSymbolNodes))];
-    console.log("newNodes", newNodes);
+    // console.log("newNodes", newNodes);
     // all is consumed, because of the way the algorithms works
     let newConfigs = newNodes.map((node) => {
       const newConfig = config.copy();
@@ -65,32 +52,12 @@ export default class NFASimulation extends Simulation {
     });
     // console.log("newNodes", newNodes);
     // console.log("newConfigs", newConfigs);
-    console.log("==============================");
-
-    // winning Logic
-    if (newConfigs.length === 0) {
-      console.log("lost @ config", config.stateId);
-      config.winstate = 0;
-      return config;
-    }
+    // console.log("==============================");
 
     return newConfigs;
   }
   #getNextConfigsStepByState(config) {
     const node = getNodeFromId(this.cy, config.stateId);
-
-    if (config.winstate !== undefined) {
-      console.log("Removing configs with winstate", config.stateId);
-      return [];
-    }
-    if (config.strRem.length === 0) {
-      if (node.data("final")) {
-        config.winstate = 1;
-      } else {
-        config.winstate = 0;
-      }
-      return config;
-    }
 
     const nextConfigs = node
       .outgoers("edge")
@@ -103,41 +70,16 @@ export default class NFASimulation extends Simulation {
         return newConfig;
       });
 
-    // winning Logic
-    if (nextConfigs.length === 0) {
-      console.log("lost @ config", config.stateId);
-      config.winstate = 0;
-      return config;
-    }
-
     return nextConfigs;
   }
   #getNextConfigsRandom(config) {
     const node = getNodeFromId(this.cy, config.stateId);
 
-    if (config.winstate !== undefined) {
-      console.log("Removing configs with winstate", config.stateId);
-      return [];
-    }
-    if (config.strRem.length === 0) {
-      if (node.data("final")) {
-        config.winstate = 1;
-      } else {
-        config.winstate = 0;
-      }
-      return config;
-    }
-
     const nextEdges = node
       .outgoers("edge")
       .filter((edge) => config.canConsume(edge.data("label")));
 
-    // winning Logic
-    if (nextEdges.length === 0) {
-      console.log("lost @ config", config.stateId);
-      config.winstate = 0;
-      return config;
-    }
+    if (nextEdges.length === 0) return [];
 
     const choosenEdge = nextEdges[Math.floor(Math.random() * nextEdges.length)];
     const choosenNode = choosenEdge.target();
@@ -150,18 +92,46 @@ export default class NFASimulation extends Simulation {
   }
 
   getNextConfigs(config) {
+    const node = getNodeFromId(this.cy, config.stateId);
+
+    if (config.winstate !== undefined) {
+      // console.log("Removing configs with winstate", config.stateId);
+      return [];
+    }
+    if (config.strRem.length === 0) {
+      if (node.data("final")) {
+        config.winstate = 1;
+      } else {
+        config.winstate = 0;
+      }
+      return config;
+    }
+
+    let nextConfigs = [];
+
     switch (this.steppingStrategy) {
       case steppingStrategy.STEP_WITH_CLOSURE:
         // console.log("Stepping with closure");
-        return this.#getNextConfigsClosure(config);
+        nextConfigs = this.#getNextConfigsClosure(config);
+        break;
       case steppingStrategy.STEP_BY_STATE:
         // console.log("Stepping By state");
-        return this.#getNextConfigsStepByState(config);
+        nextConfigs = this.#getNextConfigsStepByState(config);
+        break;
       case steppingStrategy.RANDOM:
         // console.log("Stepping random");
-        return this.#getNextConfigsRandom(config);
+        nextConfigs = this.#getNextConfigsRandom(config);
+        break;
       default:
         throw new Error("invalid stepping strategy");
     }
+
+    // winning Logic
+    if (nextConfigs.length === 0) {
+      // console.log("lost @ config", config.stateId);
+      config.winstate = 0;
+      return config;
+    }
+    return nextConfigs;
   }
 }
