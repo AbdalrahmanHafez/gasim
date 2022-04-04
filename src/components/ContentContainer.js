@@ -205,13 +205,14 @@ const ContentContainer = ({ tabIdx }) => {
       <div id="btnSimulate">
         <Dropdown overlay={menu}>
           <a className="ant-dropdown-link" onClick={(e) => e.preventDefault()}>
-            Simulate
+            {"Simulate  "}
             <DownOutlined />
           </a>
         </Dropdown>
       </div>
       <button
         id="testButton"
+        disabled
         onClick={() => {
           console.log("[test btn] click");
           // ui.test();

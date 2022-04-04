@@ -84,9 +84,9 @@ h1 {
   top: 0;
   z-index: 2;
   margin: 0.2em;
-  /* background-color: #306cb9; */
   color: white;
   font-size: large;
+  /* background-color: #306cb9; */
 }
 #simContainer {
   width: 500px;

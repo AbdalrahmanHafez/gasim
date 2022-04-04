@@ -23,10 +23,7 @@ const SimCard = ({ id, config, tabIdx }) => {
         {config.strDone}
         <strong>{config.strRem}</strong>
       </div>
-      {tabIdx === 4 && (
-        <div className="simCardProgress">{config.stack}</div>
-        
-      )}
+      {tabIdx === 3 && <div className="simCardProgress">{config.stack}</div>}
       {/* {formatPath(config.path)} */}
     </div>
   );
