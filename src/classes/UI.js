@@ -57,8 +57,9 @@ export default class UI {
   }
   handleStartSimulation(steppingStrategy) {
     log("clicked start simulation");
-    // const inputString = "ab";
-    const inputString = prompt("Enter input string", "abcd");
+    // let inputString = "";
+    let inputString = prompt("Enter input string", "abcd").trim();
+
     if (inputString === null) return; // this will allow empty string ''
 
     const initalNode = this.cy.$("node[?inital]")[0];
@@ -68,9 +69,9 @@ export default class UI {
       return;
     }
 
-    if (this.tabType === tabType.FA)
+    if (this.tabType === tabType.FA) {
       this.sim = new NFASimulation(this, inputString, steppingStrategy);
-    else if (this.tabType === tabType.PDA)
+    } else if (this.tabType === tabType.PDA)
       this.sim = new PDASimulation(this, inputString, steppingStrategy);
 
     // Highlight the inital nodes

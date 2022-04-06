@@ -71,7 +71,7 @@ export default class NFASimulation extends Simulation {
         newConfig.stateId = node.id();
         return newConfig;
       });
-
+    console.log(nextConfigs);
     return nextConfigs;
   }
   #getNextConfigsRandom(config) {
@@ -83,6 +83,10 @@ export default class NFASimulation extends Simulation {
     return [choosenConfig];
   }
 
+  setWinState(node) {
+    if (node.data("final")) return 1;
+    return 0;
+  }
   getNextConfigs(config) {
     const node = getNodeFromId(this.cy, config.stateId);
 
@@ -90,12 +94,9 @@ export default class NFASimulation extends Simulation {
       // console.log("Removing configs with winstate", config.stateId);
       return [];
     }
-    if (config.strRem.length === 0) {
-      if (node.data("final")) {
-        config.winstate = 1;
-      } else {
-        config.winstate = 0;
-      }
+    // debugger;
+    if (config.strRem.length === 0 && config.inputString !== "") {
+      config.winstate = this.setWinState(node);
       return config;
     }
 
@@ -120,8 +121,7 @@ export default class NFASimulation extends Simulation {
 
     // winning Logic
     if (nextConfigs.length === 0) {
-      // console.log("lost @ config", config.stateId);
-      config.winstate = 0;
+      config.winstate = this.setWinState(node);
       return config;
     }
     return nextConfigs;

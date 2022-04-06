@@ -51,7 +51,7 @@ export default function TabsController() {
         Add Tab
       </Button>
       <Tabs
-        defaultActiveKey={"0"}
+        defaultActiveKey={"1"}
         onChange={callback}
         style={{ margin: "0px 7px" }}
       >
