@@ -57,10 +57,11 @@ export default class UI {
   }
   handleStartSimulation(steppingStrategy) {
     log("clicked start simulation");
-    // let inputString = "";
-    let inputString = prompt("Enter input string", "abcd").trim();
+    // let inputString = "a";
+    let inputString = prompt("Enter input string", "abcd");
 
     if (inputString === null) return; // this will allow empty string ''
+    inputString = inputString.trim();
 
     const initalNode = this.cy.$("node[?inital]")[0];
     if (!initalNode) {

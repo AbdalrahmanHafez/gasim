@@ -95,10 +95,10 @@ export default class NFASimulation extends Simulation {
       return [];
     }
     // debugger;
-    if (config.strRem.length === 0 && config.inputString !== "") {
-      config.winstate = this.setWinState(node);
-      return config;
-    }
+    // if (config.strRem.length === 0 && config.inputString !== "") {
+    //   config.winstate = this.setWinState(node);
+    //   return config;
+    // }
 
     let nextConfigs = [];
 
@@ -120,10 +120,21 @@ export default class NFASimulation extends Simulation {
     }
 
     // winning Logic
+    // if no more possiable routes you have to choose a winning state
     if (nextConfigs.length === 0) {
       config.winstate = this.setWinState(node);
       return config;
     }
+    // if no more remaining string, and there are more options(epsilons),
+    // if if cur node is winning show that, if not continue to next epsilon
+
+    // limitation: that may create duplicates in the configs
+    if (config.strRem.length === 0) {
+      config.winstate = this.setWinState(node);
+      if (config.winstate === 1) return [config, ...nextConfigs];
+      else return nextConfigs;
+    }
+
     return nextConfigs;
   }
 }
