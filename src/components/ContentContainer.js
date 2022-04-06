@@ -9,27 +9,18 @@ import steppingStrategy from "../enums/steppingStrategy";
 const $ = window.jQuery;
 
 const log = (msg) => console.log(`[Content Container] ${msg}`);
-const ContentContainer = ({ tabIdx }) => {
+const ContentContainer = ({ tabIdx, info }) => {
   log("Render");
   const [, forceRender] = useState({});
-  const [store, setstore] = useContext(StoreContext);
-  const [ui, setui] = useState(new UI(tabIdx));
 
-  const info = store[tabIdx];
+  const { tabType } = info;
+
+  const [ui, setui] = useState(new UI({ ...info, tabIdx }));
+
   const [showSim, setShowSim] = useState(false);
 
   const helpers = { forceRender, setShowSim };
   ui.helpers = helpers;
-
-  const setinfo = (something) => {
-    const newInfo =
-      typeof something === "function" ? something(info) : something;
-    setstore((prev) => {
-      const newstore = [...prev];
-      newstore[tabIdx] = newInfo;
-      return newstore;
-    });
-  };
 
   useEffect(() => {
     const elm1 = {
@@ -169,11 +160,13 @@ const ContentContainer = ({ tabIdx }) => {
       ],
     };
 
-    // TODO: Dynamic sim
     if (tabIdx === 0) ui.injectCy(elm1);
     if (tabIdx === 1) ui.injectCy(elm2);
     if (tabIdx === 2) ui.injectCy(elm3);
     if (tabIdx === 3) ui.injectCy(elmPDA);
+
+    // TODO: Dynamic sim, for given tab Type
+    // inject cy with empty elm
   }, [ui]);
 
   const menu = (
@@ -195,13 +188,6 @@ const ContentContainer = ({ tabIdx }) => {
 
   return (
     <>
-      {/* <Button
-        id="btnSimulate"
-        variant="outlined"
-        onClick={ui.handleStartSimulation}
-      >
-        Simulate input
-      </Button> */}
       <div id="btnSimulate">
         <Dropdown overlay={menu}>
           <a className="ant-dropdown-link" onClick={(e) => e.preventDefault()}>
@@ -212,7 +198,6 @@ const ContentContainer = ({ tabIdx }) => {
       </div>
       <button
         id="testButton"
-        disabled
         onClick={() => {
           console.log("[test btn] click");
           // ui.test();
@@ -223,7 +208,7 @@ const ContentContainer = ({ tabIdx }) => {
       </button>
       <div style={{ display: "flex" }}>
         <div id={`cy-${tabIdx}`} className="cy" />
-        {showSim && <SimPanel tabIdx={tabIdx} ui={ui} />}
+        {showSim && <SimPanel tabIdx={tabIdx} ui={ui} tabType={info.tabType} />}
       </div>
     </>
   );

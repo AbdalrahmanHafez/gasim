@@ -19,7 +19,11 @@ export default class Config {
   }
 
   copy() {
-    const newConfig = new Config(this.stateId, this.inputString);
+    const newConfig = new (Object.getPrototypeOf(this).constructor)(
+      this.stateId,
+      this.inputString
+    );
+    // const newConfig = new Config(this.stateId, this.inputString);
     newConfig.strDone = this.strDone;
     newConfig.strRem = this.strRem;
     newConfig.winstate = this.winstate;

@@ -12,6 +12,8 @@ export default class NFASimulation extends Simulation {
   constructor(ui, inputString, stepStart) {
     super(ui, inputString, stepStart);
 
+    this.configs = [new Config(this.initalNode.id(), inputString)];
+
     if (stepStart === steppingStrategy.STEP_WITH_CLOSURE) {
       this.configs.push(
         ...getNodeClosure(this.initalNode).map(

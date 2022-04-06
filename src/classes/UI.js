@@ -9,6 +9,7 @@ import { getNodeFromId } from "../Helpers/hlpGraph";
 import edgeEditing from "cytoscape-edge-editing";
 import konva from "konva";
 import $ from "jquery";
+import tabType from "../enums/tabTypes";
 
 cytoscape.use(edgehandles);
 cytoscape.use(contextMenus);
@@ -19,11 +20,11 @@ cytoscape.use(popper);
 const log = (msg) => console.log(`[UI] ${msg}`);
 
 export default class UI {
-  constructor(tabIdx) {
+  constructor({ tabIdx, tabType }) {
     this.tabIdx = tabIdx;
     this.tabId = `tab-${tabIdx}`;
     this.cyId = `cy-${tabIdx}`;
-    this.showSim = false;
+    this.tabType = tabType;
     this.cy = undefined;
     this.sim = undefined;
     this.handleStartSimulation = this.handleStartSimulation.bind(this);
@@ -67,10 +68,10 @@ export default class UI {
       return;
     }
 
-    // TODO: Dynamic sim
-    if (this.tabIdx === 3)
+    if (this.tabType === tabType.FA)
+      this.sim = new NFASimulation(this, inputString, steppingStrategy);
+    else if (this.tabType === tabType.PDA)
       this.sim = new PDASimulation(this, inputString, steppingStrategy);
-    else this.sim = new NFASimulation(this, inputString, steppingStrategy);
 
     // Highlight the inital nodes
     this.#highlightConfigs(this.sim.configs);
@@ -81,14 +82,13 @@ export default class UI {
   actionSimulationReset() {
     this.clearHighlighted();
 
-    // TODO: Dynamic sim
-    if (this.tabIdx === 3) {
+    if (this.tabType === tabType.PDA) {
       this.sim = new PDASimulation(
         this,
         this.sim.inputString,
         this.sim.steppingStrategy
       );
-    } else {
+    } else if (this.tabType === tabType.FA) {
       this.sim = new NFASimulation(
         this,
         this.sim.inputString,
@@ -712,7 +712,6 @@ export default class UI {
           tooltipText: "Fit Graph",
           coreAsWell: true,
           onClickFunction: function (event) {
-            // TODO: make it dynamic? how
             cy.fit();
           },
           hasTrailingDivider: true,

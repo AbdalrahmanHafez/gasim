@@ -44,6 +44,8 @@ export default class PDASimulation extends Simulation {
   constructor(ui, inputString, stepStart) {
     super(ui, inputString, stepStart);
 
+    this.configs = [new PDAConfig(this.initalNode.id(), inputString)];
+
     // FIXME: getNodeClosure
     if (stepStart === steppingStrategy.STEP_WITH_CLOSURE) {
       this.configs.push(

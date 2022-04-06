@@ -1,9 +1,10 @@
 import { useEffect, useState, useContext } from "react";
+import tabTypes from "../enums/tabTypes.js";
 import { StoreContext } from "../Store.js";
 
 const $ = window.jQuery;
 
-const SimCard = ({ id, config, tabIdx }) => {
+const SimCard = ({ id, config, tabIdx, tabType }) => {
   const handleStep = () => {
     console.log("handleStep");
     config.tick();
@@ -23,13 +24,15 @@ const SimCard = ({ id, config, tabIdx }) => {
         {config.strDone}
         <strong>{config.strRem}</strong>
       </div>
-      {tabIdx === 3 && <div className="simCardProgress">{config.stack}</div>}
+      {tabType === tabTypes.PDA && (
+        <div className="simCardProgress">{config.stack}</div>
+      )}
       {/* {formatPath(config.path)} */}
     </div>
   );
 };
 
-export default function SimPanel({ tabIdx, ui }) {
+export default function SimPanel({ tabIdx, ui, tabType }) {
   const getCy = () => ui.getCy();
   const getConfigs = () => ui.getConfigs();
   console.log("[SimPanel] Rendered");
@@ -62,7 +65,13 @@ export default function SimPanel({ tabIdx, ui }) {
         Reset
       </button>
       {getConfigs().map((config, index) => (
-        <SimCard key={index} id={index} config={config} tabIdx={tabIdx} />
+        <SimCard
+          key={index}
+          id={index}
+          config={config}
+          tabIdx={tabIdx}
+          tabType={tabType}
+        />
       ))}
       {/* <SimCard id={1} view={view} handleStep={handleStep} /> */}
     </div>

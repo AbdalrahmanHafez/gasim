@@ -1,5 +1,12 @@
 import React, { useState, useRef } from "react";
-const initialState = [{}, {}, {}, {}];
+import tabType from "./enums/tabTypes";
+
+const initialState = [
+  { tabType: tabType.FA },
+  { tabType: tabType.FA },
+  { tabType: tabType.FA },
+  { tabType: tabType.PDA },
+];
 
 export const StoreContext = React.createContext();
 export const UtilityContext = React.createContext();
