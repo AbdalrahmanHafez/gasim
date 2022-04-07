@@ -1,11 +1,6 @@
 import Simulation from "./Simulation";
 import PDAConfig from "./PDAConfig";
-import {
-  getInitalNode,
-  getNodeClosure,
-  getNodeFromId,
-  parsePDAEdgeLabel,
-} from "../Helpers/hlpGraph";
+import { getNodeFromId, parsePDAEdgeLabel } from "../Helpers/hlpGraph";
 
 import steppingStrategy from "../enums/steppingStrategy";
 
@@ -41,22 +36,23 @@ const getPDANodeClosure = (node) => {
 };
 
 export default class PDASimulation extends Simulation {
-  constructor(ui, inputString, stepStart) {
-    super(ui, inputString, stepStart);
+  constructor(ui, inputString, stepStrat) {
+    super(ui, stepStrat);
+    this.inputString = inputString;
 
     this.configs = [new PDAConfig(this.initalNode.id(), inputString)];
 
     // FIXME: getNodeClosure
-    if (stepStart === steppingStrategy.STEP_WITH_CLOSURE) {
+    if (stepStrat === steppingStrategy.STEP_WITH_CLOSURE) {
       this.configs.push(
         ...getPDANodeClosure(this.initalNode).map(
           (node) => new PDAConfig(node.id(), inputString)
         )
       );
-    } else if (stepStart === steppingStrategy.STEP_BY_STATE) {
+    } else if (stepStrat === steppingStrategy.STEP_BY_STATE) {
       // do nothing,
       // the inital node is already in the configs
-    } else if (stepStart === steppingStrategy.RANDOM) {
+    } else if (stepStrat === steppingStrategy.RANDOM) {
       // do nothing,
       // the inital node is already in the configs
     } else {

@@ -1,3 +1,5 @@
+import tabTypes from "../enums/tabTypes";
+
 export const getInitalNode = (cy) => cy.$("node[?inital]")[0];
 export const getNodeClosure = (cynode) => {
   const closure = (node) =>
@@ -33,4 +35,31 @@ export const parsePDAEdgeLabel = (label) => {
   assert(label.length === 3, "label must be a 3 characters");
   const [symbol, pop, push] = label.split("");
   return { symbol, pop, push };
+};
+// TODO: TM Label
+export const parseTMEdgeLabel = (label) => {
+  return label.split("|").map((seg) => {
+    let [symbol, replacement, movement] = seg.split("");
+    if (movement === "R") movement = +1;
+    else if (movement === "L") movement = -1;
+    else if (movement === "S") movement = 0;
+    else throw new Error("Invalid movement");
+    return { symbol, replacement, movement };
+  });
+};
+
+/**
+ * parses edge string label to an object, based on graph type
+ * @param {string} label - edge label
+ * @param {string} tabType - graph type
+ * @returns {boolean} object of parsed values, label key containss what displayed on edge
+ */
+export const parseGraphLabel = (label, tabType) => {
+  switch (tabType) {
+    case tabType === tabTypes.PDA:
+      return parsePDAEdgeLabel(label);
+      break;
+    default:
+      throw new Error("TabType not valid");
+  }
 };

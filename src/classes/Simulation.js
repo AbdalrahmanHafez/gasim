@@ -7,13 +7,12 @@ import {
 } from "../Helpers/hlpGraph";
 
 export default class Simulation {
-  constructor(ui, inputString, steppingStrategy) {
+  constructor(ui, steppingStrategy) {
     if (this.constructor == Simulation) {
       throw new Error("Abstract classes can't be instantiated.");
     }
 
     this.ui = ui;
-    this.inputString = inputString;
     this.cy = this.ui.cy;
     this.initalNode = getInitalNode(this.cy);
 

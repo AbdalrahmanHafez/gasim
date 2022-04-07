@@ -104,7 +104,7 @@ h1 {
 }
 .simCard {
   margin: 5px 0px;
-  height: 85px;
+  min-height: 85px;
   padding: 7px;
   border: 1px solid #949494;
   background-color: #d6d6d6;
@@ -117,8 +117,9 @@ h1 {
 }
 .simCardProgress {
   width: 100%;
+  overflow-wrap: anywhere;
   /* TODO: fix the hight to be max(max-content, somevalue) i guess */
-  height: 22px;
+  min-height: 22px;
   background-color: white;
   text-align: center;
   border-radius: 5px;

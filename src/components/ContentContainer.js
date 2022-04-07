@@ -118,7 +118,6 @@ const ContentContainer = ({ tabIdx, info }) => {
         { data: { id: "cd", source: "c", target: "d", label: "b" } },
       ],
     };
-
     const elmPDA = {
       nodes: [
         {
@@ -160,10 +159,64 @@ const ContentContainer = ({ tabIdx, info }) => {
       ],
     };
 
+    const elmTM = {
+      nodes: [
+        {
+          data: { id: "a", inital: true, final: false },
+        },
+        {
+          data: { id: "b", inital: false, final: false },
+        },
+        {
+          data: { id: "c", inital: false, final: false },
+        },
+        { data: { id: "d", inital: false, final: true } },
+      ],
+      edges: [
+        { data: { id: "ab", source: "a", target: "b", label: "aaR|abR" } },
+        { data: { id: "ba", source: "b", target: "a", label: "/bR|/cR" } },
+        { data: { id: "bc", source: "b", target: "c", label: "aaR|acR" } },
+        { data: { id: "bd", source: "b", target: "d", label: "abR|akR" } },
+      ],
+    };
+
+    const elmTM2 = {
+      nodes: [
+        {
+          data: { id: "q0", inital: true, final: false },
+        },
+        {
+          data: { id: "q1", inital: false, final: false },
+        },
+        {
+          data: { id: "q2", inital: false, final: false },
+        },
+        { data: { id: "q3", inital: false, final: false } },
+        { data: { id: "q4", inital: false, final: false } },
+        { data: { id: "q5", inital: false, final: false } },
+        { data: { id: "q6", inital: false, final: false } },
+      ],
+      edges: [
+        { data: { id: "q0q1", source: "q0", target: "q1", label: "//R|//R" } },
+        { data: { id: "q1q2", source: "q1", target: "q2", label: "/#R|/aS" } },
+        { data: { id: "q2q3", source: "q2", target: "q3", label: "/#R|aaS" } },
+        { data: { id: "q3q3", source: "q3", target: "q3", label: "/aR|aaR" } },
+        { data: { id: "q3q4", source: "q3", target: "q4", label: "//S|//L" } },
+        { data: { id: "q4q4", source: "q4", target: "q4", label: "/bR|aaL" } },
+        { data: { id: "q4q5", source: "q4", target: "q5", label: "//S|//R" } },
+        { data: { id: "q5q5", source: "q5", target: "q5", label: "/cR|aaR" } },
+        { data: { id: "q5q6", source: "q5", target: "q6", label: "//S|/aL" } },
+        { data: { id: "q6q6", source: "q6", target: "q6", label: "//S|aaL" } },
+        { data: { id: "q6q3", source: "q6", target: "q3", label: "/#R|//R" } },
+      ],
+    };
+
     if (tabIdx === 0) ui.injectCy(elm1);
     if (tabIdx === 1) ui.injectCy(elm2);
     if (tabIdx === 2) ui.injectCy(elm3);
     if (tabIdx === 3) ui.injectCy(elmPDA);
+    if (tabIdx === 4) ui.injectCy(elmTM);
+    if (tabIdx === 5) ui.injectCy(elmTM2);
 
     // TODO: Dynamic sim, for given tab Type
     // inject cy with empty elm

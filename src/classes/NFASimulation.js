@@ -10,7 +10,8 @@ import steppingStrategy from "../enums/steppingStrategy";
 
 export default class NFASimulation extends Simulation {
   constructor(ui, inputString, stepStart) {
-    super(ui, inputString, stepStart);
+    super(ui, stepStart);
+    this.inputString = inputString;
 
     this.configs = [new Config(this.initalNode.id(), inputString)];
 

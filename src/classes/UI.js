@@ -5,7 +5,8 @@ import contextMenus from "cytoscape-context-menus";
 import Simulation from "./Simulation";
 import NFASimulation from "./NFASimulation";
 import PDASimulation from "./PDASimulation";
-import { getNodeFromId } from "../Helpers/hlpGraph";
+import TMSimulation from "./TMSimulation";
+import { parseGraphLabel, getNodeFromId } from "../Helpers/hlpGraph";
 import edgeEditing from "cytoscape-edge-editing";
 import konva from "konva";
 import $ from "jquery";
@@ -34,6 +35,7 @@ export default class UI {
     // this.cy.json({ elements: elm2 });
   }
   clearHighlighted() {
+    // TODO: lookat cy.batch()
     this.cy
       .$("node")
       .toArray()
@@ -57,8 +59,8 @@ export default class UI {
   }
   handleStartSimulation(steppingStrategy) {
     log("clicked start simulation");
-    // let inputString = "a";
-    let inputString = prompt("Enter input string", "abcd");
+    let inputString = "a";
+    // let inputString = prompt("Enter input string", "abcd");
 
     if (inputString === null) return; // this will allow empty string ''
     inputString = inputString.trim();
@@ -72,8 +74,17 @@ export default class UI {
 
     if (this.tabType === tabType.FA) {
       this.sim = new NFASimulation(this, inputString, steppingStrategy);
-    } else if (this.tabType === tabType.PDA)
+    } else if (this.tabType === tabType.PDA) {
       this.sim = new PDASimulation(this, inputString, steppingStrategy);
+    } else if (this.tabType === tabType.TM) {
+      // TODO: Dyanimc tm input
+
+      // const input = ["a", "a"];
+      // const input = ["aaa", "aaa"];
+      const input = ["", ""];
+
+      this.sim = new TMSimulation(this, input);
+    }
 
     // Highlight the inital nodes
     this.#highlightConfigs(this.sim.configs);
@@ -96,6 +107,8 @@ export default class UI {
         this.sim.inputString,
         this.sim.steppingStrategy
       );
+    } else if (this.tabType === tabType.TM) {
+      this.sim = new TMSimulation(this, this.sim.inputs);
     }
 
     this.#highlightConfigs(this.sim.configs);
@@ -261,6 +274,7 @@ export default class UI {
       ready: (e) => {
         // console.log("what is that", e); // todo: ready function
         // this.cyinstances.push(e.cy);
+
         this.cy = e.cy;
         window.cyinst.push(e.cy);
       },
@@ -457,6 +471,7 @@ export default class UI {
     });
 
     // Event Handlers
+
     cy.on("ehcomplete", (event, sourceNode, targetNode, addedEdge) => {
       let { position } = event;
       const transitionLabel = prompt("Enter transition label");
@@ -790,7 +805,7 @@ export default class UI {
     // });
     // cy.style().update();
 
-    const handleDoubleTap = (e) => {
+    const handleDoubleTapEdgeOrNode = (e) => {
       // a node or edge
       const obj = e.target;
       if (obj.isNode()) {
@@ -812,7 +827,7 @@ export default class UI {
     // };
     //    EVENTS
     // cy.on("tap", this.handleMouseClick); // TODO: handlemouselclick
-    cy.on("dbltap", "node, edge", handleDoubleTap);
+    cy.on("dbltap", "node, edge", handleDoubleTapEdgeOrNode);
     cy.on("resize", handleWindowResize);
     // $(document).on("keydown", handleKeyPress);
   }
