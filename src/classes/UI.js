@@ -33,11 +33,12 @@ export default class UI {
   }
   test() {
     // this.cy.json({ elements: elm2 });
+    // this.cy.
   }
   clearHighlighted() {
     // TODO: lookat cy.batch()
     this.cy
-      .$("node")
+      .$("node, edge")
       .toArray()
       .forEach((n) => n.removeClass("highlighted"));
   }
@@ -47,6 +48,8 @@ export default class UI {
     this.clearHighlighted();
     configs.forEach((config) => {
       getNodeFromId(this.cy, config.stateId).addClass("highlighted");
+
+      config.takenEdges?.forEach((edge) => edge.addClass("highlighted"));
     });
   }
   actionSimulationStepAll() {
@@ -59,7 +62,7 @@ export default class UI {
   }
   handleStartSimulation(steppingStrategy) {
     log("clicked start simulation");
-    let inputString = "a";
+    let inputString = "ab";
     // let inputString = prompt("Enter input string", "abcd");
 
     if (inputString === null) return; // this will allow empty string ''

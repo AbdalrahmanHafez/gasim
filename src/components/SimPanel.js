@@ -6,14 +6,10 @@ const $ = window.jQuery;
 
 const TM_Highlight_Head = (tape) => {
   let rendered = [];
-  console.log(tape.elements);
   const keys = Object.keys(tape.elements).map(Number);
   const extendedChars = 4;
   const start = (keys[0] || 0) - extendedChars;
   const end = (keys[keys.length - 1] || 0) + extendedChars;
-  console.log("start: ", start);
-  console.log("end: ", end);
-  console.log("-");
   for (let i = start; i <= end; i++) {
     rendered.push(
       <span
@@ -46,7 +42,7 @@ const SimCard = ({ id, config, tabIdx, tabType }) => {
       }
     >
       <div className="simCardHeader">state: {config.stateId}</div>
-      {(tabType === tabTypes.NFA || tabType === tabType.PDA) && (
+      {(tabType === tabTypes.FA || tabType === tabType.PDA) && (
         <div className="simCardProgress">
           {config.strDone}
           <strong>{config.strRem}</strong>

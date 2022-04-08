@@ -37,6 +37,7 @@ export default class TMSimulation extends Simulation {
       const newNode = edge.target();
 
       const newConfig = new TMConfig(newNode.id(), config.copyTapes());
+      newConfig.takenEdges = [edge];
 
       parsed.forEach((input, idx) => {
         newConfig.tapes[idx].consume(input.replacement, input.movement);
@@ -52,19 +53,18 @@ export default class TMSimulation extends Simulation {
     const node = getNodeFromId(this.cy, config.stateId);
 
     if (config.winstate !== undefined) {
+      config.takenEdges = [];
       return [];
     }
 
     let nextConfigs = [];
-
-    if (this.steppingStrategy !== steppingStrategy.STEP_BY_STATE)
-      throw new Error("invalid stepping strategy");
 
     nextConfigs = this.#getNextConfigsStepByState(config);
 
     // winning Logic
     if (nextConfigs.length === 0) {
       config.winstate = this.setWinState(node);
+      config.takenEdges = [];
       return config;
     }
 

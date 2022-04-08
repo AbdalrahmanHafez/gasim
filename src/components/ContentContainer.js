@@ -259,6 +259,7 @@ const ContentContainer = ({ tabIdx, info }) => {
       >
         test
       </button>
+      <button onClick={() => ui.test()}>test2</button>
       <div style={{ display: "flex" }}>
         <div id={`cy-${tabIdx}`} className="cy" />
         {showSim && <SimPanel tabIdx={tabIdx} ui={ui} tabType={info.tabType} />}

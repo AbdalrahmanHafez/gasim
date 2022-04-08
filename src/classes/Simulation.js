@@ -33,4 +33,25 @@ export default class Simulation {
     );
     console.log("NEW CONFIGS AFTER STEP ALL", this.configs);
   }
+  // AddTakenEdgeFromConfigToConfigs(config, configs) {
+  //   const cy = this.ui.cy;
+  //   const nodes = configs.map((c) => getNodeFromId(cy, c.stateId));
+  //   const initNode = getNodeFromId(cy, config.stateId);
+  //   console.log(
+  //     cy.elements().bfs({
+  //       root: initNode,
+  //       visit: function (v, e, u, i, depth) {
+  //         const idx = nodes.indexOf(v);
+  //         if (idx === -1) return;
+  //         console.log(`${v?.id()} ${e?.id()} ${u?.id()} ${i} ${depth}`);
+  //         if (e === undefined) {
+  //           return true;
+  //         }
+  //         // console.log("connecting " + e.data("label"));
+  //         configs[idx].takenEdge = e;
+  //       },
+  //       directed: true,
+  //     })
+  //   );
+  // }
 }

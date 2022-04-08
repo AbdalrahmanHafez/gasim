@@ -59,6 +59,9 @@ export default class PDASimulation extends Simulation {
       throw new Error("Not implemented");
     }
   }
+  #getTakenEdges_epsilon(node) {
+    return node.incomers("edge").filter((edge) => edge.data("label") === "εεε");
+  }
 
   #getNextConfigsClosure(config) {
     const node = getNodeFromId(this.cy, config.stateId);
@@ -92,6 +95,7 @@ export default class PDASimulation extends Simulation {
 
       const nodeConfig = config.copy();
       nodeConfig.stateId = node.id();
+      nodeConfig.takenEdges = [edge];
       //  input consumption and stack modification
       if (lbl.symbol !== "ε") nodeConfig.consume();
       if (lbl.pop !== "ε") nodeConfig.stack.pop();
@@ -100,14 +104,12 @@ export default class PDASimulation extends Simulation {
       let nodeClosureConfigs = nodeClosure.map((node) => {
         const newConfig = nodeConfig.copy();
         newConfig.stateId = node.id();
+        newConfig.takenEdges = this.#getTakenEdges_epsilon(node);
         return newConfig;
       });
 
       newConfigs.push(...nodeClosureConfigs.concat(nodeConfig));
     });
-
-    console.log("newConfigs", newConfigs);
-    console.log("==============================");
 
     return newConfigs;
   }
@@ -129,6 +131,7 @@ export default class PDASimulation extends Simulation {
       const node = edge.target();
       const newConfig = config.copy();
       newConfig.stateId = node.id();
+      newConfig.takenEdges = [edge];
 
       if (lbl.symbol !== "ε") newConfig.consume();
       if (lbl.pop !== "ε") newConfig.stack.pop();
@@ -188,6 +191,7 @@ export default class PDASimulation extends Simulation {
     // if no more possiable routes you have to choose a winning state
     if (nextConfigs.length === 0) {
       config.winstate = this.setWinState(node);
+      config.takenEdges = [];
       return config;
     }
     // if no more remaining string, and there are more options(epsilons),
@@ -196,6 +200,7 @@ export default class PDASimulation extends Simulation {
     // limitation: that may create duplicates in the configs
     if (config.strRem.length === 0) {
       config.winstate = this.setWinState(node);
+      config.takenEdges = [];
       if (config.winstate === 1) return [config, ...nextConfigs];
       else return nextConfigs;
     }

@@ -6,6 +6,8 @@ export default class Config {
     this.strDone = "";
     this.strRem = inputString;
     this.winstate = undefined;
+
+    this.takenEdges = undefined; // used for highlighting
   }
   get nextSymbol() {
     return this.strRem[0];
