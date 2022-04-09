@@ -7,6 +7,11 @@ export default class TMConfig extends Config {
     super(stateId, null);
     this.tapes = tapes;
   }
+
+  static get empty() {
+    return "▢";
+  }
+
   get nextSymbol() {
     return null;
   }

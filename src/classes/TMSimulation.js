@@ -1,6 +1,6 @@
 import Simulation from "./Simulation";
 import PDAConfig from "./PDAConfig";
-import { getNodeFromId, parseTMEdgeLabel } from "../Helpers/hlpGraph";
+import { getNodeFromId } from "../Helpers/hlpGraph";
 import steppingStrategy from "../enums/steppingStrategy";
 import TMConfig from "./TMConfig";
 import TMTape from "./TMTape";
@@ -30,7 +30,7 @@ export default class TMSimulation extends Simulation {
     let newConfigs = [];
     node.outgoers("edge").forEach((edge) => {
       // debugger;
-      const parsed = parseTMEdgeLabel(edge.data("label"));
+      const parsed = edge.data("labelData");
       if (!parsed.every((seg, idx) => config.tapes[idx].canConsume(seg.symbol)))
         return; // go to the next edge
 

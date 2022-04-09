@@ -47,7 +47,7 @@ export default class NFASimulation extends Simulation {
     // console.log("getting next config closure on config ", config.stateId);
     const nextSymbolNodes = node
       .outgoers("edge")
-      .filter((edge) => config.nextSymbol === edge.data("label"))
+      .filter((edge) => config.nextSymbol === edge.data("labelData"))
       .map((edge) => edge.target());
 
     const nnEpsilonNodes = nextSymbolNodes.flatMap((n) => getNodeClosure(n));
@@ -78,11 +78,11 @@ export default class NFASimulation extends Simulation {
 
     const nextConfigs = node
       .outgoers("edge")
-      .filter((edge) => config.canConsume(edge.data("label")))
+      .filter((edge) => config.canConsume(edge.data("labelData")))
       .map((edge) => {
         const node = edge.target();
         const newConfig = config.copy();
-        if (edge.data("label") !== "ε") newConfig.consume();
+        if (edge.data("labelData") !== "ε") newConfig.consume();
         newConfig.stateId = node.id();
         newConfig.takenEdges = [edge];
         return newConfig;

@@ -6,11 +6,16 @@ import Simulation from "./Simulation";
 import NFASimulation from "./NFASimulation";
 import PDASimulation from "./PDASimulation";
 import TMSimulation from "./TMSimulation";
-import { parseGraphLabel, getNodeFromId } from "../Helpers/hlpGraph";
+import { getNodeFromId } from "../Helpers/hlpGraph";
 import edgeEditing from "cytoscape-edge-editing";
 import konva from "konva";
 import $ from "jquery";
 import tabType from "../enums/tabTypes";
+import {
+  promptLabel_for_new_edge,
+  parseExampleLabels,
+  setLabelEvents,
+} from "../Helpers/GraphLabel";
 
 cytoscape.use(edgehandles);
 cytoscape.use(contextMenus);
@@ -119,6 +124,13 @@ export default class UI {
   }
 
   injectCy(elements) {
+    elements.edges.forEach((edge) => {
+      edge.data = {
+        ...edge.data,
+        ...parseExampleLabels(edge.data.label, this.tabType),
+      };
+    });
+
     if (!window.cyinst) window.cyinst = [];
     var cy = cytoscape({
       container: document.getElementById(this.cyId),
@@ -473,17 +485,13 @@ export default class UI {
       started = false;
     });
 
-    // Event Handlers
-
     cy.on("ehcomplete", (event, sourceNode, targetNode, addedEdge) => {
-      let { position } = event;
-      const transitionLabel = prompt("Enter transition label");
-      if (transitionLabel == null) {
-        addedEdge.remove();
-        return;
-      }
-      addedEdge.data("label", transitionLabel || "ε");
+      // let { position } = event;
+      promptLabel_for_new_edge(addedEdge, this.tabType);
     });
+
+    // Event Handlers
+    setLabelEvents(cy, this.tabType);
 
     // Context Menu
 
@@ -808,31 +816,12 @@ export default class UI {
     // });
     // cy.style().update();
 
-    const handleDoubleTapEdgeOrNode = (e) => {
-      // a node or edge
-      const obj = e.target;
-      if (obj.isNode()) {
-        const newName = prompt("Rename Node", obj.data().name);
-        if (!newName) return;
-        obj.data("name", newName);
-      } else {
-        const newName = prompt("Rename Edge", obj.data().label);
-        if (newName == null) return;
-        obj.data("label", newName || "ε");
-      }
-    };
     const handleWindowResize = () => {
       cy.fit();
       console.log("[event] resize");
     };
-    // const handleKeyPress = (e) => {
-    //   console.log(e);
-    // };
-    //    EVENTS
-    // cy.on("tap", this.handleMouseClick); // TODO: handlemouselclick
-    cy.on("dbltap", "node, edge", handleDoubleTapEdgeOrNode);
+
     cy.on("resize", handleWindowResize);
-    // $(document).on("keydown", handleKeyPress);
   }
 
   getCy() {

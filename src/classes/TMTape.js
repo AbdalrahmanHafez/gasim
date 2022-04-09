@@ -1,3 +1,5 @@
+import TMConfig from "./TMConfig";
+
 export default class TMTape {
   constructor(input) {
     this.input = input;
@@ -18,7 +20,7 @@ export default class TMTape {
     const headChar = this.elements[this.head];
     const matchesTape = headChar === sym;
 
-    if (headChar === undefined && sym === "/")
+    if (headChar === undefined && sym === TMConfig.empty)
       // the head is pointing to a non element /
       return true;
 
@@ -26,7 +28,7 @@ export default class TMTape {
   }
 
   consume(replacement, movement) {
-    if (replacement !== "/") this.elements[this.head] = replacement;
+    if (replacement !== TMConfig.empty) this.elements[this.head] = replacement;
     this.head += movement;
   }
 

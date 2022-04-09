@@ -1,6 +1,6 @@
 import Simulation from "./Simulation";
 import PDAConfig from "./PDAConfig";
-import { getNodeFromId, parsePDAEdgeLabel } from "../Helpers/hlpGraph";
+import { getNodeFromId } from "../Helpers/hlpGraph";
 
 import steppingStrategy from "../enums/steppingStrategy";
 
@@ -16,8 +16,10 @@ const getPDANodeClosure = (node) => {
     node
       .outgoers("edge")
       .filter((edge) => {
-        const lbl = parsePDAEdgeLabel(edge.data("label"));
-        return lbl.symbol === "ε" && lbl.push === "ε" && lbl.pop === "ε";
+        const lblData = edge.data("labelData");
+        return (
+          lblData.symbol === "ε" && lblData.push === "ε" && lblData.pop === "ε"
+        );
       })
       .map((edge) => edge.target());
 
@@ -70,7 +72,7 @@ export default class PDASimulation extends Simulation {
     // console.log("getting next config closure on config ", config.stateId);
     let newConfigs = [];
     node.outgoers("edge").forEach((edge) => {
-      const lbl = parsePDAEdgeLabel(edge.data("label"));
+      const lbl = edge.data("labelData");
 
       /* 
       aae OK
@@ -118,7 +120,7 @@ export default class PDASimulation extends Simulation {
 
     const newConfigs = [];
     node.outgoers("edge").forEach((edge) => {
-      const lbl = parsePDAEdgeLabel(edge.data("label"));
+      const lbl = edge.data("labelData");
       if (
         !(
           config.canConsume(lbl.symbol) &&

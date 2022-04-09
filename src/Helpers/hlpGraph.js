@@ -47,19 +47,3 @@ export const parseTMEdgeLabel = (label) => {
     return { symbol, replacement, movement };
   });
 };
-
-/**
- * parses edge string label to an object, based on graph type
- * @param {string} label - edge label
- * @param {string} tabType - graph type
- * @returns {boolean} object of parsed values, label key containss what displayed on edge
- */
-export const parseGraphLabel = (label, tabType) => {
-  switch (tabType) {
-    case tabType === tabTypes.PDA:
-      return parsePDAEdgeLabel(label);
-      break;
-    default:
-      throw new Error("TabType not valid");
-  }
-};

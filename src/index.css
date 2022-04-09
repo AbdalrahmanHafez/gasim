@@ -125,3 +125,14 @@ h1 {
   border-radius: 5px;
   border: 1px solid #949494;
 }
+
+.popperInputContainer{
+	display: grid;
+	width: fit-content;
+	grid-template-columns: 1fr 1fr 1fr;
+}
+.popperInputContainer > input{
+  width: 60px;
+  border: 1px solid #949494;
+}
+
