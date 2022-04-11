@@ -65,19 +65,24 @@ export default class UI {
 
     this.helpers.forceRender({});
   }
+
   handleStartSimulation(steppingStrategy) {
     log("clicked start simulation");
-    let inputString = "ab";
-    // let inputString = prompt("Enter input string", "abcd");
-
-    if (inputString === null) return; // this will allow empty string ''
-    inputString = inputString.trim();
 
     const initalNode = this.cy.$("node[?inital]")[0];
     if (!initalNode) {
       console.log("[SIM] no inital exiting");
       alert("No inital node found. right click on a node to spcifiy initial");
       return;
+    }
+
+    let inputString = undefined;
+    if (this.tabType === tabType.FA || this.tabType === tabType.PDA) {
+      //  inputString = "ab";
+      inputString = prompt("Enter input string", "abcd");
+
+      if (inputString === null) return; // this will allow empty string ''
+      inputString = inputString.trim();
     }
 
     if (this.tabType === tabType.FA) {
@@ -87,11 +92,17 @@ export default class UI {
     } else if (this.tabType === tabType.TM) {
       // TODO: Dyanimc tm input
 
+      // let tapesCount = +prompt("Enter number of tapes", 2);
+      let tapesCount = this.tabIdx === 5 ? 1 : 2;
+
+      const input = Array(tapesCount)
+        .fill("")
+        .map((_, idx) => prompt(`Enter input for tape ${idx + 1}`, ""));
+
       // const input = ["a", "a"];
       // const input = ["aaa", "aaa"];
-      const input = ["", ""];
-
-      this.sim = new TMSimulation(this, input);
+      // const input = ["", ""];
+      this.sim = new TMSimulation(this, input, steppingStrategy);
     }
 
     // Highlight the inital nodes
@@ -116,7 +127,11 @@ export default class UI {
         this.sim.steppingStrategy
       );
     } else if (this.tabType === tabType.TM) {
-      this.sim = new TMSimulation(this, this.sim.inputs);
+      this.sim = new TMSimulation(
+        this,
+        this.sim.inputs,
+        this.sim.steppingStrategy
+      );
     }
 
     this.#highlightConfigs(this.sim.configs);

@@ -52,11 +52,9 @@ const saveInputData = () => {
   );
   //   console.log(values);
   //   all values must be at most 1 char
-  for (let i = 0; i < values.length; i++) {
-    if (values[i].length > 1) {
-      alert("all values must be 1 char or less");
-      return false;
-    }
+  if (values.find((v) => v.length > 1) !== undefined) {
+    alert("all values must be 1 char or less");
+    return false;
   }
 
   const tabType = inputPopper.tabType;
@@ -209,6 +207,11 @@ export const promptLabel_for_new_edge = (e, tabType) => {
 
 const handleESC = () => {
   if (inputPopper) {
+    const storedEdge = inputPopper.edge;
+    // that means its a new edge and should be canceld
+    // otherwise its a rename action
+    if (storedEdge.data("labelData") === undefined) storedEdge.remove();
+
     inputPopper.state.elements.popper.remove();
     inputPopper.destroy();
     inputPopper = undefined;

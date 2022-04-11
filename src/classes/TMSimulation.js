@@ -13,8 +13,8 @@ function assert(condition, message) {
 }
 
 export default class TMSimulation extends Simulation {
-  constructor(ui, inputs) {
-    super(ui, steppingStrategy.STEP_BY_STATE);
+  constructor(ui, inputs, steppingStrategy) {
+    super(ui, steppingStrategy);
     this.inputs = inputs;
     const initTapes = inputs.map((input) => new TMTape(input));
     this.configs = [new TMConfig(this.initalNode.id(), initTapes)];
@@ -48,6 +48,14 @@ export default class TMSimulation extends Simulation {
 
     return newConfigs;
   }
+  #getNextConfigsRandom(config) {
+    const configs = this.#getNextConfigsStepByState(config);
+
+    const choosenConfig = configs[Math.floor(Math.random() * configs.length)];
+
+    if (!choosenConfig) return [];
+    return [choosenConfig];
+  }
 
   getNextConfigs(config) {
     const node = getNodeFromId(this.cy, config.stateId);
@@ -59,7 +67,18 @@ export default class TMSimulation extends Simulation {
 
     let nextConfigs = [];
 
-    nextConfigs = this.#getNextConfigsStepByState(config);
+    switch (this.steppingStrategy) {
+      case steppingStrategy.STEP_BY_STATE:
+        // console.log("Stepping By state");
+        nextConfigs = this.#getNextConfigsStepByState(config);
+        break;
+      case steppingStrategy.RANDOM:
+        // console.log("Stepping random");
+        nextConfigs = this.#getNextConfigsRandom(config);
+        break;
+      default:
+        throw new Error("invalid stepping strategy");
+    }
 
     // winning Logic
     if (nextConfigs.length === 0) {

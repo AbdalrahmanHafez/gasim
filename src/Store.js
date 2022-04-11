@@ -8,6 +8,7 @@ const initialState = [
   { tabType: tabType.PDA },
   { tabType: tabType.TM },
   { tabType: tabType.TM },
+  { tabType: tabType.TM },
 ];
 
 export const StoreContext = React.createContext();

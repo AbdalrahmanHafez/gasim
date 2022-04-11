@@ -5,10 +5,21 @@ import UI from "../classes/UI";
 import { Menu, Dropdown } from "antd";
 import { DownOutlined } from "@ant-design/icons";
 import steppingStrategy from "../enums/steppingStrategy";
+import tabTypes from "../enums/tabTypes";
 
 const $ = window.jQuery;
 
 const log = (msg) => console.log(`[Content Container] ${msg}`);
+const map_ttype_to_strategy = (ttype) => {
+  if (ttype === tabTypes.FA || ttype === tabTypes.PDA)
+    return Object.keys(steppingStrategy);
+  else if (ttype === tabTypes.TM) {
+    console.log(Object.keys(steppingStrategy));
+    return Object.keys(steppingStrategy).filter(
+      (k) => k !== "STEP_WITH_CLOSURE"
+    );
+  }
+};
 const ContentContainer = ({ tabIdx, info }) => {
   log("Render");
   const [, forceRender] = useState({});
@@ -183,6 +194,27 @@ const ContentContainer = ({ tabIdx, info }) => {
     const elmTM2 = {
       nodes: [
         {
+          data: { id: "a", inital: true, final: false },
+        },
+        {
+          data: { id: "b", inital: false, final: false },
+        },
+        {
+          data: { id: "c", inital: false, final: false },
+        },
+        { data: { id: "d", inital: false, final: true } },
+      ],
+      edges: [
+        { data: { id: "ab", source: "a", target: "b", label: "aaR" } },
+        { data: { id: "ba", source: "b", target: "a", label: "▢bR" } },
+        { data: { id: "bc", source: "b", target: "c", label: "aaR" } },
+        { data: { id: "bd", source: "b", target: "d", label: "abR" } },
+      ],
+    };
+
+    const elmTM3 = {
+      nodes: [
+        {
           data: { id: "q0", inital: true, final: false },
         },
         {
@@ -217,6 +249,7 @@ const ContentContainer = ({ tabIdx, info }) => {
     if (tabIdx === 3) ui.injectCy(elmPDA);
     if (tabIdx === 4) ui.injectCy(elmTM);
     if (tabIdx === 5) ui.injectCy(elmTM2);
+    if (tabIdx === 6) ui.injectCy(elmTM3);
 
     // TODO: Dynamic sim, for given tab Type
     // inject cy with empty elm
@@ -224,7 +257,7 @@ const ContentContainer = ({ tabIdx, info }) => {
 
   const menu = (
     <Menu>
-      {Object.keys(steppingStrategy).map((key, idx) => (
+      {map_ttype_to_strategy(tabType).map((key, idx) => (
         <Menu.Item key={idx}>
           <a
             href="#"
@@ -249,7 +282,7 @@ const ContentContainer = ({ tabIdx, info }) => {
           </a>
         </Dropdown>
       </div>
-      <button
+      {/* <button
         id="testButton"
         onClick={() => {
           console.log("[test btn] click");
@@ -258,8 +291,7 @@ const ContentContainer = ({ tabIdx, info }) => {
         }}
       >
         test
-      </button>
-      <button onClick={() => ui.test()}>test2</button>
+      </button> */}
       <div style={{ display: "flex" }}>
         <div id={`cy-${tabIdx}`} className="cy" />
         {showSim && <SimPanel tabIdx={tabIdx} ui={ui} tabType={info.tabType} />}

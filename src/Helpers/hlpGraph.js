@@ -1,7 +1,13 @@
 import tabTypes from "../enums/tabTypes";
 
 export const getInitalNode = (cy) => cy.$("node[?inital]")[0];
+/**
+ * WARNNING ONLY for FAS Simulation
+ * @param {node} cynode
+ * @returns {nodes[]} array of nodes
+ */
 export const getNodeClosure = (cynode) => {
+  // TODO: edge.data("label") this means it's only avaibale to FAs
   const closure = (node) =>
     node
       .outgoers("edge")

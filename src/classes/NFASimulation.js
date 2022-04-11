@@ -38,7 +38,9 @@ export default class NFASimulation extends Simulation {
     return this.#getTakenEdges_label(node, "ε");
   }
   #getTakenEdges_label(node, label) {
-    return node.incomers("edge").filter((edge) => edge.data("label") === label);
+    return node
+      .incomers("edge")
+      .filter((edge) => edge.data("labelData").symbol === label);
   }
 
   #getNextConfigsClosure(config) {

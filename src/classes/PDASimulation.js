@@ -62,7 +62,10 @@ export default class PDASimulation extends Simulation {
     }
   }
   #getTakenEdges_epsilon(node) {
-    return node.incomers("edge").filter((edge) => edge.data("label") === "εεε");
+    return node.incomers("edge").filter((edge) => {
+      const lbl = edge.data("labelData");
+      return lbl.symbol === "ε" && lbl.push === "ε" && lbl.pop === "ε";
+    });
   }
 
   #getNextConfigsClosure(config) {
