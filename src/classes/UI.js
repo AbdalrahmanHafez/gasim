@@ -184,8 +184,12 @@ export default class UI {
           selector: "node[?final]",
           style: {
             // shape: "cut-rectangle",
-            "border-color": "green",
-            "border-width": 4,
+            // "border-color": "green",
+            // "border-width": 4,
+            "background-image": "assets/node_inital.png",
+            "background-fit": "cover",
+            "border-width": 3,
+            "border-opacity": 0.5,
           },
         },
         {

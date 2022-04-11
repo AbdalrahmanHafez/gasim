@@ -110,7 +110,12 @@ const ContentContainer = ({ tabIdx, info }) => {
     const elm3 = {
       nodes: [
         {
-          data: { id: "a", name: "Node A", inital: true, final: false },
+          data: {
+            id: "a",
+            name: "Node A",
+            inital: true,
+            final: false,
+          },
         },
         {
           data: { id: "b", name: "B", inital: false, final: false },
