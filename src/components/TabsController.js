@@ -10,7 +10,28 @@ import { Tabs } from "antd";
 const { TabPane } = Tabs;
 
 const $ = window.jQuery;
+function mapTabIdxToNameAndInfo(tabIdx) {
+  // TODO: dynamic tabs
+  switch (tabIdx) {
+    case 0:
+      return { label: "NFA 1", info: "Try inputs: a, abc, abcd, abcde " };
+    case 1:
+      return { label: "NFA 2", info: "Try inputs: '', a, ab, abc " };
+    case 2:
+      return { label: "NFA 3", info: "Try inputs: '', a, ab, abc " };
+    case 3:
+      return { label: "PDA", info: "Try inputs: '', a, ab, abc " };
+    case 4:
+      return { label: "MTTM", info: "Try inputs: [a, a] [aa, aa] " };
+    case 5:
+      return { label: "TM", info: "Try inputs: a, aa" };
+    case 6:
+      return { label: "Enum", info: "Try inputs: '' (empty)" };
 
+    default:
+      return { label: "Tab " + tabIdx, info: "Tab " + tabIdx };
+  }
+}
 export default function TabsController() {
   const [store, setstore] = useContext(StoreContext);
   const { addTab } = useContext(UtilityContext);
@@ -37,6 +58,7 @@ export default function TabsController() {
 
   console.log("[TabsController] Rendered");
   // TODO: ADD tab add tabtype
+
   return (
     <>
       <Button
@@ -51,18 +73,22 @@ export default function TabsController() {
         Add Tab
       </Button>
       <Tabs
-        defaultActiveKey={"3"}
+        defaultActiveKey={"5"}
         onChange={callback}
         style={{ margin: "0px 7px" }}
       >
-        {store.map((tab, index) => (
-          <TabPane tab={"Tab " + index} key={index}>
-            <div id={"tab-" + index}>
-              Tab {index}
-              <ContentContainer tabIdx={index} info={store[index]} />
-            </div>
-          </TabPane>
-        ))}
+        {store.map((tab, index) => {
+          // TODO: Dynamic Tabs
+          const tempDataTab = mapTabIdxToNameAndInfo(index);
+          return (
+            <TabPane tab={tempDataTab.label} key={index}>
+              <div id={"tab-" + index}>
+                {tempDataTab.info}
+                <ContentContainer tabIdx={index} info={store[index]} />
+              </div>
+            </TabPane>
+          );
+        })}
       </Tabs>
     </>
   );

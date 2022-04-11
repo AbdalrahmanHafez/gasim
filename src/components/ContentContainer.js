@@ -14,7 +14,6 @@ const map_ttype_to_strategy = (ttype) => {
   if (ttype === tabTypes.FA || ttype === tabTypes.PDA)
     return Object.keys(steppingStrategy);
   else if (ttype === tabTypes.TM) {
-    console.log(Object.keys(steppingStrategy));
     return Object.keys(steppingStrategy).filter(
       (k) => k !== "STEP_WITH_CLOSURE"
     );
