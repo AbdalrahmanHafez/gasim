@@ -222,6 +222,7 @@ export default class UI {
           selector: "edge",
           style: {
             content: "data(label)",
+            "text-wrap": "wrap",
             width: 5,
             "line-color": "#9dbaea",
             "target-arrow-color": "DarkRed",

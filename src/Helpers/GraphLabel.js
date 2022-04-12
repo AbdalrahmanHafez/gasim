@@ -40,7 +40,7 @@ const formatLabel = (labelData, tabType) => {
               l.movement
             )}`
         )
-        .join("|");
+        .join("\n");
     default:
       break;
   }
