@@ -9,6 +9,7 @@ const initialState = [
   { tabType: tabType.TM },
   { tabType: tabType.TM },
   { tabType: tabType.TM },
+  { tabType: tabType.IFD },
 ];
 
 export const StoreContext = React.createContext();

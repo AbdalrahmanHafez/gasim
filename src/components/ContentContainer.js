@@ -6,6 +6,7 @@ import { Menu, Dropdown } from "antd";
 import { DownOutlined } from "@ant-design/icons";
 import steppingStrategy from "../enums/steppingStrategy";
 import tabTypes from "../enums/tabTypes";
+import InputByFormalDefinition from "./InputByFormalDefinition";
 
 const $ = window.jQuery;
 
@@ -17,6 +18,10 @@ const map_ttype_to_strategy = (ttype) => {
     return Object.keys(steppingStrategy).filter(
       (k) => k !== "STEP_WITH_CLOSURE"
     );
+  } else if (ttype === tabTypes.IFD) {
+    return Object.keys(steppingStrategy);
+  } else {
+    throw new Error(`Unknown tab type: ${ttype}`);
   }
 };
 const ContentContainer = ({ tabIdx, info }) => {
@@ -66,6 +71,7 @@ const ContentContainer = ({ tabIdx, info }) => {
         { data: { id: "dq5", source: "d", target: "q5", label: "ε" } },
       ],
     };
+
     const elm2 = {
       nodes: [
         {
@@ -106,6 +112,7 @@ const ContentContainer = ({ tabIdx, info }) => {
         { data: { id: "de", source: "d", target: "e", label: "b" } },
       ],
     };
+
     const elm3 = {
       nodes: [
         {
@@ -133,6 +140,7 @@ const ContentContainer = ({ tabIdx, info }) => {
         { data: { id: "cd", source: "c", target: "d", label: "b" } },
       ],
     };
+
     const elmPDA = {
       nodes: [
         {
@@ -276,6 +284,8 @@ const ContentContainer = ({ tabIdx, info }) => {
     </Menu>
   );
 
+  const showIFD = tabType === tabTypes.IFD;
+
   return (
     <>
       <div id="btnSimulate">
@@ -296,8 +306,12 @@ const ContentContainer = ({ tabIdx, info }) => {
       >
         test
       </button> */}
+
+      {showIFD && <InputByFormalDefinition ui={ui} />}
+
       <div style={{ display: "flex" }}>
-        <div id={`cy-${tabIdx}`} className="cy" />
+        {!showIFD && <div id={`cy-${tabIdx}`} className="cy" />}
+
         {showSim && <SimPanel tabIdx={tabIdx} ui={ui} tabType={info.tabType} />}
       </div>
     </>
