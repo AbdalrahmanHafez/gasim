@@ -2,7 +2,7 @@ import Simulation from "./Simulation";
 import PDAConfig from "./PDAConfig";
 import { getNodeFromId } from "../Helpers/hlpGraph";
 
-import steppingStrategy from "../enums/steppingStrategy";
+import steppingStrategies from "../enums/steppingStrategies";
 
 function assert(condition, message) {
   if (!condition) {
@@ -45,16 +45,16 @@ export default class PDASimulation extends Simulation {
     this.configs = [new PDAConfig(this.initalNode.id(), inputString)];
 
     // FIXME: getNodeClosure
-    if (stepStrat === steppingStrategy.STEP_WITH_CLOSURE) {
+    if (stepStrat === steppingStrategies.STEP_WITH_CLOSURE) {
       this.configs.push(
         ...getPDANodeClosure(this.initalNode).map(
           (node) => new PDAConfig(node.id(), inputString)
         )
       );
-    } else if (stepStrat === steppingStrategy.STEP_BY_STATE) {
+    } else if (stepStrat === steppingStrategies.STEP_BY_STATE) {
       // do nothing,
       // the inital node is already in the configs
-    } else if (stepStrat === steppingStrategy.RANDOM) {
+    } else if (stepStrat === steppingStrategies.RANDOM) {
       // do nothing,
       // the inital node is already in the configs
     } else {
@@ -176,15 +176,15 @@ export default class PDASimulation extends Simulation {
     let nextConfigs = [];
 
     switch (this.steppingStrategy) {
-      case steppingStrategy.STEP_WITH_CLOSURE:
+      case steppingStrategies.STEP_WITH_CLOSURE:
         // console.log("Stepping with closure");
         nextConfigs = this.#getNextConfigsClosure(config);
         break;
-      case steppingStrategy.STEP_BY_STATE:
+      case steppingStrategies.STEP_BY_STATE:
         // console.log("Stepping By state");
         nextConfigs = this.#getNextConfigsStepByState(config);
         break;
-      case steppingStrategy.RANDOM:
+      case steppingStrategies.RANDOM:
         // console.log("Stepping random");
         nextConfigs = this.#getNextConfigsRandom(config);
         break;

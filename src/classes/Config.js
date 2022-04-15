@@ -1,4 +1,5 @@
 export default class Config {
+  // TODO: NFASimulation.js
   constructor(stateId, inputString) {
     this.inputString = inputString;
     this.stateId = stateId;
@@ -30,5 +31,9 @@ export default class Config {
     newConfig.strRem = this.strRem;
     newConfig.winstate = this.winstate;
     return newConfig;
+  }
+
+  static get empty() {
+    return "ε";
   }
 }

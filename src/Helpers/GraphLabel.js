@@ -1,6 +1,8 @@
 import { parsePDAEdgeLabel, parseTMEdgeLabel } from "./hlpGraph";
 import tabTypes from "../enums/tabTypes";
 import TMConfig from "../classes/TMConfig";
+import Config from "../classes/Config";
+import PDAConfig from "../classes/PDAConfig";
 
 var inputPopper;
 const str_substitute_empty = (str, sub) => (str === "" ? sub : str);
@@ -255,4 +257,18 @@ export const parseExampleLabels = (label, tabType) => {
   }
 
   return null;
+};
+
+// Helper functions
+export const simTypeToEmptyValue = (simType) => {
+  switch (simType) {
+    case tabTypes.FA:
+      return Config.empty;
+    case tabTypes.PDA:
+      return PDAConfig.empty;
+    case tabTypes.TM:
+      return TMConfig.empty;
+    default:
+      throw new Error("invalid simType inside simTypeToEmptyValue");
+  }
 };

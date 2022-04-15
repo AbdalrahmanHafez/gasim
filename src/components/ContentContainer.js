@@ -4,7 +4,7 @@ import { StoreContext } from "../Store.js";
 import UI from "../classes/UI";
 import { Menu, Dropdown } from "antd";
 import { DownOutlined } from "@ant-design/icons";
-import steppingStrategy from "../enums/steppingStrategy";
+import steppingStrategies from "../enums/steppingStrategies";
 import tabTypes from "../enums/tabTypes";
 import InputByFormalDefinition from "./InputByFormalDefinition";
 
@@ -13,13 +13,13 @@ const $ = window.jQuery;
 const log = (msg) => console.log(`[Content Container] ${msg}`);
 const map_ttype_to_strategy = (ttype) => {
   if (ttype === tabTypes.FA || ttype === tabTypes.PDA)
-    return Object.keys(steppingStrategy);
+    return Object.keys(steppingStrategies);
   else if (ttype === tabTypes.TM) {
-    return Object.keys(steppingStrategy).filter(
+    return Object.keys(steppingStrategies).filter(
       (k) => k !== "STEP_WITH_CLOSURE"
     );
   } else if (ttype === tabTypes.IFD) {
-    return Object.keys(steppingStrategy);
+    return Object.keys(steppingStrategies);
   } else {
     throw new Error(`Unknown tab type: ${ttype}`);
   }
@@ -274,10 +274,10 @@ const ContentContainer = ({ tabIdx, info }) => {
           <a
             href="#"
             onClick={() => {
-              ui.handleStartSimulation(steppingStrategy[key]);
+              ui.handleStartSimulation(steppingStrategies[key]);
             }}
           >
-            {steppingStrategy[key]}
+            {steppingStrategies[key]}
           </a>
         </Menu.Item>
       ))}
@@ -296,20 +296,27 @@ const ContentContainer = ({ tabIdx, info }) => {
           </a>
         </Dropdown>
       </div>
-      {/* <button
+      <button
         id="testButton"
         onClick={() => {
           console.log("[test btn] click");
           // ui.test();
-          ui.handleStartSimulation(steppingStrategy.STEP_BY_STATE);
+          // ui.handleStartSimulation(steppingStrategy.STEP_BY_STATE);
+
+          // ui.createHeadlessCy();
+          console.log(window.IMask);
         }}
       >
         test
-      </button> */}
-
-      {showIFD && <InputByFormalDefinition ui={ui} />}
+      </button>
 
       <div style={{ display: "flex" }}>
+        {showIFD && (
+          <div style={{ flexGrow: 1 }}>
+            <InputByFormalDefinition ui={ui} />
+          </div>
+        )}
+
         {!showIFD && <div id={`cy-${tabIdx}`} className="cy" />}
 
         {showSim && <SimPanel tabIdx={tabIdx} ui={ui} tabType={info.tabType} />}

@@ -34,6 +34,7 @@ export default class UI {
     this.cy = undefined;
     this.sim = undefined;
     this.handleStartSimulation = this.handleStartSimulation.bind(this);
+    this.handleStartSimulationTODO = this.handleStartSimulationTODO.bind(this);
     this.helpers = {};
   }
   test() {
@@ -111,27 +112,76 @@ export default class UI {
     this.helpers.setShowSim(true);
     this.helpers.forceRender({}); // this was added to rerender the configs on simpanel
   }
+  handleStartSimulationTODO(simType, steppingStrategy) {
+    // TODO: Merge this to handleStartSimulation
+    log("clicked start simulation");
+    debugger;
+    const initalNode = this.cy.$("node[?inital]")[0];
+    if (!initalNode) {
+      console.log("[SIM] no inital exiting");
+      alert("No inital node found. right click on a node to spcifiy initial");
+      return;
+    }
+
+    let inputString = undefined;
+    if (simType === tabType.FA || simType === tabType.PDA) {
+      //  inputString = "ab";
+      inputString = prompt("Enter input string", "abcd");
+
+      if (inputString === null) return; // this will allow empty string ''
+      inputString = inputString.trim();
+    }
+
+    if (simType === tabType.FA) {
+      this.sim = new NFASimulation(this, inputString, steppingStrategy);
+    } else if (simType === tabType.PDA) {
+      this.sim = new PDASimulation(this, inputString, steppingStrategy);
+    } else if (simType === tabType.TM) {
+      // TODO: Dyanimc tm input
+
+      // let tapesCount = +prompt("Enter number of tapes", 2);
+      let tapesCount = this.tabIdx === 5 ? 1 : 2;
+
+      const input = Array(tapesCount)
+        .fill("")
+        .map((_, idx) => prompt(`Enter input for tape ${idx + 1}`, ""));
+
+      // const input = ["a", "a"];
+      // const input = ["aaa", "aaa"];
+      // const input = ["", ""];
+      this.sim = new TMSimulation(this, input, steppingStrategy);
+    }
+
+    // Highlight the inital nodes
+    this.#highlightConfigs(this.sim.configs);
+
+    this.helpers.setShowSim(true);
+    this.helpers.forceRender({}); // this was added to rerender the configs on simpanel
+  }
+
   actionSimulationReset() {
     this.clearHighlighted();
 
-    if (this.tabType === tabType.PDA) {
-      this.sim = new PDASimulation(
-        this,
-        this.sim.inputString,
-        this.sim.steppingStrategy
-      );
-    } else if (this.tabType === tabType.FA) {
+    if (this.sim instanceof NFASimulation) {
       this.sim = new NFASimulation(
         this,
         this.sim.inputString,
         this.sim.steppingStrategy
       );
-    } else if (this.tabType === tabType.TM) {
+    } else if (this.sim instanceof PDASimulation) {
+      this.sim = new PDASimulation(
+        this,
+        this.sim.inputString,
+        this.sim.steppingStrategy
+      );
+    } else if (this.sim instanceof TMSimulation) {
       this.sim = new TMSimulation(
         this,
         this.sim.inputs,
         this.sim.steppingStrategy
       );
+    } else {
+      throw new Error("Can't reset unkown Simulation type");
     }
 
     this.#highlightConfigs(this.sim.configs);
@@ -844,7 +894,20 @@ export default class UI {
 
     cy.on("resize", handleWindowResize);
   }
-
+  createHeadlessCy() {
+    // NOTE: either calling this method or the injectCy, input by formal definition calls this
+    // . Also note that cy.destroy() must be called to clean up a style-enabled, headless instance.
+    const cy = cytoscape({ headless: true, styleEnabled: false });
+    if (!window.cyinst) window.cyinst = [cy];
+    else window.cyinst.push(cy);
+    this.cy = cy;
+    return cy;
+    /**
+     * cyinst[0].add({group:'nodes', data: { id: "q0", name: "q0", inital:true, final: false }})
+     * cyinst[0].add({group:'nodes', data: { id: "q1", name: "q1", inital:false, final: true }})
+     * cyinst[0].add({group:'edges', data: { id: "q0q1", source: "q0", target: "q1", label: "c" }})
+     */
+  }
   getCy() {
     return this.cy;
   }

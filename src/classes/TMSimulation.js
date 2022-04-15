@@ -1,7 +1,7 @@
 import Simulation from "./Simulation";
 import PDAConfig from "./PDAConfig";
 import { getNodeFromId } from "../Helpers/hlpGraph";
-import steppingStrategy from "../enums/steppingStrategy";
+import steppingStrategies from "../enums/steppingStrategies";
 import TMConfig from "./TMConfig";
 import TMTape from "./TMTape";
 
@@ -68,11 +68,11 @@ export default class TMSimulation extends Simulation {
     let nextConfigs = [];
 
     switch (this.steppingStrategy) {
-      case steppingStrategy.STEP_BY_STATE:
+      case steppingStrategies.STEP_BY_STATE:
         // console.log("Stepping By state");
         nextConfigs = this.#getNextConfigsStepByState(config);
         break;
-      case steppingStrategy.RANDOM:
+      case steppingStrategies.RANDOM:
         // console.log("Stepping random");
         nextConfigs = this.#getNextConfigsRandom(config);
         break;

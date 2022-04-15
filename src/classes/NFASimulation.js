@@ -6,7 +6,7 @@ import {
   getNodeFromId,
 } from "../Helpers/hlpGraph";
 
-import steppingStrategy from "../enums/steppingStrategy";
+import steppingStrategies from "../enums/steppingStrategies";
 
 export default class NFASimulation extends Simulation {
   constructor(ui, inputString, stepStart) {
@@ -15,7 +15,7 @@ export default class NFASimulation extends Simulation {
 
     this.configs = [new Config(this.initalNode.id(), inputString)];
 
-    if (stepStart === steppingStrategy.STEP_WITH_CLOSURE) {
+    if (stepStart === steppingStrategies.STEP_WITH_CLOSURE) {
       this.configs.push(
         ...getNodeClosure(this.initalNode).map((node) => {
           const newConfig = new Config(node.id(), inputString);
@@ -23,10 +23,10 @@ export default class NFASimulation extends Simulation {
           return newConfig;
         })
       );
-    } else if (stepStart === steppingStrategy.STEP_BY_STATE) {
+    } else if (stepStart === steppingStrategies.STEP_BY_STATE) {
       // do nothing,
       // the inital node is already in the configs
-    } else if (stepStart === steppingStrategy.RANDOM) {
+    } else if (stepStart === steppingStrategies.RANDOM) {
       // do nothing,
       // the inital node is already in the configs
     } else {
@@ -121,15 +121,15 @@ export default class NFASimulation extends Simulation {
     let nextConfigs = [];
 
     switch (this.steppingStrategy) {
-      case steppingStrategy.STEP_WITH_CLOSURE:
+      case steppingStrategies.STEP_WITH_CLOSURE:
         // console.log("Stepping with closure");
         nextConfigs = this.#getNextConfigsClosure(config);
         break;
-      case steppingStrategy.STEP_BY_STATE:
+      case steppingStrategies.STEP_BY_STATE:
         // console.log("Stepping By state");
         nextConfigs = this.#getNextConfigsStepByState(config);
         break;
-      case steppingStrategy.RANDOM:
+      case steppingStrategies.RANDOM:
         // console.log("Stepping random");
         nextConfigs = this.#getNextConfigsRandom(config);
         break;

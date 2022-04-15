@@ -1,6 +1,5 @@
 import React, { useEffect } from "react";
 import App from "../../App";
-import steppingStrategy from "../../enums/steppingStrategy";
 
 const $ = window.jQuery;
 let started = false;

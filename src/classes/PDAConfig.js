@@ -22,4 +22,8 @@ export default class PDAConfig extends Config {
 
     return newConfig;
   }
+
+  static get empty() {
+    return "ε";
+  }
 }
