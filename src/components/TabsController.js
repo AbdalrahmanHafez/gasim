@@ -42,15 +42,21 @@ export default function TabsController() {
   // const activateTab = useStoreActions((actions) => actions.activateTab);
   // const startSimulation = useStoreActions((actions) => actions.startSimulation);
 
-  // const setinfo = (something) => {
-  //   const newInfo =
-  //     typeof something === "function" ? something(info) : something;
-  //   setstore((prev) => {
-  //     const newstore = [...prev];
-  //     newstore[tabIdx] = newInfo;
-  //     return newstore;
-  //   });
-  // };
+  /**
+   *
+   * @param {function|Object} something function like set state, or object to set
+   * @param {Number} tabIndex will be automatically filled, children don't need to worry about it
+   */
+  const setInfo = (something, tabIndex) => {
+    const curTabInfo = store[tabIndex];
+    const newInfo =
+      typeof something === "function" ? something(curTabInfo) : something;
+    setstore((prev) => {
+      const newstore = [...prev];
+      newstore[tabIndex] = newInfo;
+      return newstore;
+    });
+  };
 
   function callback(key) {
     console.log("Changing active tab to key=" + key);
@@ -84,7 +90,11 @@ export default function TabsController() {
             <TabPane tab={tempDataTab.label} key={index}>
               <div id={"tab-" + index}>
                 {tempDataTab.info}
-                <ContentContainer tabIdx={index} info={store[index]} />
+                <ContentContainer
+                  tabIdx={index}
+                  tabInfo={store[index]}
+                  setTabInfo={(something) => setInfo(something, index)}
+                />
               </div>
             </TabPane>
           );

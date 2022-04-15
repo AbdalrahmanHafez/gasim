@@ -93,8 +93,8 @@ export default class UI {
     } else if (this.tabType === tabType.TM) {
       // TODO: Dyanimc tm input
 
-      // let tapesCount = +prompt("Enter number of tapes", 2);
-      let tapesCount = this.tabIdx === 5 ? 1 : 2;
+      let tapesCount = +prompt("Enter number of tapes", 2);
+      // let tapesCount = this.tabIdx === 5 ? 1 : 2;
 
       const input = Array(tapesCount)
         .fill("")
@@ -112,10 +112,10 @@ export default class UI {
     this.helpers.setShowSim(true);
     this.helpers.forceRender({}); // this was added to rerender the configs on simpanel
   }
-  handleStartSimulationTODO(simType, steppingStrategy) {
+  handleStartSimulationTODO(simType, steppingStrategy, TMTapesCount) {
     // TODO: Merge this to handleStartSimulation
     log("clicked start simulation");
-    debugger;
+
     const initalNode = this.cy.$("node[?inital]")[0];
     if (!initalNode) {
       console.log("[SIM] no inital exiting");
@@ -140,7 +140,8 @@ export default class UI {
       // TODO: Dyanimc tm input
 
       // let tapesCount = +prompt("Enter number of tapes", 2);
-      let tapesCount = this.tabIdx === 5 ? 1 : 2;
+      // let tapesCount = this.tabIdx === 5 ? 1 : 2;
+      let tapesCount = TMTapesCount;
 
       const input = Array(tapesCount)
         .fill("")

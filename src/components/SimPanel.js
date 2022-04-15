@@ -30,9 +30,10 @@ const TM_Highlight_Head = (tape) => {
 
   return rendered;
 };
-const SimCard = ({ id, config, tabIdx, tabType }) => {
+const SimCard = ({ id, config, tabIdx, tabInfo }) => {
   // const formatPath = (configPath) => configPath.join("->");
-
+  const { tabType, simType: IFDSimType } = tabInfo;
+  const simType = IFDSimType || tabType; // IFDSimType is only for IFD
   // TODO: Dynamic sim
   return (
     <div
@@ -42,16 +43,16 @@ const SimCard = ({ id, config, tabIdx, tabType }) => {
       }
     >
       <div className="simCardHeader">state: {config.stateId}</div>
-      {(tabType === tabTypes.FA || tabType === tabType.PDA) && (
+      {(simType === tabTypes.FA || simType === tabTypes.PDA) && (
         <div className="simCardProgress">
           {config.strDone}
           <strong>{config.strRem}</strong>
         </div>
       )}
-      {tabType === tabTypes.PDA && (
+      {simType === tabTypes.PDA && (
         <div className="simCardProgress">{config.stack}</div>
       )}
-      {tabType === tabTypes.TM &&
+      {simType === tabTypes.TM &&
         config.tapes.map((tape, idx) => (
           <div key={idx} className="simCardProgress">
             {TM_Highlight_Head(tape)}
@@ -62,9 +63,10 @@ const SimCard = ({ id, config, tabIdx, tabType }) => {
   );
 };
 
-export default function SimPanel({ tabIdx, ui, tabType }) {
+export default function SimPanel({ tabIdx, ui, tabInfo }) {
   const getCy = () => ui.getCy();
   const getConfigs = () => ui.getConfigs();
+
   console.log("[SimPanel] Rendered");
 
   useEffect(() => {
@@ -100,7 +102,7 @@ export default function SimPanel({ tabIdx, ui, tabType }) {
           id={index}
           config={config}
           tabIdx={tabIdx}
-          tabType={tabType}
+          tabInfo={tabInfo}
         />
       ))}
       {/* <SimCard id={1} view={view} handleStep={handleStep} /> */}

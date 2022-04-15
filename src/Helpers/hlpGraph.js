@@ -50,12 +50,16 @@ export const parsePDAEdgeLabel = (label) => {
  */
 export const parseTMEdgeLabel = (label) => {
   // TODO: refactor parseTMEdgeLabel account for non | ,ex: abcdef
+  const toLower = (str) => {
+    if (typeof str === "string") return str.toLowerCase();
+    else throw new Error("invalid input in parseTMEdgeLabel");
+  };
   if (label.includes("|")) {
     return label.split("|").map((seg) => {
       let [symbol, replacement, movement] = seg.split("");
-      if (movement === "R") movement = +1;
-      else if (movement === "L") movement = -1;
-      else if (movement === "S") movement = 0;
+      if (toLower(movement) === "r") movement = +1;
+      else if (toLower(movement) === "l") movement = -1;
+      else if (toLower(movement) === "s") movement = 0;
       else throw new Error("Invalid movement");
       return { symbol, replacement, movement };
     });
@@ -63,9 +67,9 @@ export const parseTMEdgeLabel = (label) => {
     const result = [];
     const parser = (seg) => {
       let [symbol, replacement, movement, ...rest] = seg;
-      if (movement === "R") movement = +1;
-      else if (movement === "L") movement = -1;
-      else if (movement === "S") movement = 0;
+      if (toLower(movement) === "r") movement = +1;
+      else if (toLower(movement) === "l") movement = -1;
+      else if (toLower(movement) === "s") movement = 0;
       else throw new Error("Invalid movement");
       result.push({ symbol, replacement, movement });
       if (rest.length > 0) parser(rest);

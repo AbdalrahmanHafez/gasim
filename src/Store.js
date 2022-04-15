@@ -1,6 +1,7 @@
 import React, { useState, useRef } from "react";
 import tabType from "./enums/tabTypes";
 
+// TODO: consider making it (tabType, simulationtype) pair
 const initialState = [
   { tabType: tabType.FA },
   { tabType: tabType.FA },
@@ -9,7 +10,7 @@ const initialState = [
   { tabType: tabType.TM },
   { tabType: tabType.TM },
   { tabType: tabType.TM },
-  { tabType: tabType.IFD },
+  { tabType: tabType.IFD, simType: tabType.FA },
 ];
 
 export const StoreContext = React.createContext();

@@ -24,13 +24,13 @@ const map_ttype_to_strategy = (ttype) => {
     throw new Error(`Unknown tab type: ${ttype}`);
   }
 };
-const ContentContainer = ({ tabIdx, info }) => {
+const ContentContainer = ({ tabIdx, tabInfo, setTabInfo }) => {
   log("Render");
   const [, forceRender] = useState({});
 
-  const { tabType } = info;
+  const { tabType } = tabInfo;
 
-  const [ui, setui] = useState(new UI({ ...info, tabIdx }));
+  const [ui, setui] = useState(new UI({ ...tabInfo, tabIdx }));
 
   const [showSim, setShowSim] = useState(false);
 
@@ -312,14 +312,25 @@ const ContentContainer = ({ tabIdx, info }) => {
 
       <div style={{ display: "flex" }}>
         {showIFD && (
-          <div style={{ flexGrow: 1 }}>
-            <InputByFormalDefinition ui={ui} />
+          <div style={{ flexGrow: 1, marginLeft: 10 }}>
+            <InputByFormalDefinition
+              ui={ui}
+              tabInfo={tabInfo}
+              setTabInfo={setTabInfo}
+            />
           </div>
         )}
 
         {!showIFD && <div id={`cy-${tabIdx}`} className="cy" />}
 
-        {showSim && <SimPanel tabIdx={tabIdx} ui={ui} tabType={info.tabType} />}
+        {showSim && (
+          <SimPanel
+            tabIdx={tabIdx}
+            ui={ui}
+            tabType={tabInfo.tabType}
+            tabInfo={tabInfo}
+          />
+        )}
       </div>
     </>
   );

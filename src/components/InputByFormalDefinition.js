@@ -18,9 +18,14 @@ import steppingStrategies from "../enums/steppingStrategies";
 import { parseExampleLabels } from "../Helpers/GraphLabel";
 import InputLabel from "../components/InputLabel";
 
-const InputByFormalDefinition = ({ ui }) => {
+const InputByFormalDefinition = ({ ui, tabInfo, setTabInfo }) => {
   // TODO: refactor this to its own logic file
-  const [automataType, setAutomataType] = useState(tabTypes.FA);
+  // const [automataType, setAutomataType] = useState(tabTypes.FA);
+  const automataType = tabInfo.simType;
+  const setAutomataType = (simType) => {
+    setTabInfo({ ...tabInfo, simType: simType });
+  };
+
   const [tapesCtr, setTapesCtr] = useState(1);
   const [statesCtr, setStatesCtr] = useState(1);
   const [transitionCtr, setTransitionCtr] = useState(1);
@@ -30,21 +35,28 @@ const InputByFormalDefinition = ({ ui }) => {
     const data = { ...values, finalStates: finalStates };
     console.log("Success:", data);
     const { fTrFrom, fTrFunc, fTrTo, simType, steppingStrategy } = data;
-    // TODO: stub remove
-    // const fTrFrom = [0, 1];
-    // const fTrFunc = ["a", "c"];
-    // const fTrTo = [1, 0];
-    // const simType = tabTypes.FA;
-    // const stepStrat = steppingStrategy.STEP_BY_STATE;
-    // end of stub
+
+    // check for valid input
+    if (
+      [fTrFrom, fTrFunc, fTrTo].some((arr) =>
+        arr.some((elm) => elm === undefined)
+      )
+    ) {
+      message.info("Invalid Transition input, please check your input");
+      return;
+    }
 
     ui.createHeadlessCy();
     const cy = ui.cy;
-    // q0 is always the inital state
+    // Clear evrything from graph, since might still states from previous run
+    cy.elements().remove();
+
+    // adding q0, is always the inital state
     cy.add({
       group: "nodes",
       data: { id: "q0", name: "q0", inital: true, final: false },
     });
+    // Adding Final states
     finalStates.forEach((stateNr) =>
       cy.add({
         group: "nodes",
@@ -56,6 +68,19 @@ const InputByFormalDefinition = ({ ui }) => {
         },
       })
     );
+    // Adding normal states
+    for (let i = 1; i < statesCtr; i++) {
+      if (finalStates.includes(i)) continue;
+      cy.add({
+        group: "nodes",
+        data: {
+          id: `q${i}`,
+          name: `q${i}`,
+          inital: false,
+          final: false,
+        },
+      });
+    }
     if (!(fTrFrom.length === fTrTo.length && fTrFunc.length === fTrTo.length)) {
       throw new Error("from, to and func must have the same length");
     }
@@ -75,12 +100,12 @@ const InputByFormalDefinition = ({ ui }) => {
     });
 
     // Creating a new Sim
-    ui.handleStartSimulationTODO(simType, steppingStrategy);
+    ui.handleStartSimulationTODO(simType, steppingStrategy, tapesCtr);
   };
 
   const onFinishFailed = (errorInfo) => {
     console.log("Failed:", errorInfo);
-    message.info("Click on menu item.");
+    message.info("Invalid Transition input");
   };
 
   const opAutomata = [
@@ -91,7 +116,7 @@ const InputByFormalDefinition = ({ ui }) => {
 
   const displaySteppingStrategy = () => {
     const options = Object.entries(steppingStrategies).map(([key, value]) => (
-      <Radio value={value} key={key}>
+      <Radio required value={value} key={key}>
         {value}
       </Radio>
     ));
@@ -123,12 +148,14 @@ const InputByFormalDefinition = ({ ui }) => {
         }}
         initialValues={{
           simType: tabTypes.FA,
+          steppingStrategy: steppingStrategies.STEP_WITH_CLOSURE,
+          fTrFrom: [],
         }}
         onFinish={onFormSubmit}
         onFinishFailed={onFinishFailed}
         autoComplete="off"
       >
-        <Form.Item label="Simulation Type:" name="simType">
+        <Form.Item required label="Simulation Type:" name="simType">
           <Radio.Group
             options={opAutomata}
             optionType="button"
@@ -136,7 +163,7 @@ const InputByFormalDefinition = ({ ui }) => {
             onChange={(e) => setAutomataType(e.target.value)}
           />
         </Form.Item>
-        <Form.Item label="Stepping Strategy" name="steppingStrategy">
+        <Form.Item required label="Stepping Strategy" name="steppingStrategy">
           <Radio.Group optionType="button" buttonStyle="solid">
             {displaySteppingStrategy()}
           </Radio.Group>
@@ -182,7 +209,6 @@ const InputByFormalDefinition = ({ ui }) => {
               Add <DownOutlined />
             </Button>
           </Dropdown>
-          <br />
           {finalStates.map((key, i) => (
             <span key={i}>
               <label>{`q${key}`}</label>
@@ -192,7 +218,7 @@ const InputByFormalDefinition = ({ ui }) => {
         </Form.Item>
 
         <Form.Item label="Transition Function">
-          <Form.Item>
+          <Form.Item help="space to insert empty or blank symbol">
             <InputNumber
               style={{ width: 50 }}
               min={1}
@@ -203,22 +229,15 @@ const InputByFormalDefinition = ({ ui }) => {
           {Array(transitionCtr)
             .fill(null)
             .map((_, i) => (
-              <Input.Group key={i} compact>
-                <Form.Item noStyle name={["fTrFrom", i]}>
+              <Input.Group key={i} compact required>
+                <Form.Item noStyle name={["fTrFrom", i]} required>
                   <Select
+                    required
                     options={Array(statesCtr)
                       .fill(null)
                       .map((_, i) => ({ label: `q${i}`, value: i }))}
                   />
                 </Form.Item>
-                <Input
-                  style={{
-                    width: 30,
-                    pointerEvents: "none",
-                  }}
-                  placeholder="~"
-                  disabled
-                />
                 <Form.Item noStyle name={["fTrFunc", i]}>
                   {/* <Input
                     // required TODO: add required
@@ -228,16 +247,12 @@ const InputByFormalDefinition = ({ ui }) => {
                     }}
                     placeholder="Transition" //TODO: transition inputs based on machine type
                   /> */}
-                  <InputLabel simType={automataType} tapesCtr={tapesCtr} />
+                  <InputLabel
+                    required
+                    simType={automataType}
+                    tapesCtr={tapesCtr}
+                  />
                 </Form.Item>
-                <Input
-                  style={{
-                    width: 30,
-                    pointerEvents: "none",
-                  }}
-                  placeholder="~"
-                  disabled
-                />
                 <Form.Item noStyle name={["fTrTo", i]}>
                   <Select
                     options={Array(statesCtr)
