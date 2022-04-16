@@ -59,7 +59,6 @@ const InputByFormalDefinition = ({ ui, tabInfo, setTabInfo }) => {
     });
     // Adding normal states
     for (let i = 1; i < statesCtr; i++) {
-      if (finalStates.includes(i)) continue;
       cy.add({
         group: "nodes",
         data: {

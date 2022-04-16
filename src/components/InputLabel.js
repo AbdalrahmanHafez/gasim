@@ -55,7 +55,7 @@ const InputLabel = ({ simType, tapesCtr, ...rest }) => {
           // `typedValue` if `unmask='typed'`
           (value, mask) => {
             const rawValue = mask.masked.rawInputValue;
-            console.log(rawValue, value, mask.typedValue, mask);
+            // console.log(rawValue, value, mask.typedValue, mask);
             const newValue = rawValue
               .split(" ") // maybe consider anothe character than space, ex: "!"
               .join(simTypeToEmptyValue(simType));

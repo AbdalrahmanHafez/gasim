@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import SimPanel from "./SimPanel";
 import { StoreContext } from "../Store.js";
 import UI from "../classes/UI";
-import { Menu, Dropdown } from "antd";
+import { Menu, Dropdown, Checkbox } from "antd";
 import { DownOutlined } from "@ant-design/icons";
 import steppingStrategies from "../enums/steppingStrategies";
 import tabTypes from "../enums/tabTypes";
@@ -31,6 +31,7 @@ const ContentContainer = ({ tabIdx, tabInfo, setTabInfo }) => {
   const { tabType } = tabInfo;
 
   const [ui, setui] = useState(new UI({ ...tabInfo, tabIdx }));
+  const [enableFastrun, setEnableFastrun] = useState(false);
 
   const [showSim, setShowSim] = useState(false);
 
@@ -302,6 +303,16 @@ const ContentContainer = ({ tabIdx, tabInfo, setTabInfo }) => {
         </div>
       )}
 
+      <div id="ckbFastrun">
+        <Checkbox
+          id="ckbFastrun"
+          checked={enableFastrun}
+          onChange={(e) => setEnableFastrun(e.target.checked)}
+        >
+          FastRun
+        </Checkbox>
+      </div>
+
       <button
         id="testButton"
         onClick={() => {
@@ -326,6 +337,7 @@ const ContentContainer = ({ tabIdx, tabInfo, setTabInfo }) => {
 
         {showSim && (
           <SimPanel
+            isFastrun={enableFastrun}
             tabIdx={tabIdx}
             ui={ui}
             tabType={tabInfo.tabType}

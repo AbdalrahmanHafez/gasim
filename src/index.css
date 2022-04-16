@@ -78,6 +78,7 @@ h1 {
   border-radius: 20px;
   z-index: 2;
 }
+
 #btnSimulate {
   position: absolute;
   right: 0;
@@ -88,6 +89,18 @@ h1 {
   font-size: large;
   /* background-color: #306cb9; */
 }
+
+#ckbFastrun {
+  position: absolute;
+  right: 5em;
+  top: 0;
+  z-index: 2;
+  margin: 0.2em;
+  color: white;
+  font-size: large;
+  /* background-color: #306cb9; */
+}
+
 #simContainer {
   width: 500px;
   background-color: #e9e9e9;

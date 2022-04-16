@@ -1,6 +1,13 @@
 import { useEffect, useState, useContext } from "react";
 import tabTypes from "../enums/tabTypes.js";
-import { StoreContext } from "../Store.js";
+import useFastrun from "../Hooks/useFastrun.js";
+import { Slider, Space, Divider } from "antd";
+import {
+  CaretRightOutlined,
+  PauseOutlined,
+  UndoOutlined,
+} from "@ant-design/icons";
+import "antd/dist/antd.css";
 
 const $ = window.jQuery;
 
@@ -63,19 +70,20 @@ const SimCard = ({ id, config, tabIdx, tabInfo }) => {
   );
 };
 
-export default function SimPanel({ tabIdx, ui, tabInfo }) {
+const DEFAULT_PLAY_SPEED = 20;
+export default function SimPanel({ tabIdx, ui, tabInfo, isFastrun }) {
   const getCy = () => ui.getCy();
   const getConfigs = () => ui.getConfigs();
-
-  console.log("[SimPanel] Rendered");
-
-  useEffect(() => {
-    console.log("[SimPanel] useEffect");
-  }, []);
 
   const handleBtnStepAll = () => {
     ui.actionSimulationStepAll();
   };
+
+  const [running, toggleRunning, setRunInterval] = useFastrun(
+    handleBtnStepAll,
+    DEFAULT_PLAY_SPEED
+  );
+
   const handleBtnReset = () => {
     ui.actionSimulationReset();
   };
@@ -83,19 +91,48 @@ export default function SimPanel({ tabIdx, ui, tabInfo }) {
     ui.clearHighlighted();
     ui.helpers.setShowSim(false);
   };
+
+  console.log("[SimPanel] Rendered");
+
+  useEffect(() => {
+    console.log("[SimPanel] useEffect");
+  }, []);
+
   return (
     <div id="simContainer">
       Simulation Panel
-      <button id={"btnCloseSim"} onClick={handleBtnPanelClose}>
+      <button id="btnCloseSim" onClick={handleBtnPanelClose}>
         &#10005;
       </button>
       <br />
-      <button id="testStepAll" onClick={handleBtnStepAll} className="ui-button">
-        Step all
-      </button>
-      <button onClick={handleBtnReset} className="ui-button">
-        Reset
-      </button>
+      <div style={{ display: "flex" }}>
+        {isFastrun ? (
+          <>
+            <button onClick={toggleRunning} className="ui-button">
+              {running ? <PauseOutlined /> : <CaretRightOutlined />}
+            </button>
+            <Slider
+              style={{ flexGrow: 1 }}
+              min={1}
+              max={100}
+              defaultValue={DEFAULT_PLAY_SPEED}
+              onChange={setRunInterval}
+            />
+          </>
+        ) : (
+          <button
+            id="testStepAll"
+            onClick={handleBtnStepAll}
+            className="ui-button"
+          >
+            Step all
+          </button>
+        )}
+        <button onClick={handleBtnReset} className="ui-button">
+          {/* Reset */}
+          <UndoOutlined />
+        </button>
+      </div>
       {getConfigs().map((config, index) => (
         <SimCard
           key={index}
@@ -105,7 +142,6 @@ export default function SimPanel({ tabIdx, ui, tabInfo }) {
           tabInfo={tabInfo}
         />
       ))}
-      {/* <SimCard id={1} view={view} handleStep={handleStep} /> */}
     </div>
   );
 }
