@@ -10,6 +10,7 @@ import {
   Menu,
   Select,
   Input,
+  Space,
 } from "antd";
 import { DownOutlined } from "@ant-design/icons";
 import tabTypes from "../enums/tabTypes";
@@ -56,18 +57,6 @@ const InputByFormalDefinition = ({ ui, tabInfo, setTabInfo }) => {
       group: "nodes",
       data: { id: "q0", name: "q0", inital: true, final: false },
     });
-    // Adding Final states
-    finalStates.forEach((stateNr) =>
-      cy.add({
-        group: "nodes",
-        data: {
-          id: `q${stateNr}`,
-          name: `q${stateNr}`,
-          inital: false,
-          final: true,
-        },
-      })
-    );
     // Adding normal states
     for (let i = 1; i < statesCtr; i++) {
       if (finalStates.includes(i)) continue;
@@ -81,6 +70,11 @@ const InputByFormalDefinition = ({ ui, tabInfo, setTabInfo }) => {
         },
       });
     }
+    // update already created nodes with  Final states
+    finalStates.forEach((stateNr) =>
+      cy.nodes("#q" + stateNr).data("final", true)
+    );
+
     if (!(fTrFrom.length === fTrTo.length && fTrFunc.length === fTrTo.length)) {
       throw new Error("from, to and func must have the same length");
     }
@@ -116,7 +110,7 @@ const InputByFormalDefinition = ({ ui, tabInfo, setTabInfo }) => {
 
   const displaySteppingStrategy = () => {
     const options = Object.entries(steppingStrategies).map(([key, value]) => (
-      <Radio required value={value} key={key}>
+      <Radio value={value} key={key}>
         {value}
       </Radio>
     ));
@@ -148,14 +142,12 @@ const InputByFormalDefinition = ({ ui, tabInfo, setTabInfo }) => {
         }}
         initialValues={{
           simType: tabTypes.FA,
-          steppingStrategy: steppingStrategies.STEP_WITH_CLOSURE,
-          fTrFrom: [],
         }}
         onFinish={onFormSubmit}
         onFinishFailed={onFinishFailed}
         autoComplete="off"
       >
-        <Form.Item required label="Simulation Type:" name="simType">
+        <Form.Item label="Simulation Type:" name="simType">
           <Radio.Group
             options={opAutomata}
             optionType="button"
@@ -163,7 +155,12 @@ const InputByFormalDefinition = ({ ui, tabInfo, setTabInfo }) => {
             onChange={(e) => setAutomataType(e.target.value)}
           />
         </Form.Item>
-        <Form.Item required label="Stepping Strategy" name="steppingStrategy">
+
+        <Form.Item
+          label="Stepping Strategy"
+          name="steppingStrategy"
+          rules={[{ required: true, message: "Please select a choice" }]}
+        >
           <Radio.Group optionType="button" buttonStyle="solid">
             {displaySteppingStrategy()}
           </Radio.Group>
@@ -189,32 +186,34 @@ const InputByFormalDefinition = ({ ui, tabInfo, setTabInfo }) => {
         )}
 
         <Form.Item label="Final States">
-          <Dropdown
-            overlay={() => {
-              return (
-                <Menu>
-                  {Array(statesCtr)
-                    .fill(0)
-                    .map((_, i) => (
-                      <Menu.Item
-                        onClick={() => handleAddFinalState(i)}
-                        key={i}
-                      >{`q${i}`}</Menu.Item>
-                    ))}
-                </Menu>
-              );
-            }}
-          >
-            <Button>
-              Add <DownOutlined />
-            </Button>
-          </Dropdown>
-          {finalStates.map((key, i) => (
-            <span key={i}>
-              <label>{`q${key}`}</label>
-              <Button onClick={() => handleRemoveFinalState(key)}>✖</Button>
-            </span>
-          ))}
+          <Space size="middle">
+            <Dropdown
+              overlay={() => {
+                return (
+                  <Menu>
+                    {Array(statesCtr)
+                      .fill(0)
+                      .map((_, i) => (
+                        <Menu.Item
+                          onClick={() => handleAddFinalState(i)}
+                          key={i}
+                        >{`q${i}`}</Menu.Item>
+                      ))}
+                  </Menu>
+                );
+              }}
+            >
+              <Button>
+                Add <DownOutlined />
+              </Button>
+            </Dropdown>
+            {finalStates.map((key, i) => (
+              <span key={i}>
+                <label>{`q${key}`}</label>
+                <Button onClick={() => handleRemoveFinalState(key)}>✖</Button>
+              </span>
+            ))}
+          </Space>
         </Form.Item>
 
         <Form.Item label="Transition Function">

@@ -288,23 +288,24 @@ const ContentContainer = ({ tabIdx, tabInfo, setTabInfo }) => {
 
   return (
     <>
-      <div id="btnSimulate">
-        <Dropdown overlay={menu}>
-          <a className="ant-dropdown-link" onClick={(e) => e.preventDefault()}>
-            {"Simulate  "}
-            <DownOutlined />
-          </a>
-        </Dropdown>
-      </div>
+      {!showIFD && (
+        <div id="btnSimulate">
+          <Dropdown overlay={menu}>
+            <a
+              className="ant-dropdown-link"
+              onClick={(e) => e.preventDefault()}
+            >
+              {"Simulate  "}
+              <DownOutlined />
+            </a>
+          </Dropdown>
+        </div>
+      )}
+
       <button
         id="testButton"
         onClick={() => {
           console.log("[test btn] click");
-          // ui.test();
-          // ui.handleStartSimulation(steppingStrategy.STEP_BY_STATE);
-
-          // ui.createHeadlessCy();
-          console.log(window.IMask);
         }}
       >
         test

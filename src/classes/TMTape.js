@@ -28,7 +28,12 @@ export default class TMTape {
   }
 
   consume(replacement, movement) {
-    if (replacement !== TMConfig.empty) this.elements[this.head] = replacement;
+    if (replacement === TMConfig.empty) {
+      delete this.elements[this.head];
+    } else {
+      this.elements[this.head] = replacement;
+    }
+
     this.head += movement;
   }
 
