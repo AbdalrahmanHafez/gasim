@@ -257,12 +257,13 @@ const ContentContainer = ({ tabIdx, tabInfo, setTabInfo }) => {
     };
 
     if (tabIdx === 0) ui.injectCy(elm1);
-    if (tabIdx === 1) ui.injectCy(elm2);
-    if (tabIdx === 2) ui.injectCy(elm3);
-    if (tabIdx === 3) ui.injectCy(elmPDA);
-    if (tabIdx === 4) ui.injectCy(elmTM);
-    if (tabIdx === 5) ui.injectCy(elmTM2);
-    if (tabIdx === 6) ui.injectCy(elmTM3);
+    else if (tabIdx === 1) ui.injectCy(elm2);
+    else if (tabIdx === 2) ui.injectCy(elm3);
+    else if (tabIdx === 3) ui.injectCy(elmPDA);
+    else if (tabIdx === 4) ui.injectCy(elmTM);
+    else if (tabIdx === 5) ui.injectCy(elmTM2);
+    else if (tabIdx === 6) ui.injectCy(elmTM3);
+    else if (tabType !== tabTypes.IFD) ui.injectCy({ nodes: [], edges: [] });
 
     // TODO: Dynamic sim, for given tab Type
     // inject cy with empty elm

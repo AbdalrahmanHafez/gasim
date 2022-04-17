@@ -190,7 +190,7 @@ export default class UI {
   }
 
   injectCy(elements) {
-    elements.edges.forEach((edge) => {
+    elements.edges?.forEach((edge) => {
       edge.data = {
         ...edge.data,
         ...parseExampleLabels(edge.data.label, this.tabType),

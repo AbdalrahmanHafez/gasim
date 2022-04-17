@@ -1,7 +1,8 @@
 import TabsController from "./components/TabsController";
 import { useStoreActions } from "easy-peasy";
-import { useEffect, useContext } from "react";
+import { useEffect, useContext, useState } from "react";
 import Button from "@mui/material/Button";
+import MenuBar from "./components/MenuBar";
 
 function App() {
   console.log("[APP] render");
@@ -14,6 +15,7 @@ function App() {
     <div className="App">
       <h1>Graphical Automata Simulator</h1>
 
+      <MenuBar />
       <TabsController />
     </div>
   );
