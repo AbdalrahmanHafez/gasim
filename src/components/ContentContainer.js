@@ -7,6 +7,9 @@ import { DownOutlined } from "@ant-design/icons";
 import steppingStrategies from "../enums/steppingStrategies";
 import tabTypes from "../enums/tabTypes";
 import InputByFormalDefinition from "./InputByFormalDefinition";
+import ConversionPanel from "../components/ConversionPanel";
+import { Set, is } from "immutable";
+import { getNodeClosure } from "../Helpers/hlpGraph";
 
 const $ = window.jQuery;
 
@@ -27,8 +30,9 @@ const map_ttype_to_strategy = (ttype) => {
 const ContentContainer = ({ tabIdx, tabInfo, setTabInfo }) => {
   log("Render");
   const [, forceRender] = useState({});
+  const [fake, setFake] = useState(false);
 
-  const { tabType } = tabInfo;
+  const { tabType, showConversion } = tabInfo;
 
   const [ui, setui] = useState(new UI({ ...tabInfo, tabIdx }));
   const [enableFastrun, setEnableFastrun] = useState(false);
@@ -256,6 +260,48 @@ const ContentContainer = ({ tabIdx, tabInfo, setTabInfo }) => {
       ],
     };
 
+    const elm8 = {
+      nodes: [
+        {
+          data: { id: "q4", name: "q4", inital: true, final: false },
+        },
+        {
+          data: { id: "q6", name: "q6", inital: false, final: false },
+        },
+        {
+          data: { id: "q5", name: "q5", inital: false, final: false },
+        },
+        {
+          data: { id: "q7", name: "q7", inital: false, final: false },
+        },
+        {
+          data: { id: "q0", name: "q0", inital: false, final: false },
+        },
+        {
+          data: { id: "q1", name: "q1", inital: false, final: false },
+        },
+        {
+          data: { id: "q3", name: "q3", inital: false, final: false },
+        },
+        {
+          data: { id: "q2", name: "q2", inital: false, final: false },
+        },
+      ],
+      edges: [
+        { data: { id: "q4q6", source: "q4", target: "q6", label: "k" } },
+        { data: { id: "q4q5", source: "q4", target: "q5", label: "a" } },
+        { data: { id: "q5q7", source: "q5", target: "q7", label: "b" } },
+        { data: { id: "q7q4", source: "q7", target: "q4", label: "s" } },
+        { data: { id: "q4q0", source: "q4", target: "q0", label: "ε" } },
+        { data: { id: "q0q1", source: "q0", target: "q1", label: "a" } },
+        { data: { id: "q1q0", source: "q1", target: "q0", label: "w" } },
+        { data: { id: "q7q1", source: "q7", target: "q1", label: "a" } },
+        { data: { id: "q1q3", source: "q1", target: "q3", label: "ε" } },
+        { data: { id: "q0q2", source: "q0", target: "q2", label: "a" } },
+        { data: { id: "q2q3", source: "q2", target: "q3", label: "c" } },
+      ],
+    };
+
     if (tabIdx === 0) ui.injectCy(elm1);
     else if (tabIdx === 1) ui.injectCy(elm2);
     else if (tabIdx === 2) ui.injectCy(elm3);
@@ -263,11 +309,167 @@ const ContentContainer = ({ tabIdx, tabInfo, setTabInfo }) => {
     else if (tabIdx === 4) ui.injectCy(elmTM);
     else if (tabIdx === 5) ui.injectCy(elmTM2);
     else if (tabIdx === 6) ui.injectCy(elmTM3);
+    else if (tabIdx === 8) ui.injectCy(elm8);
     else if (tabType !== tabTypes.IFD) ui.injectCy({ nodes: [], edges: [] });
 
     // TODO: Dynamic sim, for given tab Type
     // inject cy with empty elm
   }, [ui]);
+
+  useEffect(() => {
+    if (!fake) return; //TODO: very wrong please fix
+    console.log("trigger conversion");
+    const cy = ui.getCy();
+    const initalNode = cy.$("node[?inital]")[0];
+    const initalNodes = getNodeClosure(initalNode);
+    const originalNodes = cy.nodes();
+
+    const printId = (eles) => {
+      // elems either [nodes or Sets]
+      if (eles.length === 0) return "empty";
+      const first = eles[0];
+      if (first instanceof Set) {
+        return eles
+          .map((s) =>
+            s
+              .toJS()
+              .map((e) => e.data("id"))
+              .join("|")
+          )
+          .join("*");
+      } else {
+        return eles.map((smt) => smt.data("id")).join("|");
+      }
+    };
+
+    const getLabelsFromNode = (node) =>
+      node.outgoers("edge").map((edge) => edge.data("label"));
+
+    // const set = new Set([1]);
+    // set.update((s) => s.add(3));
+    // console.log(set);
+
+    const getTargetNodeSetFromNodeSetAndTrnasition = (
+      nodeSet,
+      transitionlbl
+    ) => {
+      let targetNodeSet = new Set();
+      nodeSet.forEach((node) => {
+        node
+          .outgoers("edge")
+          .filter((edge) => edge.data("label") === transitionlbl)
+          .map((edge) => edge.target())
+          .flatMap((node) => [...getNodeClosure(node), node])
+          .forEach((node) => {
+            targetNodeSet = targetNodeSet.add(node);
+          });
+      });
+      return targetNodeSet;
+    };
+
+    const createTransitionNodeSet = (nodesetA, nodesetB, label) => {
+      // TODO: assume they aren't in the graph already
+      const addNode = (nodeSet) => {
+        // if node exists
+        // debugger;
+        const nodeName = nodeSet.map((node) => node.data("name")).join(",");
+        const alreadyNode = cy.$(`node[id="cnv-${nodeName}"]`);
+        if (alreadyNode.length > 0 && !originalNodes.includes(alreadyNode[0]))
+          return alreadyNode[0];
+
+        return cy.add({
+          group: "nodes",
+          data: {
+            id: `cnv-${nodeName}`,
+            name: nodeName,
+            inital: false,
+            final: false,
+          },
+        });
+      };
+      const connectNodes = (nodeA, nodeB, label) => {
+        cy.add({
+          group: "edges",
+          data: {
+            id: `cnve-${nodeA.data("name")}${nodeB.data("name")}`,
+            source: nodeA.data("id"),
+            target: nodeB.data("id"),
+            label: label,
+          },
+        });
+      };
+      const nodeA = addNode(nodesetA);
+      const nodeB = addNode(nodesetB);
+      console.log("connectNodes", nodeA, nodeB, label);
+
+      connectNodes(nodeA, nodeB, label);
+    };
+
+    // const res2 = getTargetNodeSetFromNodeSetAndTrnasition(
+    //   new Set([...initalNodes, initalNode]),
+    //   "a"
+    // );
+    // console.log(res2.toJS());
+
+    let mte = [new Set([...initalNodes, initalNode])];
+    const expand = (nodeSet) => {
+      // debugger;
+      let uniqueLabels = new Set();
+
+      nodeSet.forEach((node) => {
+        // debugger;
+        const labels = getLabelsFromNode(node);
+        // console.log(labels);
+        uniqueLabels = uniqueLabels.add(...labels);
+      });
+      uniqueLabels = uniqueLabels.remove(undefined);
+      console.log("uniqueLabels", uniqueLabels.toJS());
+
+      let moreToExplore = [];
+      uniqueLabels.forEach((label) => {
+        let targetNodeSet = getTargetNodeSetFromNodeSetAndTrnasition(
+          nodeSet,
+          label
+        );
+        // console.log("nodeseet", nodeSet.toJS());
+        // console.log("targetnodeset", targetNodeSet.toJS());
+
+        console.log("nodeseet", printId(nodeSet));
+        console.log("targetnodeset", printId(targetNodeSet));
+        console.log("label", label);
+        createTransitionNodeSet(nodeSet, targetNodeSet, label);
+
+        moreToExplore.push(targetNodeSet);
+      });
+      return moreToExplore;
+      // console.log(uniqueLabels.toJS());
+    };
+
+    let visited = []; // Set[] visited resultant nodes
+    let counter = 6;
+    while (mte.length !== 0 && counter > 1) {
+      console.count("EXPANDING");
+      mte = mte.flatMap((ns) => {
+        let more,
+          res = [];
+        try {
+          //TODO: something is wrong iguess in the last iter
+          more = expand(ns);
+
+          res = more.filter((s) => !visited.some((v) => is(s, v)));
+        } catch (error) {}
+        return res;
+      });
+
+      visited.push(...mte);
+
+      console.log("mte", printId(mte));
+      console.log("visited", printId(visited));
+      counter--;
+    }
+
+    cy.layout({ name: "cose" }).run();
+  }, [fake, ui]);
 
   const menu = (
     <Menu>
@@ -317,10 +519,16 @@ const ContentContainer = ({ tabIdx, tabInfo, setTabInfo }) => {
       <button
         id="testButton"
         onClick={() => {
-          console.log("[test btn] click");
+          setFake(true);
+          // const cy = ui.getCy();
+          // const nodes = cy.nodes();
+
+          // console.log("[test btn] click");
+          // const s = new Set([nodes[0], nodes[1], nodes[0]]);
+          // console.log(s);
         }}
       >
-        test
+        Convert NFA to DFA (testing)
       </button>
 
       <div style={{ display: "flex" }}>
@@ -335,6 +543,7 @@ const ContentContainer = ({ tabIdx, tabInfo, setTabInfo }) => {
         )}
 
         {!showIFD && <div id={`cy-${tabIdx}`} className="cy" />}
+        {/* {showConversion && <ConversionPanel ui={ui} />} */}
 
         {showSim && (
           <SimPanel

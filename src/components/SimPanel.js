@@ -72,7 +72,6 @@ const SimCard = ({ id, config, tabIdx, tabInfo }) => {
 
 const DEFAULT_PLAY_SPEED = 20;
 export default function SimPanel({ tabIdx, ui, tabInfo, isFastrun }) {
-  const getCy = () => ui.getCy();
   const getConfigs = () => ui.getConfigs();
 
   const handleBtnStepAll = () => {

@@ -32,7 +32,7 @@ function mapTabIdxToInfo(tabIdx) {
       return { info: "Tab " + tabIdx };
   }
 }
-export default function TabsController() {
+export default function TabsController({ activeTabKey, setActiveTabKey }) {
   const [store, setstore] = useContext(StoreContext);
   const { addTab } = useContext(UtilityContext);
 
@@ -74,7 +74,11 @@ export default function TabsController() {
       >
         Add Tab
       </Button>
-      <Tabs defaultActiveKey="6" style={{ margin: "0px 7px" }}>
+      <Tabs
+        activeKey={activeTabKey.toString()}
+        onChange={(nKey) => setActiveTabKey(+nKey)}
+        style={{ margin: "0px 7px" }}
+      >
         {store.map((tab, index) => {
           // TODO: Dynamic Tabs
           const tempDataTab = mapTabIdxToInfo(index);

@@ -6,6 +6,7 @@ import MenuBar from "./components/MenuBar";
 
 function App() {
   console.log("[APP] render");
+  const [activeTabKey, setActiveTabKey] = useState(8);
 
   useEffect(() => {
     console.log("[APP] useEffect");
@@ -15,8 +16,11 @@ function App() {
     <div className="App">
       <h1>Graphical Automata Simulator</h1>
 
-      <MenuBar />
-      <TabsController />
+      <MenuBar activeTabKey={activeTabKey} setActiveTabKey={setActiveTabKey} />
+      <TabsController
+        activeTabKey={activeTabKey}
+        setActiveTabKey={setActiveTabKey}
+      />
     </div>
   );
 }

@@ -2,8 +2,11 @@ import React, { useState, useRef } from "react";
 import tabTypes from "./enums/tabTypes";
 
 // TODO: consider making it (tabType, simulationtype) pair
+/**
+ * Each {tabType: tabTypes, title: string, simType: tabType, showConversion:boolean}
+ */
 const initialState = [
-  { tabType: tabTypes.FA, title: "NFA 1" },
+  { tabType: tabTypes.FA, title: "NFA 1", showConversion: false },
   { tabType: tabTypes.FA, title: "NFA 2" },
   { tabType: tabTypes.FA, title: "NFA 3" },
   { tabType: tabTypes.PDA, title: "PDA" },
@@ -11,6 +14,7 @@ const initialState = [
   { tabType: tabTypes.TM, title: "TM" },
   { tabType: tabTypes.TM, title: "Enum" },
   { tabType: tabTypes.IFD, simType: tabTypes.FA, title: "IFD" },
+  { tabType: tabTypes.FA, title: "NFA Conversion", showConversion: false },
 ];
 
 export const StoreContext = React.createContext();
