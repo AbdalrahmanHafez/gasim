@@ -1611,6 +1611,7 @@ export default class UI {
     const cy = cytoscape({ headless: true, styleEnabled: false });
     if (!window.cyinst) window.cyinst = [cy];
     else window.cyinst.push(cy);
+    this.cy = cy;
     return cy;
     /**
      * cyinst[0].add({group:'nodes', data: { id: "q0", name: "q0", inital:true, final: false }})
