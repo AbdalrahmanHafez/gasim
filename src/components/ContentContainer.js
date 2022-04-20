@@ -345,10 +345,6 @@ const ContentContainer = ({ tabIdx, tabInfo, setTabInfo }) => {
     const getLabelsFromNode = (node) =>
       node.outgoers("edge").map((edge) => edge.data("label"));
 
-    // const set = new Set([1]);
-    // set.update((s) => s.add(3));
-    // console.log(set);
-
     const getTargetNodeSetFromNodeSetAndTrnasition = (
       nodeSet,
       transitionlbl
@@ -400,29 +396,48 @@ const ContentContainer = ({ tabIdx, tabInfo, setTabInfo }) => {
       };
       const nodeA = addNode(nodesetA);
       const nodeB = addNode(nodesetB);
-      console.log("connectNodes", nodeA, nodeB, label);
 
       connectNodes(nodeA, nodeB, label);
     };
 
-    // const res2 = getTargetNodeSetFromNodeSetAndTrnasition(
-    //   new Set([...initalNodes, initalNode]),
-    //   "a"
-    // );
-    // console.log(res2.toJS());
-
     let mte = [new Set([...initalNodes, initalNode])];
     const expand = (nodeSet) => {
-      // debugger;
+      /** Algorithm
+        initalNodeSet = NodeSet(closure(initalNode))
+        initalNode = Res.addNode(initalNodeSet)
+        
+        mte = [initalNode]
+        while(mte not empty)
+          mte.flatMap(node => func(node))
+
+        def func(Rnode):
+          NodeSet = Rnode.NodeSet
+          for each node in NodesSet:
+            uniqueLabels set add getUniqueLabelsFromNode(node)
+          uniqueLabels.remove(epsilon) if has it
+          
+          let moreToExplore = []
+          foreach lbl in uniqueLabels:
+            targetNodeSet = NodesSet.withTransition(lbl).closure()
+            create transition to targetNodeSet with lbl
+              if(targetNodeSet not a node in the graph)
+                NodeSetNode to targetNodeSetNode NEW transition lbl
+                moreToExplore += .|. Rnode
+              else connect with that node
+          return moreToExplore
+       *  */
+
       let uniqueLabels = new Set();
 
       nodeSet.forEach((node) => {
         // debugger;
         const labels = getLabelsFromNode(node);
         // console.log(labels);
-        uniqueLabels = uniqueLabels.add(...labels);
+        labels.forEach((label) => {
+          uniqueLabels = uniqueLabels.add(label);
+        });
       });
-      uniqueLabels = uniqueLabels.remove(undefined);
+      uniqueLabels = uniqueLabels.remove("ε");
       console.log("uniqueLabels", uniqueLabels.toJS());
 
       let moreToExplore = [];
@@ -431,8 +446,6 @@ const ContentContainer = ({ tabIdx, tabInfo, setTabInfo }) => {
           nodeSet,
           label
         );
-        // console.log("nodeseet", nodeSet.toJS());
-        // console.log("targetnodeset", targetNodeSet.toJS());
 
         console.log("nodeseet", printId(nodeSet));
         console.log("targetnodeset", printId(targetNodeSet));
@@ -446,26 +459,21 @@ const ContentContainer = ({ tabIdx, tabInfo, setTabInfo }) => {
     };
 
     let visited = []; // Set[] visited resultant nodes
-    let counter = 6;
-    while (mte.length !== 0 && counter > 1) {
+
+    while (mte.length !== 0) {
       console.count("EXPANDING");
       mte = mte.flatMap((ns) => {
         let more,
           res = [];
-        try {
-          //TODO: something is wrong iguess in the last iter
-          more = expand(ns);
+        more = expand(ns);
+        visited.push(ns);
+        res = more.filter((s) => !visited.some((v) => is(s, v)));
 
-          res = more.filter((s) => !visited.some((v) => is(s, v)));
-        } catch (error) {}
         return res;
       });
 
-      visited.push(...mte);
-
       console.log("mte", printId(mte));
       console.log("visited", printId(visited));
-      counter--;
     }
 
     cy.layout({ name: "cose" }).run();
@@ -520,12 +528,6 @@ const ContentContainer = ({ tabIdx, tabInfo, setTabInfo }) => {
         id="testButton"
         onClick={() => {
           setFake(true);
-          // const cy = ui.getCy();
-          // const nodes = cy.nodes();
-
-          // console.log("[test btn] click");
-          // const s = new Set([nodes[0], nodes[1], nodes[0]]);
-          // console.log(s);
         }}
       >
         Convert NFA to DFA (testing)

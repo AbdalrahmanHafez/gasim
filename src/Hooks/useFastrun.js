@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useInterval } from "react-use";
 
 // const DEFAULT_INTERVAL
-const slider_to_interval = (sliderValue) => (1000 * 5) / sliderValue;
+const slider_to_interval = (sliderValue) => (1000 * 10) / sliderValue;
 const useFastrun = (cb, defaultInterval) => {
   const [running, setRunning] = useState(false);
   const [interval, setInterval] = useState(slider_to_interval(defaultInterval));

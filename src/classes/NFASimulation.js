@@ -151,6 +151,7 @@ export default class NFASimulation extends Simulation {
     if (config.strRem.length === 0) {
       config.winstate = this.setWinState(node);
       config.takenEdges = [];
+      // if (config.winstate === 1) return [config]; // FixFor: to not continue with epsilon transition if this state is win state
       if (config.winstate === 1) return [config, ...nextConfigs];
       else return nextConfigs;
     }
