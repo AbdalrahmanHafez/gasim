@@ -2,13 +2,14 @@ import { useState } from "react";
 import { useInterval } from "react-use";
 
 // const DEFAULT_INTERVAL
-
+const slider_to_interval = (sliderValue) => (1000 * 5) / sliderValue;
 const useFastrun = (cb, defaultInterval) => {
   const [running, setRunning] = useState(false);
-  const [interval, setInterval] = useState(defaultInterval);
+  const [interval, setInterval] = useState(slider_to_interval(defaultInterval));
 
   useInterval(
     () => {
+      console.log("[useFastrun] interval", interval);
       cb();
     },
     // Delay in milliseconds or null to stop it
@@ -19,7 +20,7 @@ const useFastrun = (cb, defaultInterval) => {
     if (sliderValue === null) {
       setRunning(false);
     } else {
-      const interval = 1000 / sliderValue; // times(value) per second
+      const interval = slider_to_interval(sliderValue); // sliderValue; // times(value) per second
       setInterval(interval);
     }
   };
