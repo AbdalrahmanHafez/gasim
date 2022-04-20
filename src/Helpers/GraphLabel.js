@@ -32,7 +32,7 @@ const formatLabel = (labelData, tabType) => {
     case tabTypes.FA:
       return `${labelData}`;
     case tabTypes.PDA:
-      return `${labelData.symbol} → ${labelData.pop}, ${labelData.push}`;
+      return `${labelData.symbol},${labelData.pop} → ${labelData.push}`;
     case tabTypes.TM:
       // for TM labelData is Array
       return labelData

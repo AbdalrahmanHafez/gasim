@@ -10,7 +10,7 @@ import { simTypeToEmptyValue } from "../Helpers/GraphLabel";
 const mapSimTypeToMask = (simType, tapesCtr) => {
   if (simType === tabTypes.FA) return { mask: "*", placeholderChar: "_" };
   else if (simType === tabTypes.PDA)
-    return { mask: "*{→}*{, }*", placeholderChar: "_" };
+    return { mask: "*{, }*{→}*", placeholderChar: "_" };
   else if (simType === tabTypes.TM)
     return {
       mask: Array(tapesCtr).fill("BASEDIR").join(" | "),
