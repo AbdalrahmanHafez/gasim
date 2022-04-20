@@ -65,6 +65,12 @@ export default class TMSimulation extends Simulation {
       return [];
     }
 
+    // if you pass by a final state, you win directly, no more steps
+    if (this.setWinState(node) === 1) {
+      config.winstate = 1;
+      return config;
+    }
+
     let nextConfigs = [];
 
     switch (this.steppingStrategy) {

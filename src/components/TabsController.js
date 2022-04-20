@@ -14,7 +14,7 @@ function mapTabIdxToInfo(tabIdx) {
   // TODO: dynamic tabs
   switch (tabIdx) {
     case 0:
-      return { info: "Try inputs: a, abc, abcd, abcde " };
+      return { info: "Try inputs: a, abc, abcd, abcde" };
     case 1:
       return { info: "Try inputs: '', a, ab, abc " };
     case 2:
@@ -22,9 +22,13 @@ function mapTabIdxToInfo(tabIdx) {
     case 3:
       return { info: "Try inputs: '', a, ab, abc " };
     case 4:
-      return { info: "Try inputs: [a, a] [aa, aa] " };
+      return {
+        info: "Try inputs: [a, a] [aa, aa]; all unspecified transitions go to a hidden reject state",
+      };
     case 5:
-      return { info: "Try inputs: a, aa" };
+      return {
+        info: "Try inputs: a, aa; all unspecified transitions go to a hidden reject state",
+      };
     case 6:
       return { info: "Try inputs: '' (empty)" };
 

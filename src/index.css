@@ -107,6 +107,7 @@ h1 {
   border: 1px solid #949494;
   padding: 0.5em;
   position: relative;
+  
 }
 #simContainer > #btnCloseSim {
   border-radius: 50%;
@@ -137,6 +138,8 @@ h1 {
   text-align: center;
   border-radius: 5px;
   border: 1px solid #949494;
+  max-height: 6rem;
+  overflow-y: auto;
 }
 
 .popperInputContainer{

@@ -165,7 +165,14 @@ const InputByFormalDefinition = ({ ui, tabInfo, setTabInfo }) => {
           </Radio.Group>
         </Form.Item>
 
-        <Form.Item label="Number of States:" help="q0 is the inital state">
+        <Form.Item
+          label="Number of States:"
+          help={
+            tabInfo.simType === tabTypes.TM
+              ? "q0 is the inital state. all unspecified transitions go to a hidden reject state"
+              : "q0 is the inital state"
+          }
+        >
           <InputNumber
             style={{ width: 50 }}
             min={1}
@@ -184,7 +191,14 @@ const InputByFormalDefinition = ({ ui, tabInfo, setTabInfo }) => {
           </Form.Item>
         )}
 
-        <Form.Item label="Final States">
+        <Form.Item
+          label="Final States"
+          help={
+            tabInfo.simType === tabTypes.TM
+              ? "More than one accept state is allowed by this model"
+              : ""
+          }
+        >
           <Space size="middle">
             <Dropdown
               overlay={() => {
