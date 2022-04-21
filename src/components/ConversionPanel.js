@@ -1,33 +1,36 @@
 import React, { useEffect, useState } from "react";
+import tabTypes from "../enums/tabTypes";
 
-const CY_ELM_ID = "cy-conversion";
+const log = (msg) => console.log(`[ConversionPanel] ${msg}`);
 
-const CyElm = ({ ui }) => {
+export default function ConversionPanel({ tabInfo, ui, tabType, tabIdx }) {
+  log("render");
+  const CY_ID = `cy-cnv-${tabIdx}`;
+  const [, forcerender] = useState(null);
+
+  const { conversionType } = tabInfo;
+
+  const handleBtnPanelClose = () => {
+    ui.helpers.setShowSim(false);
+  };
+
   useEffect(() => {
-    console.log("[CyElm] useEffect");
+    log("useEffect");
 
-    const cy = ui.injectCyForConversion(CY_ELM_ID, { nodes: [], edges: [] });
+    console.log("in conversion panel", ui.cy);
+
+    const cy = ui.injectConversionCy(CY_ID);
+    const srcCy = ui.cy;
+    ui.addConversion(srcCy, cy, tabType, conversionType);
   }, [ui]);
 
-  return <div id={CY_ELM_ID} className="cy" />;
-};
-let injected = false;
-const ConversionPanel = ({ ui }) => {
-  useEffect(() => {
-    if (injected) return;
-    if (ui.cy === undefined) {
-      console.log("cy is undefined");
-    } else {
-      console.log("whorray got there");
-      injected = true;
-    }
-  });
-
   return (
-    <>
-      <CyElm ui={ui} />
-    </>
+    <div id="conversionPanel">
+      Conversion Panel
+      <button id="btnCloseSim" onClick={handleBtnPanelClose}>
+        &#10005;
+      </button>
+      <div id={CY_ID} className="cy" />
+    </div>
   );
-};
-
-export default ConversionPanel;
+}

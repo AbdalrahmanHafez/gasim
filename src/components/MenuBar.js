@@ -3,6 +3,8 @@ import { Menu, MenuItem, MenuButton, SubMenu } from "@szhsin/react-menu";
 import "@szhsin/react-menu/dist/index.css";
 import "@szhsin/react-menu/dist/transitions/slide.css";
 
+import conversionType from "../enums/conversionType";
+
 import { StoreContext, UtilityContext } from "../Store";
 import tabTypes from "../enums/tabTypes";
 
@@ -32,10 +34,10 @@ function MenuBar({ activeTabKey, setActiveTabKey }) {
 
   const handleConvertMenu = ({ value }) => {
     switch (value) {
-      case "NFAtoDFA":
-        console.log("converting nfa to dfa");
+      case conversionType.NFAtoDFA:
         const newStore = [...store];
         newStore[activeTabKey].showConversion = true;
+        newStore[activeTabKey].conversionType = conversionType.NFAtoDFA;
         setStore(newStore);
         break;
       default:
@@ -67,7 +69,7 @@ function MenuBar({ activeTabKey, setActiveTabKey }) {
         }
         onItemClick={handleConvertMenu}
       >
-        <MenuItem value="NFAtoDFA">NFA to DFA</MenuItem>
+        <MenuItem value={conversionType.NFAtoDFA}>NFA to DFA</MenuItem>
       </Menu>
     </div>
   );

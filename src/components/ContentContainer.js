@@ -32,6 +32,7 @@ const ContentContainer = ({ tabIdx, tabInfo, setTabInfo }) => {
   const [, forceRender] = useState({});
   const [fake, setFake] = useState(false);
 
+  const CY_ID = `cy-${tabIdx}`;
   const { tabType, showConversion } = tabInfo;
 
   const [ui, setui] = useState(new UI({ ...tabInfo, tabIdx }));
@@ -302,15 +303,16 @@ const ContentContainer = ({ tabIdx, tabInfo, setTabInfo }) => {
       ],
     };
 
-    if (tabIdx === 0) ui.injectCy(elm1);
-    else if (tabIdx === 1) ui.injectCy(elm2);
-    else if (tabIdx === 2) ui.injectCy(elm3);
-    else if (tabIdx === 3) ui.injectCy(elmPDA);
-    else if (tabIdx === 4) ui.injectCy(elmTM);
-    else if (tabIdx === 5) ui.injectCy(elmTM2);
-    else if (tabIdx === 6) ui.injectCy(elmTM3);
-    else if (tabIdx === 8) ui.injectCy(elm8);
-    else if (tabType !== tabTypes.IFD) ui.injectCy({ nodes: [], edges: [] });
+    if (tabIdx === 0) ui.injectMachineCy(CY_ID, elm1);
+    else if (tabIdx === 1) ui.injectMachineCy(CY_ID, elm2);
+    else if (tabIdx === 2) ui.injectMachineCy(CY_ID, elm3);
+    else if (tabIdx === 3) ui.injectMachineCy(CY_ID, elmPDA);
+    else if (tabIdx === 4) ui.injectMachineCy(CY_ID, elmTM);
+    else if (tabIdx === 5) ui.injectMachineCy(CY_ID, elmTM2);
+    else if (tabIdx === 6) ui.injectMachineCy(CY_ID, elmTM3);
+    else if (tabIdx === 8) ui.injectMachineCy(CY_ID, elm8);
+    else if (tabType !== tabTypes.IFD)
+      ui.injectMachineCy(CY_ID, { nodes: [], edges: [] });
 
     // TODO: Dynamic sim, for given tab Type
     // inject cy with empty elm
@@ -544,8 +546,19 @@ const ContentContainer = ({ tabIdx, tabInfo, setTabInfo }) => {
           </div>
         )}
 
-        {!showIFD && <div id={`cy-${tabIdx}`} className="cy" />}
-        {/* {showConversion && <ConversionPanel ui={ui} />} */}
+        {!showIFD && <div id={CY_ID} className="cy" />}
+
+        {showConversion && (
+          <ConversionPanel
+            tabInfo={tabInfo}
+            ui={ui}
+            tabType={tabType}
+            tabIdx={tabIdx}
+          />
+        )}
+
+        {/* TODO: better logic for showing which one,  for example 
+        can'y show both panels simultanously */}
 
         {showSim && (
           <SimPanel
