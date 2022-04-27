@@ -20,7 +20,8 @@ const initialState = [
     title: "NFA Conversion",
     showConversion: false,
   },
-  { tabType: tabTypes.GR, title: "Grammer" },
+  { tabType: tabTypes.GR, title: "Grammar" },
+  { tabType: tabTypes.GR, title: "GrammarToPDA" },
 ];
 
 export const StoreContext = React.createContext();

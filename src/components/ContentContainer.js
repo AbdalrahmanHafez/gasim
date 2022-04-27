@@ -12,6 +12,7 @@ import { Set, is } from "immutable";
 import { getNodeClosure } from "../Helpers/hlpGraph";
 import GrammarView from "./GrammarView";
 import { grammarExamples, machineExamples } from "../Helpers/Constatns";
+import GrammarConverter from "./GrammarConverter";
 const $ = window.jQuery;
 
 const log = (msg) => console.log(`[Content Container] ${msg}`);
@@ -45,7 +46,7 @@ const ContentContainer = ({ tabIdx, tabInfo, setTabInfo }) => {
   ui.helpers = helpers;
 
   useEffect(() => {
-    const { elm1, elm2, elm3, elmPDA, elmTM, elmTM2, elmTM3, elm8 } =
+    const { elm1, elm2, elm3, elmPDA, elmTM, elmTM2, elmTM3, elm8, empty } =
       machineExamples;
 
     if (tabIdx === 0) ui.injectMachineCy(CY_ID, elm1);
@@ -57,7 +58,7 @@ const ContentContainer = ({ tabIdx, tabInfo, setTabInfo }) => {
     else if (tabIdx === 6) ui.injectMachineCy(CY_ID, elmTM3);
     else if (tabIdx === 8) ui.injectMachineCy(CY_ID, elm8);
     else {
-      console.log("CC Ue no cy injections");
+      console.log("no cy injections for this tab");
     }
 
     // TODO: Dynamic sim, for given tab Type
@@ -109,6 +110,9 @@ const ContentContainer = ({ tabIdx, tabInfo, setTabInfo }) => {
     );
   };
 
+  if (tabIdx === 10) {
+    return <GrammarConverter ui={ui} />;
+  }
   if (tabType === tabTypes.GR) {
     return (
       <>

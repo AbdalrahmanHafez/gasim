@@ -6,7 +6,7 @@ import MenuBar from "./components/MenuBar";
 
 function App() {
   console.log("[APP] render");
-  const [activeTabKey, setActiveTabKey] = useState(9);
+  const [activeTabKey, setActiveTabKey] = useState(10);
 
   useEffect(() => {
     console.log("[APP] useEffect");

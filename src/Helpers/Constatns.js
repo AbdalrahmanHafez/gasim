@@ -1,6 +1,10 @@
 import Grammar from "../classes/Grammar";
 
 export const machineExamples = {
+  empty: {
+    nodes: [],
+    edges: [],
+  },
   elm1: {
     nodes: [
       {

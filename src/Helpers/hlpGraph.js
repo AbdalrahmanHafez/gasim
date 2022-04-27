@@ -38,6 +38,9 @@ function assert(condition, message) {
 }
 // TODO: PDA Label
 export const parsePDAEdgeLabel = (label) => {
+  // TODO: not true that its only 3 chars forex
+  // "ε , Z ; SZ
+
   assert(label.length === 3, "label must be a 3 characters");
   const [symbol, pop, push] = label.split("");
   return { symbol, pop, push };
