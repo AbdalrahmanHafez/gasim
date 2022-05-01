@@ -13,6 +13,7 @@ import { getNodeClosure } from "../Helpers/hlpGraph";
 import GrammarView from "./GrammarView";
 import { grammarExamples, machineExamples } from "../Helpers/Constatns";
 import GrammarConverter from "./GrammarConverter";
+import REView from "./REView";
 const $ = window.jQuery;
 
 const log = (msg) => console.log(`[Content Container] ${msg}`);
@@ -121,6 +122,9 @@ const ContentContainer = ({ tabIdx, tabInfo, setTabInfo }) => {
       </>
     );
   }
+
+  if (tabType === tabTypes.RE) return <REView ui={ui} />;
+
   return (
     <>
       {!showIFD && <SimulateDropDown />}

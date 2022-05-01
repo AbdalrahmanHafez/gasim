@@ -22,6 +22,7 @@ const initialState = [
   },
   { tabType: tabTypes.GR, title: "Grammar" },
   { tabType: tabTypes.GR, title: "GrammarToPDA" },
+  { tabType: tabTypes.RE, title: "RE" },
 ];
 
 export const StoreContext = React.createContext();
