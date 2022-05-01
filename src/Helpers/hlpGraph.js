@@ -81,3 +81,21 @@ export const parseTMEdgeLabel = (label) => {
     return result;
   }
 };
+
+export const verifyInitalStateExists = (cyinst) => {
+  const initalNode = cyinst.$("node[?inital]")[0];
+  if (initalNode === undefined) {
+    alert("Graph must contain an inital state");
+    return false;
+  }
+  return true;
+};
+
+export const verifyAtLeastFinalState = (cyinst) => {
+  const finalNodes = cyinst.$("node[?final]");
+  if (finalNodes === undefined || finalNodes.length === 0) {
+    alert("Graph must contain at least one final state");
+    return false;
+  }
+  return true;
+};

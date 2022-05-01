@@ -9,11 +9,16 @@ import tabTypes from "../enums/tabTypes";
 import InputByFormalDefinition from "./InputByFormalDefinition";
 import ConversionPanel from "../components/ConversionPanel";
 import { Set, is } from "immutable";
-import { getNodeClosure } from "../Helpers/hlpGraph";
+import {
+  getNodeClosure,
+  verifyAtLeastFinalState,
+  verifyInitalStateExists,
+} from "../Helpers/hlpGraph";
 import GrammarView from "./GrammarView";
 import { grammarExamples, machineExamples } from "../Helpers/Constatns";
 import GrammarConverter from "./GrammarConverter";
 import REView from "./REView";
+import axios from "axios";
 const $ = window.jQuery;
 
 const log = (msg) => console.log(`[Content Container] ${msg}`);
@@ -140,12 +145,40 @@ const ContentContainer = ({ tabIdx, tabInfo, setTabInfo }) => {
       </div>
 
       <button
-        id="testButton"
         onClick={() => {
-          console.log("Clicked Testing button");
+          console.log("Clicked converting button");
+          const cy = ui.getCy();
+
+          if (!verifyInitalStateExists(cy) || !verifyAtLeastFinalState(cy))
+            return;
+
+          const nodes = cy.nodes().map((n) => ({
+            id: n.data("id"),
+            inital: n.data("inital"),
+            final: n.data("final"),
+          }));
+          const edges = cy.edges().map((e) => ({
+            source: e.data("source"),
+            target: e.data("target"),
+            label: e.data("label") === "ε" ? "" : e.data("label"),
+          }));
+          const graphData = { nodes, edges };
+          const graphDataStr = JSON.stringify(graphData);
+          // console.log(graphDataStr);
+
+          axios
+            .post(
+              `http://localhost:5050/js`,
+              `code=edu.duke.cs.jflap.JFLAP.FSAtoRE('${encodeURIComponent(
+                graphDataStr
+              )}');`
+            )
+            .then((res) => {
+              console.log("regex is ", res.data);
+            });
         }}
       >
-        Convert NFA to DFA (testing)
+        Convert NFA to RE (TODO remov)
       </button>
 
       <div style={{ display: "flex" }}>
