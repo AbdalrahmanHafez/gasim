@@ -99,3 +99,12 @@ export const verifyAtLeastFinalState = (cyinst) => {
   }
   return true;
 };
+
+export const verifyOnlyOneFinalState = (cyinst) => {
+  const finalNodes = cyinst.$("node[?final]");
+  if (!verifyAtLeastFinalState(cyinst) || finalNodes.length !== 1) {
+    alert("Graph must contain at only one final state");
+    return false;
+  }
+  return true;
+};

@@ -265,5 +265,11 @@ export const machineExamples = {
   },
 };
 export const grammarExamples = {
-  g1: new Grammar(),
+  g1: new Grammar([
+    ["S", "AB"],
+    ["A", "aA"],
+    ["A", ""],
+    ["B", "bB"],
+    ["B", ""],
+  ]),
 };

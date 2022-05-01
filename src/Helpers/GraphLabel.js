@@ -54,10 +54,10 @@ const saveInputData = () => {
   );
   //   console.log(values);
   //   all values must be at most 1 char
-  if (values.find((v) => v.length > 1) !== undefined) {
-    alert("all values must be 1 char or less");
-    return false;
-  }
+  // if (values.find((v) => v.length > 1) !== undefined) {
+  //   alert("all values must be 1 char or less");
+  //   return false;
+  // }
 
   const tabType = inputPopper.tabType;
   switch (tabType) {

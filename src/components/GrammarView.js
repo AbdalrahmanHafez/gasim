@@ -99,7 +99,7 @@ const EditableTable = (props) => {
     },
     {
       title: "",
-      dataIndex: "arrow",
+      render: () => <span>&rarr;</span>,
     },
     {
       title: "To",
@@ -194,47 +194,30 @@ const EditableTable = (props) => {
   );
 };
 
-const GrammarView = ({ ui, grammer }) => {
-  const [data, setData] = useState([
-    {
-      key: "0",
-      from: "S",
-      arrow: "-->",
-      to: "AB",
-    },
-    {
-      key: "1",
-      from: "A",
-      arrow: "-->",
-      to: "aA",
-    },
-    {
-      key: "2",
-      from: "A",
-      arrow: "-->",
-      to: "",
-    },
-    {
-      key: "3",
-      from: "B",
-      arrow: "-->",
-      to: "bB",
-    },
-    {
-      key: "4",
-      from: "B",
-      arrow: "-->",
-      to: "",
-    },
-  ]);
+const dataToProductions = (data) => data.map((row) => [row.from, row.to]);
+const productionToData = (productionArray) =>
+  productionArray.map((prod, idx) => ({
+    key: "" + idx,
+    from: prod[0],
+    to: Epsilonify(prod[1]),
+  }));
+
+const GrammarView = ({ ui, grammar }) => {
+  console.log("GrammarView grammar is ", grammar);
+
+  const [data, setData] = useState(
+    (grammar && productionToData(grammar.productions)) || null
+  );
+
+  useEffect(() => {
+    setData((grammar && productionToData(grammar.productions)) || null);
+  }, [grammar]);
 
   const [showSim, setShowSim] = useState(false);
   const [simRunning, setSimRunning] = useState(false);
   const [simData, setSimData] = useState([]);
   const [simStep, setSimStep] = useState(1);
   const [simUserInput, setSimUserInput] = useState("");
-
-  const dataToProductions = (data) => data.map((row) => [row.from, row.to]);
 
   // useInterval(() => {
   //   console.log("interval");

@@ -19,6 +19,7 @@ import { grammarExamples, machineExamples } from "../Helpers/Constatns";
 import GrammarConverter from "./GrammarConverter";
 import REView from "./REView";
 import axios from "axios";
+import PDAtoGrammar from "./PDAtoGrammar";
 const $ = window.jQuery;
 
 const log = (msg) => console.log(`[Content Container] ${msg}`);
@@ -119,11 +120,15 @@ const ContentContainer = ({ tabIdx, tabInfo, setTabInfo }) => {
   if (tabIdx === 10) {
     return <GrammarConverter ui={ui} />;
   }
+  if (tabIdx === 11) {
+    return <PDAtoGrammar ui={ui} />;
+  }
+
   if (tabType === tabTypes.GR) {
     return (
       <>
         <SimulateDropDown />
-        <GrammarView ui={ui} grammer={grammarExamples.g1} />
+        <GrammarView ui={ui} grammar={grammarExamples.g1} />
       </>
     );
   }
