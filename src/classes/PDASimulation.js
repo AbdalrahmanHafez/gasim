@@ -1,6 +1,6 @@
 import Simulation from "./Simulation";
 import PDAConfig from "./PDAConfig";
-import { getNodeFromId } from "../Helpers/hlpGraph";
+import { getInitalNode, getNodeClosure, getNodeFromId } from "../utils";
 
 import steppingStrategies from "../enums/steppingStrategies";
 

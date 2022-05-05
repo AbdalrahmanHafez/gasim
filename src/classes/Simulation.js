@@ -1,20 +1,19 @@
+import { getInitalNode, getNodeClosure, getNodeFromId } from "../utils";
 import Config from "./Config";
 import PDAConfig from "./PDAConfig";
-import {
-  getInitalNode,
-  getNodeClosure,
-  getNodeFromId,
-} from "../Helpers/hlpGraph";
 
 export default class Simulation {
-  constructor(ui, steppingStrategy) {
+  constructor(cy, steppingStrategy) {
     if (this.constructor == Simulation) {
       throw new Error("Abstract classes can't be instantiated.");
     }
 
-    this.ui = ui;
-    this.cy = this.ui.cy;
-    this.initalNode = getInitalNode(this.cy);
+    this.cy = cy;
+    this.initalNode = getInitalNode(cy);
+
+    if (!this.initalNode) {
+      throw new Error("Inital Node must be defined.");
+    }
 
     this.steppingStrategy = steppingStrategy;
   }

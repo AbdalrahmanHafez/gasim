@@ -6,7 +6,7 @@ import Simulation from "./Simulation";
 import NFASimulation from "./NFASimulation";
 import PDASimulation from "./PDASimulation";
 import TMSimulation from "./TMSimulation";
-import { getNodeFromId } from "../Helpers/hlpGraph";
+import { getInitalNode, getNodeClosure, getNodeFromId } from "../utils";
 import edgeEditing from "cytoscape-edge-editing";
 import konva from "konva";
 import $ from "jquery";

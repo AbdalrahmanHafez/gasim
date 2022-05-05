@@ -1,5 +1,11 @@
 import Grammar from "../classes/Grammar";
 
+export const symbols = {
+  empty: "ε",
+  rectangle: "▢",
+  arrow: "→",
+};
+
 export const machineExamples = {
   empty: {
     nodes: [],

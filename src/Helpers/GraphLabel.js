@@ -1,4 +1,5 @@
-import { parsePDAEdgeLabel, parseTMEdgeLabel } from "./hlpGraph";
+import { parsePDAEdgeLabel, parseTMEdgeLabel } from "../utils";
+
 import tabTypes from "../enums/tabTypes";
 import TMConfig from "../classes/TMConfig";
 import Config from "../classes/Config";

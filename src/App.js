@@ -1,12 +1,11 @@
 import TabsController from "./components/TabsController";
 import { useStoreActions } from "easy-peasy";
 import { useEffect, useContext, useState } from "react";
-import Button from "@mui/material/Button";
 import MenuBar from "./components/MenuBar";
 
 function App() {
   console.log("[APP] render");
-  const [activeTabKey, setActiveTabKey] = useState(11);
+  const [activeTabKey, setActiveTabKey] = useState(0);
 
   useEffect(() => {
     console.log("[APP] useEffect");

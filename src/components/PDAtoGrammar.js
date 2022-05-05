@@ -4,10 +4,7 @@ import { grammarExamples, machineExamples } from "../Helpers/Constatns";
 import GrammarView from "./GrammarView";
 import axios from "axios";
 import Grammar from "../classes/Grammar";
-import {
-  verifyInitalStateExists,
-  verifyOnlyOneFinalState,
-} from "../Helpers/hlpGraph";
+import { verifyInitalStateExists, verifyOnlyOneFinalState } from "../utils";
 
 const CY_ID = "PDAtoGrammar-CY";
 

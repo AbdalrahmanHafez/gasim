@@ -1,12 +1,13 @@
-import Simulation from "./Simulation";
-import Config from "./Config";
-import { getInitalNode, getNodeClosure, getNodeFromId } from "../utils";
+import Simulation from "../../classes/Simulation";
+import Config from "../../classes/Config";
 
-import steppingStrategies from "../enums/steppingStrategies";
+import { getInitalNode, getNodeClosure, getNodeFromId } from "../../utils";
 
-export default class NFASimulation extends Simulation {
-  constructor(ui, inputString, stepStart) {
-    super(ui, stepStart);
+import steppingStrategies from "../../enums/steppingStrategies";
+
+export default class FSASimulation extends Simulation {
+  constructor(cy, inputString, stepStart) {
+    super(cy, stepStart);
     this.inputString = inputString;
 
     this.configs = [new Config(this.initalNode.id(), inputString)];

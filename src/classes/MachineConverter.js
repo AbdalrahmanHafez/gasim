@@ -1,6 +1,6 @@
 import conversionType from "../enums/conversionType";
 import tabTypes from "../enums/tabTypes";
-import { getNodeClosure } from "../Helpers/hlpGraph";
+import { getInitalNode, getNodeClosure, getNodeFromId } from "../utils";
 import { Set, is } from "immutable";
 
 export default class MachineConverter {
