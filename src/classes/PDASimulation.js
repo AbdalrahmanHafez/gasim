@@ -4,13 +4,6 @@ import { getInitalNode, getNodeClosure, getNodeFromId } from "../utils";
 
 import steppingStrategies from "../enums/steppingStrategies";
 
-function assert(condition, message) {
-  if (!condition) {
-    if (message) throw new Error(message);
-    else throw new Error("Assertion failed");
-  }
-}
-
 const getPDANodeClosure = (node) => {
   const closure = (node) =>
     node

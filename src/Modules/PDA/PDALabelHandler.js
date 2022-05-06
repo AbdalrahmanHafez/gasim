@@ -1,7 +1,9 @@
 import LabelHandler from "../../classes/LabelHandler";
-import { str_substitute_empty } from "../../Helpers/GraphLabel.js";
+import { formatLabel, str_substitute_empty } from "../../Helpers/GraphLabel.js";
 import { IMaskInput, IMask, IMaskMixin } from "react-imask";
 import { symbols } from "../../Helpers/Constatns";
+import { assert } from "../../utils";
+import tabTypes from "../../enums/tabTypes";
 
 export default class PDALabelHandler extends LabelHandler {
   getInputMasks(edge) {
@@ -30,16 +32,21 @@ export default class PDALabelHandler extends LabelHandler {
 
   saveInputData() {
     const masks = this.getInputMasksFromPopper();
-    console.log("masks are ", masks);
+    // console.log("masks are ", masks);
     let mask = masks[0];
     let values = mask.masked.state._blocks
       .map((b) => b.masked?._value)
-      .filter(Boolean);
-    // console.log("values are ", values);
+      .filter((v) => v !== undefined);
+    // .filter(Boolean);
+    // values are not nessisarly 3, if not value enterd by the user, values =  []
+    console.log("values are ", values);
+
+    assert(values.length >= 3, "PDA Label values must be 3");
+
     values = values.map((v) => str_substitute_empty(v, "ε"));
     const data = { symbol: values[0], pop: values[1], push: values[2] };
     const updatedValues = {
-      label: mask.value,
+      label: formatLabel(data, tabTypes.PDA),
       labelData: data,
     };
     this.inputPopper.edge.data(updatedValues);

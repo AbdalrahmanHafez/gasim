@@ -256,7 +256,7 @@ const cvt_movement_to_number = (movement) => {
     : undefined;
 };
 
-const formatLabel = (labelData, tabType) => {
+export const formatLabel = (labelData, tabType) => {
   switch (tabType) {
     case tabTypes.FA:
       return `${labelData}`;

@@ -29,8 +29,8 @@ export default class FSALabelHandler extends LabelHandler {
   }
 
   saveInputData() {
-    const values = this.getInputMasksFromPopper();
-    let label = values[0];
+    const masks = this.getInputMasksFromPopper();
+    let label = masks[0].value;
     label = str_substitute_empty(label, "ε");
 
     this.inputPopper.edge.data({ label, labelData: label });
