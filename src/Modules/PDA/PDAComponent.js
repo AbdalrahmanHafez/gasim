@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { injectEmptyCy, addElementsToCy } from "../../utils";
-import FSALabelHandler from "./FSALabelHandler";
+import PDALabelHandler from "./PDALabelHandler";
 
 function PDAComponent({ cyref, model }) {
   const CY_ID = `cy-${uuidv4()}`;
@@ -13,7 +13,7 @@ function PDAComponent({ cyref, model }) {
     addElementsToCy(cyref.current, model.elements);
     cyref.current.layout({ name: "cose" }).run();
 
-    LabelHandler.current = new FSALabelHandler();
+    LabelHandler.current = new PDALabelHandler();
     LabelHandler.current.attatchEventListeners(cyref.current);
   }, []);
 

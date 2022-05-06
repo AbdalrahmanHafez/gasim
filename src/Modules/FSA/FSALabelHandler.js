@@ -4,17 +4,17 @@ import { IMaskInput, IMask, IMaskMixin } from "react-imask";
 import { symbols } from "../../Helpers/Constatns";
 
 export default class FSALabelHandler extends LabelHandler {
-  getInputElements(edge) {
-    const inputEles = [];
+  getInputMasks(edge) {
+    const inputMasks = [];
     const labelData = edge.data("labelData");
 
     if (labelData === undefined) {
       //   This means that the edge is a new edge
 
       var newMask = this.createIMask();
-      inputEles.push(newMask.el.input);
+      inputMasks.push(newMask);
 
-      return inputEles;
+      return inputMasks;
     }
     // not a new Edge , renaming an edge
 
@@ -23,13 +23,13 @@ export default class FSALabelHandler extends LabelHandler {
     var renameMask = this.createIMask();
 
     renameMask.value = label;
-    inputEles.push(renameMask.el.input);
+    inputMasks.push(renameMask);
 
-    return inputEles;
+    return inputMasks;
   }
 
   saveInputData() {
-    const values = this.getInputValuesFromPopper();
+    const values = this.getInputMasksFromPopper();
     let label = values[0];
     label = str_substitute_empty(label, "ε");
 

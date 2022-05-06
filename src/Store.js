@@ -4,6 +4,7 @@ import tabTypes from "./enums/tabTypes";
 import { machineExamples } from "./Helpers/Constatns";
 import { parseExampleLabels } from "./Helpers/GraphLabel";
 import { FSAModel } from "./Modules/FSA/";
+import { PDAModel } from "./Modules/PDA/";
 
 const addLabelDataForExampleElements = (elements, tabType) => {
   elements.edges?.forEach((edge) => {
@@ -23,14 +24,16 @@ let elmPDA = machineExamples.elmPDA;
 addLabelDataForExampleElements(elmPDA, tabTypes.PDA);
 
 const initialState = [
+  { title: "remove input ref" },
+
   {
     tabType: tabTypes.PDA,
-    title: "STUB PDA remove me",
-    // model: new PDAModel(elm1),
+    title: "PDA STUB remove me",
+    model: new PDAModel(elmPDA),
   },
   {
     tabType: tabTypes.FA,
-    title: "STUB NFA remove me",
+    title: "NFA STUB remove me",
     model: new FSAModel(elm1),
   },
 ];

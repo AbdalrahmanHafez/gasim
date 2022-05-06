@@ -11,12 +11,16 @@ export default class LabelHandler {
     // should attatch the inputs to the edge
     const cy = edge.cy();
     if (this.inputPopper !== undefined) return;
+    let inputMasks = null; // will be set down below
     this.inputPopper = edge.popper({
       content: () => {
         let div = document.createElement("div");
         div.classList.add("popperInputContainer");
 
-        const inputEles = this.getInputElements(edge);
+        const generatedMasks = this.getInputMasks(edge);
+        inputMasks = generatedMasks;
+
+        const inputEles = generatedMasks.map((mask) => mask.el.input);
 
         inputEles.forEach((ele) => div.append(ele));
 
@@ -39,6 +43,7 @@ export default class LabelHandler {
     // inputPopper.tabType = tabType;
     // inputPopper.cy = cy;
     this.inputPopper.edge = edge;
+    this.inputPopper.inputMasks = inputMasks;
   }
 
   handleInputOutFocus() {
@@ -68,18 +73,19 @@ export default class LabelHandler {
     throw new Error("Method 'saveInputData()' must be implemented.");
   }
 
-  getInputValuesFromPopper() {
-    let values = [...this.inputPopper.state.elements.popper.children].map(
-      (ele) => ele.value
-    );
-    return values;
+  getInputMasksFromPopper() {
+    // let values = [...this.inputPopper.state.elements.popper.children].map(
+    //   (ele) => ele.value
+    // );
+    // return values;
+    return this.inputPopper.inputMasks;
   }
 
-  getInputElements(edge) {
+  getInputMasks(edge) {
     //   should return the input elements that will be rendered
     // two cases edge label data = [undefined , has values]
 
-    throw new Error("Method 'getInputElements()' must be implemented.");
+    throw new Error("Method 'getinputmasks()' must be implemented.");
   }
 
   createIMask() {
