@@ -3,7 +3,7 @@ import conversionType from "./enums/conversionType";
 import tabTypes from "./enums/tabTypes";
 import { machineExamples } from "./Helpers/Constatns";
 import { parseExampleLabels } from "./Helpers/GraphLabel";
-import FSAModel from "./Modules/FSA/FSAModel";
+import { FSAModel } from "./Modules/FSA/";
 
 const addLabelDataForExampleElements = (elements, tabType) => {
   elements.edges?.forEach((edge) => {
@@ -19,7 +19,15 @@ const addLabelDataForExampleElements = (elements, tabType) => {
  */
 let elm1 = machineExamples.elm1;
 addLabelDataForExampleElements(elm1, tabTypes.FA);
+let elmPDA = machineExamples.elmPDA;
+addLabelDataForExampleElements(elmPDA, tabTypes.PDA);
+
 const initialState = [
+  {
+    tabType: tabTypes.PDA,
+    title: "STUB PDA remove me",
+    // model: new PDAModel(elm1),
+  },
   {
     tabType: tabTypes.FA,
     title: "STUB NFA remove me",

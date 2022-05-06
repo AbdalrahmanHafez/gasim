@@ -7,17 +7,18 @@ import { simTypeToEmptyValue } from "../Helpers/GraphLabel";
 /**
  * @param {number} tapesCtr only if simType is TM
  */
+// TODO: TM needs fixing, remove the spacing, also the tapes coun
 const mapSimTypeToMask = (simType, tapesCtr) => {
   if (simType === tabTypes.FA) return { mask: "*", placeholderChar: "_" };
   else if (simType === tabTypes.PDA)
-    return { mask: "*{, }*{→}*", placeholderChar: "_" };
+    return { mask: "*{,}*{→}*", placeholderChar: "_" };
   else if (simType === tabTypes.TM)
     return {
       mask: Array(tapesCtr).fill("BASEDIR").join(" | "),
       lazy: false,
       blocks: {
         BASE: {
-          mask: "*{→}*{, }",
+          mask: "*{→}*{,}",
         },
         DIR: {
           mask: IMask.MaskedEnum,
@@ -33,6 +34,8 @@ const inputStyle = {
   borderRadius: "3px",
   borderWidth: "1px",
   height: "2.3em",
+  fontSize: "1em",
+  letterSpacing: "0.25em",
 };
 
 const InputLabel = ({ simType, tapesCtr, ...rest }) => {
@@ -55,12 +58,17 @@ const InputLabel = ({ simType, tapesCtr, ...rest }) => {
           // `typedValue` if `unmask='typed'`
           (value, mask) => {
             const rawValue = mask.masked.rawInputValue;
+
             // console.log(rawValue, value, mask.typedValue, mask);
+            // console.log(rawValue, value, mask.typedValue);
+            console.log(`${rawValue} || ${value} || ${mask.typedValue}`);
+
             const newValue = rawValue
               .split(" ") // maybe consider anothe character than space, ex: "!"
               .join(simTypeToEmptyValue(simType));
             setvalue(newValue);
-            rest.onChange(newValue); // this is handed by From.Item, for the pupropse of storing it in the form values
+
+            rest.onChange?.(newValue); // this is handed by From.Item, for the pupropse of storing it in the form values
           }
         }
         // ...and more mask props in a guide

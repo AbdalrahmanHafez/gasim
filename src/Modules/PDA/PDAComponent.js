@@ -3,12 +3,12 @@ import { v4 as uuidv4 } from "uuid";
 import { injectEmptyCy, addElementsToCy } from "../../utils";
 import FSALabelHandler from "./FSALabelHandler";
 
-function FSAComponent({ cyref, model }) {
+function PDAComponent({ cyref, model }) {
   const CY_ID = `cy-${uuidv4()}`;
   const LabelHandler = useRef(null);
 
   useEffect(() => {
-    console.log("[FSAComponent] useEffect");
+    console.log("[PDAComponent] useEffect");
     cyref.current = injectEmptyCy(CY_ID);
     addElementsToCy(cyref.current, model.elements);
     cyref.current.layout({ name: "cose" }).run();
@@ -20,4 +20,4 @@ function FSAComponent({ cyref, model }) {
   return <div id={CY_ID} className="cy"></div>;
 }
 
-export default FSAComponent;
+export default PDAComponent;

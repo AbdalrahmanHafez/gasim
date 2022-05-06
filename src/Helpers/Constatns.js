@@ -1,7 +1,7 @@
 import Grammar from "../classes/Grammar";
 
 export const symbols = {
-  empty: "ε",
+  epsilon: "ε",
   rectangle: "▢",
   arrow: "→",
 };

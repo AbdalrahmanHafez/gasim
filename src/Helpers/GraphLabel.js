@@ -6,48 +6,6 @@ import Config from "../classes/Config";
 import PDAConfig from "../classes/PDAConfig";
 
 var inputPopper;
-const str_substitute_empty = (str, sub) => (str === "" ? sub : str);
-
-const cvt_movement_to_string = (movement) => {
-  return movement === 0
-    ? "S"
-    : movement === 1
-    ? "R"
-    : movement === -1
-    ? "L"
-    : undefined;
-};
-const cvt_movement_to_number = (movement) => {
-  movement = movement.toUpperCase();
-  return movement === "S"
-    ? 0
-    : movement === "R"
-    ? 1
-    : movement === "L"
-    ? -1
-    : undefined;
-};
-
-const formatLabel = (labelData, tabType) => {
-  switch (tabType) {
-    case tabTypes.FA:
-      return `${labelData}`;
-    case tabTypes.PDA:
-      return `${labelData.symbol},${labelData.pop} → ${labelData.push}`;
-    case tabTypes.TM:
-      // for TM labelData is Array
-      return labelData
-        .map(
-          (l) =>
-            `${l.symbol} → ${l.replacement}, ${cvt_movement_to_string(
-              l.movement
-            )}`
-        )
-        .join("\n");
-    default:
-      break;
-  }
-};
 
 const saveInputData = () => {
   let values = [...inputPopper.state.elements.popper.children].map(
@@ -119,6 +77,7 @@ const handleInputOutFocus = () => {
     inputPopper = undefined;
   }
 };
+
 const genInputsBasedOnType = (edge, tabType) => {
   const inputEles = [];
   const labelData = edge.data("labelData");
@@ -260,6 +219,7 @@ export const parseExampleLabels = (label, tabType) => {
   return null;
 };
 
+// TODO: move to graph utils
 // Helper functions
 export const simTypeToEmptyValue = (simType) => {
   switch (simType) {
@@ -271,5 +231,48 @@ export const simTypeToEmptyValue = (simType) => {
       return TMConfig.empty;
     default:
       throw new Error("invalid simType inside simTypeToEmptyValue");
+  }
+};
+
+export const str_substitute_empty = (str, sub) => (str === "" ? sub : str);
+
+const cvt_movement_to_string = (movement) => {
+  return movement === 0
+    ? "S"
+    : movement === 1
+    ? "R"
+    : movement === -1
+    ? "L"
+    : undefined;
+};
+const cvt_movement_to_number = (movement) => {
+  movement = movement.toUpperCase();
+  return movement === "S"
+    ? 0
+    : movement === "R"
+    ? 1
+    : movement === "L"
+    ? -1
+    : undefined;
+};
+
+const formatLabel = (labelData, tabType) => {
+  switch (tabType) {
+    case tabTypes.FA:
+      return `${labelData}`;
+    case tabTypes.PDA:
+      return `${labelData.symbol},${labelData.pop} → ${labelData.push}`;
+    case tabTypes.TM:
+      // for TM labelData is Array
+      return labelData
+        .map(
+          (l) =>
+            `${l.symbol} → ${l.replacement}, ${cvt_movement_to_string(
+              l.movement
+            )}`
+        )
+        .join("\n");
+    default:
+      break;
   }
 };

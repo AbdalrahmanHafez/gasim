@@ -33,8 +33,8 @@ function FSAView({ model }) {
     console.log("clicked start simulation FSA");
     console.log("choosen", choiceStepping);
 
-    // TODO: get userInput for FSA
-    const userInputString = "abc";
+    // const userInputString = "abc";
+    const userInputString = prompt("Enter input string");
 
     try {
       simulation.current = new FSASimulation(
@@ -93,7 +93,6 @@ function FSAView({ model }) {
           <RightPanel setShowPanel={setShowSim}>
             <SimPanel
               isFastRun={stFastRunChecked[0]}
-              // TODO: shouldn't it be getconfigs()?
               configs={simulation.current.configs}
               onStepAll={hanldeStepAll}
               onReset={handleResetSimulation}
