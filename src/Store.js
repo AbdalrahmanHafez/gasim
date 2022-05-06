@@ -1,11 +1,12 @@
 import React, { useState, useRef } from "react";
 import conversionType from "./enums/conversionType";
 import tabTypes from "./enums/tabTypes";
-import { machineExamples } from "./Helpers/Constatns";
+import { grammarExamples, machineExamples } from "./Helpers/Constatns";
 import { parseExampleLabels } from "./Helpers/GraphLabel";
 import { FSAModel } from "./Modules/FSA/";
 import { PDAModel } from "./Modules/PDA/";
 import { TMModel } from "./Modules/TM/";
+import { GRModel } from "./Modules/GR/";
 
 const addLabelDataForExampleElements = (elements, tabType) => {
   elements.edges?.forEach((edge) => {
@@ -31,6 +32,11 @@ addLabelDataForExampleElements(elmTM2, tabTypes.TM);
 addLabelDataForExampleElements(elmTM3, tabTypes.TM);
 
 const initialState = [
+  {
+    title: "Grammar",
+    tabType: tabTypes.GR,
+    model: new GRModel(grammarExamples.g1),
+  },
   { title: "TM 1 STUB", tabType: tabTypes.TM, model: new TMModel(elmTM, 2) },
   { title: "TM 2 STUB", tabType: tabTypes.TM, model: new TMModel(elmTM2, 1) },
   { title: "TM 3 STUB", tabType: tabTypes.TM, model: new TMModel(elmTM3, 2) },
