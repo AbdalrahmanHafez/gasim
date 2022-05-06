@@ -37,6 +37,7 @@ const TM_Highlight_Head = (tape) => {
 
   return rendered;
 };
+
 const SimCard = ({ id, config, tabIdx, tabInfo }) => {
   // const formatPath = (configPath) => configPath.join("->");
   const { tabType, simType: IFDSimType } = tabInfo;

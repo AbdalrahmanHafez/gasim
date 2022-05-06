@@ -7,16 +7,16 @@ import tabTypes from "../../enums/tabTypes";
 
 export default class PDALabelHandler extends LabelHandler {
   getInputMasks(edge) {
-    const inputEles = [];
+    const inputMasks = [];
     const labelData = edge.data("labelData");
 
     if (labelData === undefined) {
       //   This means that the edge is a new edge
 
       var newMask = this.createIMask();
-      inputEles.push(newMask);
+      inputMasks.push(newMask);
 
-      return inputEles;
+      return inputMasks;
     }
     // not a new Edge , renaming an edge
 
@@ -25,9 +25,9 @@ export default class PDALabelHandler extends LabelHandler {
     const rawStoredValue = Object.values(labelData).join("");
     renameMask.value = rawStoredValue;
 
-    inputEles.push(renameMask);
+    inputMasks.push(renameMask);
 
-    return inputEles;
+    return inputMasks;
   }
 
   saveInputData() {

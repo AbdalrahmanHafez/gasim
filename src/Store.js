@@ -5,6 +5,7 @@ import { machineExamples } from "./Helpers/Constatns";
 import { parseExampleLabels } from "./Helpers/GraphLabel";
 import { FSAModel } from "./Modules/FSA/";
 import { PDAModel } from "./Modules/PDA/";
+import { TMModel } from "./Modules/TM/";
 
 const addLabelDataForExampleElements = (elements, tabType) => {
   elements.edges?.forEach((edge) => {
@@ -22,10 +23,17 @@ let elm1 = machineExamples.elm1;
 addLabelDataForExampleElements(elm1, tabTypes.FA);
 let elmPDA = machineExamples.elmPDA;
 addLabelDataForExampleElements(elmPDA, tabTypes.PDA);
+let elmTM = machineExamples.elmTM;
+let elmTM2 = machineExamples.elmTM2;
+let elmTM3 = machineExamples.elmTM3;
+addLabelDataForExampleElements(elmTM, tabTypes.TM);
+addLabelDataForExampleElements(elmTM2, tabTypes.TM);
+addLabelDataForExampleElements(elmTM3, tabTypes.TM);
 
 const initialState = [
-  { title: "remove input ref" },
-
+  { title: "TM 1 STUB", tabType: tabTypes.TM, model: new TMModel(elmTM, 2) },
+  { title: "TM 2 STUB", tabType: tabTypes.TM, model: new TMModel(elmTM2, 1) },
+  { title: "TM 3 STUB", tabType: tabTypes.TM, model: new TMModel(elmTM3, 2) },
   {
     tabType: tabTypes.PDA,
     title: "PDA STUB remove me",

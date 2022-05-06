@@ -236,7 +236,7 @@ export const simTypeToEmptyValue = (simType) => {
 
 export const str_substitute_empty = (str, sub) => (str === "" ? sub : str);
 
-const cvt_movement_to_string = (movement) => {
+export const cvt_movement_to_string = (movement) => {
   return movement === 0
     ? "S"
     : movement === 1
@@ -245,7 +245,7 @@ const cvt_movement_to_string = (movement) => {
     ? "L"
     : undefined;
 };
-const cvt_movement_to_number = (movement) => {
+export const cvt_movement_to_number = (movement) => {
   movement = movement.toUpperCase();
   return movement === "S"
     ? 0
