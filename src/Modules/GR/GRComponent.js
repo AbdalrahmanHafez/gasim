@@ -7,6 +7,7 @@ import "./GrammarView.css";
 const EditableContext = React.createContext(null);
 
 const Epsilonify = (value) => (value ? value : "ε");
+const Deepsilonify = (value) => (value === "ε" ? "" : value);
 
 const EditableRow = ({ index, ...props }) => {
   const [form] = Form.useForm();
@@ -194,7 +195,8 @@ const EditableTable = (props) => {
   );
 };
 
-const dataToProductions = (data) => data.map((row) => [row.from, row.to]);
+const dataToProductions = (data) =>
+  data.map((row) => [row.from, Deepsilonify(row.to)]);
 const productionToData = (productionArray) =>
   productionArray.map((prod, idx) => ({
     key: "" + idx,
