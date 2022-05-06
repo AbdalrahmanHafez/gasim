@@ -7,6 +7,7 @@ import { FSAModel } from "./Modules/FSA/";
 import { PDAModel } from "./Modules/PDA/";
 import { TMModel } from "./Modules/TM/";
 import { GRModel } from "./Modules/GR/";
+import { REModel } from "./Modules/RE/";
 
 const addLabelDataForExampleElements = (elements, tabType) => {
   elements.edges?.forEach((edge) => {
@@ -32,6 +33,11 @@ addLabelDataForExampleElements(elmTM2, tabTypes.TM);
 addLabelDataForExampleElements(elmTM3, tabTypes.TM);
 
 const initialState = [
+  {
+    title: "RegEx",
+    tabType: tabTypes.RE,
+    model: new REModel("ab*c"),
+  },
   {
     title: "Grammar",
     tabType: tabTypes.GR,

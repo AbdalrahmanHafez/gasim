@@ -8,6 +8,8 @@ function FSAComponent({ cyref, model }) {
   const LabelHandler = useRef(null);
 
   useEffect(() => {
+    if (!model) return;
+
     console.log("[FSAComponent] useEffect");
     cyref.current = injectEmptyCy(CY_ID);
     addElementsToCy(cyref.current, model.elements);
@@ -15,7 +17,7 @@ function FSAComponent({ cyref, model }) {
 
     LabelHandler.current = new FSALabelHandler();
     LabelHandler.current.attatchEventListeners(cyref.current);
-  }, []);
+  }, [model]);
 
   return <div id={CY_ID} className="cy"></div>;
 }
