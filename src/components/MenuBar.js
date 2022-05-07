@@ -27,9 +27,6 @@ function MenuBar({ activeTabKey, setActiveTabKey }) {
       case "TM":
         addTab({ tabType: tabTypes.TM, title: "NFA" });
         break;
-      case "IFD":
-        addTab({ tabType: tabTypes.IFD, simType: tabTypes.FA, title: "IFD" });
-        break;
       case "GR":
         addTab({ tabType: tabTypes.GR, title: "Grammar" });
         break;
@@ -96,10 +93,6 @@ function MenuBar({ activeTabKey, setActiveTabKey }) {
         addTab({});
         break;
       }
-      case "IFD": {
-        addTab({});
-        break;
-      }
       case "GR1": {
         addTab({});
         break;
@@ -126,7 +119,6 @@ function MenuBar({ activeTabKey, setActiveTabKey }) {
         <MenuItem value="FSA">Finite State Automaton</MenuItem>
         <MenuItem value="PDA">Push down Automaton</MenuItem>
         <MenuItem value="TM">Turing Machine Automaton</MenuItem>
-        <MenuItem value="IFD">Input by Formal Definition</MenuItem>
         <MenuItem value="GR">Grammar</MenuItem>
         <MenuItem value="RE">Regular Expression</MenuItem>
       </Menu>
@@ -155,7 +147,6 @@ function MenuBar({ activeTabKey, setActiveTabKey }) {
         <MenuItem value="PDA1">PDA1</MenuItem>
         <MenuItem value="TM1">MTTM</MenuItem>
         <MenuItem value="TM2">Enumerator</MenuItem>
-        <MenuItem value="IFD">Input by Formal Definition</MenuItem>
         <MenuItem value="GR1">Grammar</MenuItem>
         <MenuItem value="RE">Regular Expression</MenuItem>
       </Menu>

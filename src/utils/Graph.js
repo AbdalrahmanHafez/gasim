@@ -727,6 +727,18 @@ export const injectEmptyCy = (cyId) => {
   return cy;
 };
 
+// export const createHeadlessCy = () => {
+//   // NOTE: either calling this method or the injectCy, input by formal definition calls this
+//   // . Also note that cy.destroy() must be called to clean up a style-enabled, headless instance.
+
+//   const cy = cytoscape({ headless: true, styleEnabled: false });
+
+//   if (!window.cyinst) window.cyinst = [cy];
+//   else window.cyinst.push(cy);
+
+//   return cy;
+// };
+
 export const addElementsToCy = (cy, elements) => {
   cy.add(elements);
 };
