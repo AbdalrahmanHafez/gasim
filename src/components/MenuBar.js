@@ -4,12 +4,15 @@ import "@szhsin/react-menu/dist/index.css";
 import "@szhsin/react-menu/dist/transitions/slide.css";
 
 import FSAModel from "../Modules/FSA/FSAModel";
-import { machineExamples } from "../Helpers/Constatns";
+import { grammarExamples, machineExamples } from "../Helpers/Constatns";
 import conversionType from "../enums/conversionType";
 import { StoreContext, UtilityContext } from "../Store";
 import tabTypes from "../enums/tabTypes";
 import { parseExampleLabels } from "../Helpers/GraphLabel";
 import { TMModel } from "../Modules/TM";
+import { GRModel } from "../Modules/GR";
+import { REModel } from "../Modules/RE";
+import { PDAModel } from "../Modules/PDA";
 
 function MenuBar({ activeTabKey, setActiveTabKey }) {
   const [store, setStore, { addTab }] = useContext(StoreContext);
@@ -75,6 +78,7 @@ function MenuBar({ activeTabKey, setActiveTabKey }) {
         throw new Error("Unknown menu item");
     }
 
+    // make current tab, the new tab
     setActiveTabKey(store.length);
   };
 
@@ -102,49 +106,102 @@ function MenuBar({ activeTabKey, setActiveTabKey }) {
 
   const addLabelDataForExampleElements = (elements, tabType) => {
     elements.edges?.forEach((edge) => {
+      console.log("visiting edge with label", edge.data.label);
       edge.data = {
         ...edge.data,
         ...parseExampleLabels(edge.data.label, tabType),
       };
     });
   };
+
   const handleExamplesMenu = ({ value }) => {
     switch (value) {
       case "NFA1": {
         let elm1 = machineExamples.elm1;
         addLabelDataForExampleElements(elm1, tabTypes.FA);
         const model = new FSAModel(elm1);
-        addTab({ tabType: tabTypes.FA, title: "NFA 1 example", model });
+        addTab({ tabType: tabTypes.FA, title: "NFA example 1", model });
         break;
       }
       case "NFA2": {
-        const model = new FSAModel(machineExamples.elm2);
-        addTab({ tabType: tabTypes.FA, title: "NFA 2 example", model });
+        let elm2 = machineExamples.elm2;
+        addLabelDataForExampleElements(elm2, tabTypes.FA);
+        const model = new FSAModel(elm2);
+        addTab({ tabType: tabTypes.FA, title: "NFA example 2", model });
+        break;
+      }
+      case "NFA3": {
+        let elm3 = machineExamples.elm3;
+        addLabelDataForExampleElements(elm3, tabTypes.FA);
+        const model = new FSAModel(elm3);
+        addTab({ tabType: tabTypes.FA, title: "NFA example 3", model });
         break;
       }
       case "PDA1": {
-        addTab({});
+        let elmPDA = machineExamples.elmPDA;
+        console.log("elmPDA is", elmPDA);
+        addLabelDataForExampleElements(elmPDA, tabTypes.PDA);
+        const model = new PDAModel(elmPDA);
+        addTab({ tabType: tabTypes.PDA, title: "PDA example", model });
         break;
       }
       case "TM1": {
-        addTab({});
+        let elmTM2 = machineExamples.elmTM2;
+        addLabelDataForExampleElements(elmTM2, tabTypes.TM);
+        const model = new TMModel(elmTM2, 2);
+        addTab({
+          tabType: tabTypes.TM,
+          title: "Turing Machine example 1",
+          model,
+        });
         break;
       }
       case "TM2": {
-        addTab({});
+        let elmTM = machineExamples.elmTM;
+        addLabelDataForExampleElements(elmTM, tabTypes.TM);
+        const model = new TMModel(elmTM, 1);
+        addTab({
+          tabType: tabTypes.TM,
+          title: "Multi tape TM example",
+          model,
+        });
+        break;
+      }
+      case "TM3": {
+        let elmTM3 = machineExamples.elmTM3;
+        addLabelDataForExampleElements(elmTM3, tabTypes.TM);
+        const model = new TMModel(elmTM3, 2);
+        addTab({
+          tabType: tabTypes.TM,
+          title: "Enumerator example",
+          model,
+        });
         break;
       }
       case "GR1": {
-        addTab({});
+        const model = new GRModel(grammarExamples.g1);
+        addTab({
+          tabType: tabTypes.GR,
+          title: "Grammar example",
+          model,
+        });
         break;
       }
       case "RE": {
-        addTab({});
+        const model = new REModel("ab*c");
+        addTab({
+          tabType: tabTypes.RE,
+          title: "Regular Expression example",
+          model,
+        });
         break;
       }
       default:
         throw new Error("Unknown menu item");
     }
+
+    // make current tab, the new tab
+    setActiveTabKey(store.length);
   };
 
   return (
@@ -188,11 +245,15 @@ function MenuBar({ activeTabKey, setActiveTabKey }) {
         }
         onItemClick={handleExamplesMenu}
       >
-        <MenuItem value="NFA1">NFA1</MenuItem>
-        <MenuItem value="NFA2">NFA2</MenuItem>
-        <MenuItem value="PDA1">PDA1</MenuItem>
-        <MenuItem value="TM1">MTTM</MenuItem>
-        <MenuItem value="TM2">Enumerator</MenuItem>
+        <SubMenu label="Finite State Machine">
+          <MenuItem value="NFA1">NFA1</MenuItem>
+          <MenuItem value="NFA2">NFA2</MenuItem>
+          <MenuItem value="NFA3">NFA3</MenuItem>
+        </SubMenu>
+        <MenuItem value="PDA1">Push Down Automata</MenuItem>
+        <MenuItem value="TM1">Turing Machine 1 Tape</MenuItem>
+        <MenuItem value="TM2">Multi Tape TM</MenuItem>
+        <MenuItem value="TM3">Enumerator</MenuItem>
         <MenuItem value="GR1">Grammar</MenuItem>
         <MenuItem value="RE">Regular Expression</MenuItem>
       </Menu>

@@ -5,8 +5,6 @@ import { PDAView } from "../Modules/PDA/";
 import { TMView } from "../Modules/TM/";
 import { GRView } from "../Modules/GR/";
 import { REView } from "../Modules/RE/";
-import { IMaskInput, IMask, IMaskMixin } from "react-imask";
-import { symbols } from "../Helpers/Constatns";
 
 function ContentContainer({ tabInfo }) {
   const { tabType } = tabInfo;
