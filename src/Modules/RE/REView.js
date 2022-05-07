@@ -9,7 +9,7 @@ const CY_ID = "RE-to-NFA-CY";
 
 // MAYBE: missing ! empty string inputs supported by jflap
 function REView({ model }) {
-  const [input, setInput] = useState("");
+  const [input, setInput] = useState(model?.inputRegex || "");
 
   const cy = useRef(null);
   const getCy = () => cy.current;
@@ -33,6 +33,7 @@ function REView({ model }) {
     const cy = getCy();
 
     const { states, transitions, initialState, finalStates } = dataStub;
+
     let FSAModelElments = {};
     FSAModelElments.nodes = states.map((state) => {
       const isFinal =

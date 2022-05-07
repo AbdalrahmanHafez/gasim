@@ -8,9 +8,11 @@ function PDAComponent({ cyref, model }) {
   const LabelHandler = useRef(null);
 
   useEffect(() => {
+    const graphElements = model ? model.elements : [];
+
     console.log("[PDAComponent] useEffect");
     cyref.current = injectEmptyCy(CY_ID);
-    addElementsToCy(cyref.current, model.elements);
+    addElementsToCy(cyref.current, graphElements);
     cyref.current.layout({ name: "cose" }).run();
 
     LabelHandler.current = new PDALabelHandler();

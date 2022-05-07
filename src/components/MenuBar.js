@@ -2,40 +2,80 @@ import React, { useContext } from "react";
 import { Menu, MenuItem, MenuButton, SubMenu } from "@szhsin/react-menu";
 import "@szhsin/react-menu/dist/index.css";
 import "@szhsin/react-menu/dist/transitions/slide.css";
+
 import FSAModel from "../Modules/FSA/FSAModel";
 import { machineExamples } from "../Helpers/Constatns";
-
 import conversionType from "../enums/conversionType";
-
 import { StoreContext, UtilityContext } from "../Store";
 import tabTypes from "../enums/tabTypes";
 import { parseExampleLabels } from "../Helpers/GraphLabel";
+import { TMModel } from "../Modules/TM";
 
 function MenuBar({ activeTabKey, setActiveTabKey }) {
-  // const { addTab } = useContext(UtilityContext);
   const [store, setStore, { addTab }] = useContext(StoreContext);
-  // TODO: addTab function interface, rest of tabtypes here and in tabType.sjs
+
+  const addUniqueLabel = (baseLabel) => {
+    const existCount = store.filter((tab) =>
+      tab.title.includes(baseLabel)
+    ).length;
+    if (existCount === 0) return baseLabel;
+    return baseLabel + " " + existCount;
+  };
+
   const handleNewMenu = (e) => {
     const { value } = e;
     switch (value) {
       case "FSA":
-        addTab({ tabType: tabTypes.FA, title: "NFA" });
+        addTab({
+          tabType: tabTypes.FA,
+          title: addUniqueLabel("Finite State Automata"),
+        });
         break;
       case "PDA":
-        addTab({ tabType: tabTypes.PDA, title: "PDA" });
+        addTab({ tabType: tabTypes.PDA, title: "Push Down Automata" });
         break;
-      case "TM":
-        addTab({ tabType: tabTypes.TM, title: "NFA" });
+      case "TMtape1":
+        addTab({
+          tabType: tabTypes.TM,
+          title: addUniqueLabel("Turing Machine 1T"),
+          model: new TMModel([], 1),
+        });
+        break;
+      case "TMtape2":
+        addTab({
+          tabType: tabTypes.TM,
+          title: addUniqueLabel("Turing Machine 2T"),
+          model: new TMModel([], 2),
+        });
+        break;
+      case "TMtape3":
+        addTab({
+          tabType: tabTypes.TM,
+          title: addUniqueLabel("Turing Machine 3T"),
+          model: new TMModel([], 3),
+        });
+        break;
+      case "TMtapeN":
+        addTab({
+          tabType: tabTypes.TM,
+          title: addUniqueLabel("Turing Machine nt"),
+          model: new TMModel([], +prompt("How many Tapes would you like?", 4)),
+        });
         break;
       case "GR":
-        addTab({ tabType: tabTypes.GR, title: "Grammar" });
+        addTab({ tabType: tabTypes.GR, title: addUniqueLabel("Grammar") });
         break;
       case "RE":
-        addTab({ tabType: tabTypes.RE, title: "Regular Expression" });
+        addTab({
+          tabType: tabTypes.RE,
+          title: addUniqueLabel("Regular Expression"),
+        });
         break;
       default:
         throw new Error("Unknown menu item");
     }
+
+    setActiveTabKey(store.length);
   };
 
   const handleConvertMenu = ({ value }) => {
@@ -59,6 +99,7 @@ function MenuBar({ activeTabKey, setActiveTabKey }) {
   // else if (tabIdx === 5) ui.injectMachineCy(CY_ID, elmTM2);
   // else if (tabIdx === 6) ui.injectMachineCy(CY_ID, elmTM3);
   // else if (tabIdx === 8) ui.injectMachineCy(CY_ID, elm8);
+
   const addLabelDataForExampleElements = (elements, tabType) => {
     elements.edges?.forEach((edge) => {
       edge.data = {
@@ -118,7 +159,12 @@ function MenuBar({ activeTabKey, setActiveTabKey }) {
       >
         <MenuItem value="FSA">Finite State Automaton</MenuItem>
         <MenuItem value="PDA">Push down Automaton</MenuItem>
-        <MenuItem value="TM">Turing Machine Automaton</MenuItem>
+        <SubMenu label="Turing Machine Automaton">
+          <MenuItem value="TMtape1">Single Tape</MenuItem>
+          <MenuItem value="TMtape2">Douple Tape</MenuItem>
+          <MenuItem value="TMtape3">Triple Tape</MenuItem>
+          <MenuItem value="TMtapeN">n-Tape</MenuItem>
+        </SubMenu>
         <MenuItem value="GR">Grammar</MenuItem>
         <MenuItem value="RE">Regular Expression</MenuItem>
       </Menu>

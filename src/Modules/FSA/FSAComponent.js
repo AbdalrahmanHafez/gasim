@@ -7,17 +7,19 @@ function FSAComponent({ cyref, model }) {
   const CY_ID = `cy-${uuidv4()}`;
   const LabelHandler = useRef(null);
 
+  // NOTE: the model does not represent the current state of the FSA graph,
+  // it is only used to instantiate the graph a profived data.
   useEffect(() => {
-    if (!model) return;
+    const graphElements = model ? model.elements : [];
 
     console.log("[FSAComponent] useEffect");
     cyref.current = injectEmptyCy(CY_ID);
-    addElementsToCy(cyref.current, model.elements);
+    addElementsToCy(cyref.current, graphElements);
     cyref.current.layout({ name: "cose" }).run();
 
     LabelHandler.current = new FSALabelHandler();
     LabelHandler.current.attatchEventListeners(cyref.current);
-  }, [model]);
+  }, []);
 
   return <div id={CY_ID} className="cy"></div>;
 }

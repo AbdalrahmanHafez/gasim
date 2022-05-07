@@ -206,11 +206,11 @@ const GRComponent = ({ model }) => {
   console.log("GrammarView grammar is ", model);
 
   const [data, setData] = useState(
-    model ? productionToData(model.productions) : null
+    model ? productionToData(model.productions) : []
   );
 
   useEffect(() => {
-    setData(model ? productionToData(model.productions) : null);
+    setData(model ? productionToData(model.productions) : []);
   }, [model]);
 
   return <EditableTable dataSource={data} setDataSource={setData} />;

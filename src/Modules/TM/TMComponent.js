@@ -9,9 +9,11 @@ function TMComponent({ cyref, model }) {
   const tapesCount = model.tapesCount;
 
   useEffect(() => {
+    const graphElements = model ? model.elements : [];
+
     console.log("[TMComponent] useEffect");
     cyref.current = injectEmptyCy(CY_ID);
-    addElementsToCy(cyref.current, model.elements);
+    addElementsToCy(cyref.current, graphElements);
     cyref.current.layout({ name: "cose" }).run();
 
     LabelHandler.current = new TMLabelHandler(tapesCount);
