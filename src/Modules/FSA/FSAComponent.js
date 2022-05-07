@@ -35,8 +35,10 @@ function FSAComponent({ cyref, model, updateModel }) {
     LabelHandler.current = new FSALabelHandler();
     LabelHandler.current.attatchEventListeners(cyref.current);
 
-    cyref.current.on("add remove", (e) => {
-      console.log("Updating the model");
+    // TODO: this must also listen for changes in intial and final states
+    cyref.current.on("add remove data", (e) => {
+      // cyref.current.on("add remove", (e) => {
+      console.log("Updating the model", e);
       // console.log(e);
       updateModel(new FSAModel(e.cy.json().elements));
     });

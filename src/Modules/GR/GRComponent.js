@@ -203,7 +203,7 @@ const productionToData = (productionArray) =>
   }));
 
 const GRComponent = ({ model }) => {
-  console.log("GrammarView grammar is ", model);
+  console.log("GrammarCompoenent grammar is ", model);
 
   const [data, setData] = useState(
     model ? productionToData(model.productions) : []

@@ -93,16 +93,31 @@ function FSAView({ model, updateModel }) {
   // TODO: when the right side panel opens excute a fit command, beacuse resize event fit automatically i disabled it
 
   function rightPanelContent() {
-    const options = [
-      <SimPanel
-        isFastRun={stFastRunChecked[0]}
-        configs={simulation.current.configs}
-        onStepAll={hanldeStepAll}
-        onReset={handleResetSimulation}
-      />,
-      <NFAtoDFAComponent model={NFAtoDFAModel} />,
-    ];
-    return options[whatToShowRightPanel];
+    switch (whatToShowRightPanel) {
+      case 0:
+        return (
+          <SimPanel
+            isFastRun={stFastRunChecked[0]}
+            configs={simulation.current.configs}
+            onStepAll={hanldeStepAll}
+            onReset={handleResetSimulation}
+          />
+        );
+      case 1:
+        return <NFAtoDFAComponent model={NFAtoDFAModel} />;
+      default:
+        throw new Error("unknown right panel content");
+    }
+    // const options = [
+    //   <SimPanel
+    //     isFastRun={stFastRunChecked[0]}
+    //     configs={simulation.current.configs}
+    //     onStepAll={hanldeStepAll}
+    //     onReset={handleResetSimulation}
+    //   />,
+    //   <NFAtoDFAComponent model={NFAtoDFAModel} />,
+    // ];
+    // return options[whatToShowRightPanel];
   }
 
   return (

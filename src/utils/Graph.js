@@ -459,7 +459,9 @@ export const injectEmptyCy = (cyId) => {
           var node = event.target || event.cyTarget;
           // set all nodes to non inital
           var invertedState = !node.data().inital;
-          cy.nodes().each((node) => node.data("inital", false));
+          cy.nodes().each((node) =>
+            node.data("inital") ? node.data("inital", false) : null
+          );
           node.data({ inital: invertedState });
         },
         hasTrailingDivider: true,
