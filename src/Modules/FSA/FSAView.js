@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import FSAComponent from "./FSAComponent";
 import { FastRunCheckBox } from "../../components/FastRun";
 import steppingStrategies from "../../enums/steppingStrategies";
@@ -6,12 +6,9 @@ import { SimulateDropDown } from "../../components/Simulation";
 import FSASimulation from "./FSASimulation";
 import RightPanel from "../../components/RightPanel";
 import SimPanel from "./SimPanel";
-
-import {
-  verifyInitalStateExists,
-  clearHighlighted,
-  highlightConfigs,
-} from "../../utils";
+import { clearHighlighted, highlightConfigs } from "../../utils";
+import { conversionBus, eventTypes } from "../../Events";
+import NFAtoDFAComponent from "../Conversion/NFAtoDFAComponent";
 
 const simulationOptions = [
   steppingStrategies.STEP_BY_STATE,
@@ -19,15 +16,27 @@ const simulationOptions = [
   steppingStrategies.RANDOM,
 ];
 
-function FSAView({ model }) {
+function FSAView({ model, updateModel }) {
   const stFastRunChecked = useState(false);
-  const [showSim, setShowSim] = useState(false);
   const [, forceRender] = useState({});
+  const [NFAtoDFAModel, setNFAtoDFAModel] = useState(null);
+
+  // const showNFAtoDFA = Boolean(NFAtoDFAModel);
+  // const [showSim, setShowSim] = useState(false);
+  const [whatToShowRightPanel, setWhatToShowRightPanel] = useState(null);
 
   const cy = useRef(null);
   const simulation = useRef(null);
 
   const getCy = () => cy.current;
+
+  useEffect(() => {
+    conversionBus.on(eventTypes.NFAtoDFA, (NFAtoDFAModel) => {
+      console.log("FSAView recived conversion model ", NFAtoDFAModel);
+      setNFAtoDFAModel(NFAtoDFAModel);
+      setWhatToShowRightPanel(1);
+    });
+  }, []);
 
   const handleSimulate = (choiceStepping) => {
     console.log("clicked start simulation FSA");
@@ -43,7 +52,7 @@ function FSAView({ model }) {
         choiceStepping
       );
 
-      setShowSim(true);
+      setWhatToShowRightPanel(0);
     } catch (error) {
       alert(error);
       return;
@@ -81,24 +90,34 @@ function FSAView({ model }) {
     forceRender({});
   };
 
+  // TODO: when the right side panel opens excute a fit command, beacuse resize event fit automatically i disabled it
+
+  function rightPanelContent() {
+    const options = [
+      <SimPanel
+        isFastRun={stFastRunChecked[0]}
+        configs={simulation.current.configs}
+        onStepAll={hanldeStepAll}
+        onReset={handleResetSimulation}
+      />,
+      <NFAtoDFAComponent model={NFAtoDFAModel} />,
+    ];
+    return options[whatToShowRightPanel];
+  }
+
   return (
     <>
       <FastRunCheckBox stChecked={stFastRunChecked} />
       <SimulateDropDown options={simulationOptions} onClick={handleSimulate} />
 
       <div style={{ display: "flex" }}>
-        <FSAComponent cyref={cy} model={model} />
+        <FSAComponent cyref={cy} model={model} updateModel={updateModel} />
 
-        {showSim && (
-          <RightPanel setShowPanel={setShowSim}>
-            <SimPanel
-              isFastRun={stFastRunChecked[0]}
-              configs={simulation.current.configs}
-              onStepAll={hanldeStepAll}
-              onReset={handleResetSimulation}
-            />
+        {whatToShowRightPanel !== null ? (
+          <RightPanel setShowPanel={() => setWhatToShowRightPanel(null)}>
+            {rightPanelContent()}
           </RightPanel>
-        )}
+        ) : null}
       </div>
     </>
   );

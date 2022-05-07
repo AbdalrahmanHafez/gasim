@@ -4,6 +4,7 @@ const tabTypes = {
   TM: "Turing Machine",
   GR: "Grammer",
   RE: "Regular Expression",
+  NFAtoDFA: "NFA to DFA",
 };
 
 export default tabTypes;

@@ -5,7 +5,6 @@ import "@szhsin/react-menu/dist/transitions/slide.css";
 
 import FSAModel from "../Modules/FSA/FSAModel";
 import { grammarExamples, machineExamples } from "../Helpers/Constatns";
-import conversionType from "../enums/conversionType";
 import { StoreContext, UtilityContext } from "../Store";
 import tabTypes from "../enums/tabTypes";
 import { parseExampleLabels } from "../Helpers/GraphLabel";
@@ -13,6 +12,8 @@ import { TMModel } from "../Modules/TM";
 import { GRModel } from "../Modules/GR";
 import { REModel } from "../Modules/RE";
 import { PDAModel } from "../Modules/PDA";
+import NFAtoDFA from "../Modules/Conversion/NFAtoDFA";
+import { conversionBus, eventTypes } from "../Events";
 
 function MenuBar({ activeTabKey, setActiveTabKey }) {
   const [store, setStore, { addTab }] = useContext(StoreContext);
@@ -32,6 +33,7 @@ function MenuBar({ activeTabKey, setActiveTabKey }) {
         addTab({
           tabType: tabTypes.FA,
           title: addUniqueLabel("Finite State Automata"),
+          model: new FSAModel([]),
         });
         break;
       case "PDA":
@@ -83,18 +85,29 @@ function MenuBar({ activeTabKey, setActiveTabKey }) {
   };
 
   const handleConvertMenu = ({ value }) => {
+    const currentTabInfo = store[activeTabKey];
+
     switch (value) {
-      case conversionType.NFAtoDFA:
-        const newStore = [...store];
-        newStore[activeTabKey].showConversion = true;
-        newStore[activeTabKey].conversionType = conversionType.NFAtoDFA;
-        setStore(newStore);
+      case tabTypes.NFAtoDFA:
+        conversionBus.dispatch(
+          eventTypes.NFAtoDFA,
+          new NFAtoDFA(currentTabInfo.model)
+        );
+        // addTab({
+        //   title: "NFA to DFA",
+        //   tabType: tabTypes.NFAtoDFA,
+        //   model: new NFAtoDFA(currentTabInfo.model),
+        // });
+
+        // const newStore = [...store];
+        // newStore[activeTabKey].showConversion = true;
+        // newStore[activeTabKey].conversionType = conversionType.NFAtoDFA;
+        // setStore(newStore);
         break;
       default:
         throw new Error("Unknown menu item");
     }
   };
-
   // if (tabIdx === 0) ui.injectMachineCy(CY_ID, elm1);
   // else if (tabIdx === 1) ui.injectMachineCy(CY_ID, elm2);
   // else if (tabIdx === 2) ui.injectMachineCy(CY_ID, elm3);
@@ -234,7 +247,7 @@ function MenuBar({ activeTabKey, setActiveTabKey }) {
         }
         onItemClick={handleConvertMenu}
       >
-        <MenuItem value={conversionType.NFAtoDFA}>NFA to DFA</MenuItem>
+        <MenuItem value={tabTypes.NFAtoDFA}>NFA to DFA</MenuItem>
       </Menu>
 
       <Menu

@@ -11,7 +11,6 @@ import edgeEditing from "cytoscape-edge-editing";
 import konva from "konva";
 import $ from "jquery";
 import tabType from "../enums/tabTypes";
-import MachineConverter from "../classes/MachineConverter";
 import {
   promptLabel_for_new_edge,
   parseExampleLabels,
@@ -34,7 +33,7 @@ export default class UI {
     this.tabType = tabType;
     this.cy = undefined;
     this.conversionCy = undefined;
-    this.machineConverter = undefined;
+    // this.machineConverter = undefined;
     this.sim = undefined;
     this.handleStartSimulation = this.handleStartSimulation.bind(this);
     this.handleStartSimulationTODO = this.handleStartSimulationTODO.bind(this);
@@ -934,8 +933,8 @@ export default class UI {
     return this.sim.getConfigs();
   }
 
-  addConversion(srcCy, dstCy, tabType, conversionType) {
-    this.machineConverter = new MachineConverter(tabType, conversionType);
-    this.machineConverter.addConversion(srcCy, dstCy);
-  }
+  // addConversion(srcCy, dstCy, tabType, conversionType) {
+  //   this.machineConverter = new MachineConverter(tabType, conversionType);
+  //   this.machineConverter.addConversion(srcCy, dstCy);
+  // }
 }

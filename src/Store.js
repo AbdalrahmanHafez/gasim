@@ -1,5 +1,4 @@
 import React, { useState, useRef } from "react";
-import conversionType from "./enums/conversionType";
 import tabTypes from "./enums/tabTypes";
 import { grammarExamples, machineExamples } from "./Helpers/Constatns";
 import { parseExampleLabels } from "./Helpers/GraphLabel";
