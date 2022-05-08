@@ -8,6 +8,7 @@ const tabTypes = {
   GRtoPDA: "GR to PDA",
   NFAtoRE: "NFA to RE",
   REtoNFA: "RE to NFA",
+  PDAtoGR: "PDA to GR",
 };
 
 export default tabTypes;

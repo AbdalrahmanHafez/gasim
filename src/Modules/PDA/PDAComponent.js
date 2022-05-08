@@ -2,8 +2,9 @@ import React, { useEffect, useRef } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { injectEmptyCy, addElementsToCy } from "../../utils";
 import PDALabelHandler from "./PDALabelHandler";
+import PDAModel from "./PDAModel";
 
-function PDAComponent({ cyref, model }) {
+function PDAComponent({ cyref, model, updateModel }) {
   const CY_ID = `cy-${uuidv4()}`;
   const LabelHandler = useRef(null);
 
@@ -17,6 +18,13 @@ function PDAComponent({ cyref, model }) {
 
     LabelHandler.current = new PDALabelHandler();
     LabelHandler.current.attatchEventListeners(cyref.current);
+
+    cyref.current.on("add remove data", (e) => {
+      // cyref.current.on("add remove", (e) => {
+      console.log("Updating the model", e);
+      // console.log(e);
+      updateModel(new PDAModel(e.cy.json().elements));
+    });
   }, []);
 
   return <div id={CY_ID} className="cy"></div>;

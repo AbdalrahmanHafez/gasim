@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { FastRunCheckBox } from "../../components/FastRun";
 import steppingStrategies from "../../enums/steppingStrategies";
 import { SimulateDropDown } from "../../components/Simulation";
@@ -12,6 +12,8 @@ import {
   clearHighlighted,
   highlightConfigs,
 } from "../../utils";
+import { conversionBus, eventTypes } from "../../Events";
+import { PDAtoGRComponent } from "../Conversion";
 
 const simulationOptions = [
   steppingStrategies.STEP_BY_STATE,
@@ -19,15 +21,31 @@ const simulationOptions = [
   steppingStrategies.RANDOM,
 ];
 
-function PDAView({ model }) {
+function PDAView({ model, updateModel }) {
   const stFastRunChecked = useState(false);
-  const [showSim, setShowSim] = useState(false);
   const [, forceRender] = useState({});
+
+  const [idxToShow, setIdxToShow] = useState(null);
+  const [PDAtoGRModel, setPDAtoGRModel] = useState(null);
 
   const cy = useRef(null);
   const simulation = useRef(null);
 
   const getCy = () => cy.current;
+
+  useEffect(() => {
+    // Conversion event from menu bar
+
+    conversionBus.on(eventTypes.PDAtoGR, (PDAtoGRModel) => {
+      console.log("PDAView recived conversion model ", PDAtoGRModel);
+      // TODO: do checks first in another method HERE if ok then proced
+
+      if (!PDAtoGRModel.checkValid()) return;
+
+      setPDAtoGRModel(PDAtoGRModel);
+      setIdxToShow(1);
+    });
+  }, []);
 
   const handleSimulate = (choiceStepping) => {
     console.log("clicked start simulation PDA");
@@ -43,7 +61,7 @@ function PDAView({ model }) {
         choiceStepping
       );
 
-      setShowSim(true);
+      setIdxToShow(0);
     } catch (error) {
       alert(error);
       return;
@@ -81,22 +99,32 @@ function PDAView({ model }) {
     forceRender({});
   };
 
+  function displaySideContent() {
+    if (idxToShow === null) return null;
+    if (idxToShow === 0)
+      return (
+        <SimPanel
+          isFastRun={stFastRunChecked[0]}
+          configs={simulation.current.configs}
+          onStepAll={hanldeStepAll}
+          onReset={handleResetSimulation}
+        />
+      );
+
+    if (idxToShow === 1) return <PDAtoGRComponent model={PDAtoGRModel} />;
+  }
+
   return (
     <>
       <FastRunCheckBox stChecked={stFastRunChecked} />
       <SimulateDropDown options={simulationOptions} onClick={handleSimulate} />
 
       <div style={{ display: "flex" }}>
-        <PDAComponent cyref={cy} model={model} />
+        <PDAComponent cyref={cy} model={model} updateModel={updateModel} />
 
-        {showSim && (
-          <RightPanel setShowPanel={setShowSim}>
-            <SimPanel
-              isFastRun={stFastRunChecked[0]}
-              configs={simulation.current.configs}
-              onStepAll={hanldeStepAll}
-              onReset={handleResetSimulation}
-            />
+        {idxToShow !== null && (
+          <RightPanel setShowPanel={() => setIdxToShow(null)}>
+            {displaySideContent()}
           </RightPanel>
         )}
       </div>

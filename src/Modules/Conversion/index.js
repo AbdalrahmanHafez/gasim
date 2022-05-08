@@ -10,6 +10,9 @@ export { default as NFAtoRE } from "./NFAtoRE";
 export { default as REtoNFAComponent } from "./REtoNFAComponent";
 export { default as REtoNFA } from "./REtoNFA";
 
+export { default as PDAtoGRComponent } from "./PDAtoGRComponent";
+export { default as PDAtoGR } from "./PDAtoGR";
+
 /**
  * 	Conversion happes as follows
  * 	Class model for the conversion that contain the information about the convertions forex: NFAtoDFA.js

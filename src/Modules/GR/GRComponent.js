@@ -89,14 +89,14 @@ const EditableCell = ({
 };
 
 const EditableTable = (props) => {
-  const { dataSource, setDataSource } = props;
-
+  const { dataSource, setDataSource, editable } = props;
+  const allowEdits = editable ? true : false;
   const columns = [
     {
       title: "From",
       dataIndex: "from",
       width: "30%",
-      editable: true,
+      editable: allowEdits,
     },
     {
       title: "",
@@ -106,7 +106,7 @@ const EditableTable = (props) => {
       title: "To",
       dataIndex: "to",
       width: "30%",
-      editable: true,
+      editable: allowEdits,
     },
     {
       title: "",
@@ -180,16 +180,18 @@ const EditableTable = (props) => {
         pagination={false}
         bordered
       />
-      <Button
-        onClick={handleAdd}
-        type="default"
-        style={{
-          marginBottom: 16,
-          marginTop: 5,
-        }}
-      >
-        Add a row
-      </Button>
+      {allowEdits && (
+        <Button
+          onClick={handleAdd}
+          type="default"
+          style={{
+            marginBottom: 16,
+            marginTop: 5,
+          }}
+        >
+          Add a row
+        </Button>
+      )}
     </div>
   );
 };
@@ -202,25 +204,26 @@ const productionToData = (productionArray) =>
   }));
 const dataToProductions = (data) => data.map((row) => [row.from, row.to]);
 
-const GRComponent = ({ model, updateModel }) => {
+const GRComponent = ({ model, updateModel, editable }) => {
   console.log("GrammarCompoenent grammar is ", model);
 
-  // const [data, setData] = useState(
-  //   model ? productionToData(model.productions) : []
-  // );
-
-  // useEffect(() => {
-  //   setData(model ? productionToData(model.productions) : []);
-  // }, [model]);
+  // by default it's editable, unless specified
 
   const setDataSource = (newData) => {
     // console.log("newData", newData);
     // console.log("new data is ", dataToProductions(newData));
     updateModel(new GRModel(dataToProductions(newData)));
   };
-  const data = productionToData(model.productions);
 
-  return <EditableTable dataSource={data} setDataSource={setDataSource} />;
+  const data = model === null ? [] : productionToData(model.productions);
+
+  return (
+    <EditableTable
+      dataSource={data}
+      setDataSource={setDataSource}
+      editable={editable}
+    />
+  );
 };
 
 export default GRComponent;

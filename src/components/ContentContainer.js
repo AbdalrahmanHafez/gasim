@@ -31,7 +31,7 @@ function ContentContainer({ tabInfo }) {
 
   if (tabType === tabTypes.PDA) {
     const model = tabInfo.model;
-    return <PDAView model={model} />;
+    return <PDAView model={model} updateModel={updateModel} />;
   }
 
   if (tabType === tabTypes.TM) {
