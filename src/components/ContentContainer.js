@@ -41,7 +41,7 @@ function ContentContainer({ tabInfo }) {
 
   if (tabType === tabTypes.GR) {
     const model = tabInfo.model;
-    return <GRView model={model} />;
+    return <GRView model={model} updateModel={updateModel} />;
   }
 
   if (tabType === tabTypes.RE) {

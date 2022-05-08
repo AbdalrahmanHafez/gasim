@@ -14,6 +14,7 @@ import { REModel } from "../Modules/RE";
 import { PDAModel } from "../Modules/PDA";
 import NFAtoDFA from "../Modules/Conversion/NFAtoDFA";
 import { conversionBus, eventTypes } from "../Events";
+import { GRtoPDA } from "../Modules/Conversion";
 
 function MenuBar({ activeTabKey, setActiveTabKey }) {
   const [store, setStore, { addTab }] = useContext(StoreContext);
@@ -68,7 +69,11 @@ function MenuBar({ activeTabKey, setActiveTabKey }) {
         });
         break;
       case "GR":
-        addTab({ tabType: tabTypes.GR, title: addUniqueLabel("Grammar") });
+        addTab({
+          tabType: tabTypes.GR,
+          title: addUniqueLabel("Grammar"),
+          model: new GRModel([]),
+        });
         break;
       case "RE":
         addTab({
@@ -93,17 +98,25 @@ function MenuBar({ activeTabKey, setActiveTabKey }) {
           eventTypes.NFAtoDFA,
           new NFAtoDFA(currentTabInfo.model)
         );
-        // addTab({
-        //   title: "NFA to DFA",
-        //   tabType: tabTypes.NFAtoDFA,
-        //   model: new NFAtoDFA(currentTabInfo.model),
-        // });
-
-        // const newStore = [...store];
-        // newStore[activeTabKey].showConversion = true;
-        // newStore[activeTabKey].conversionType = conversionType.NFAtoDFA;
-        // setStore(newStore);
         break;
+
+      case tabTypes.GRtoPDA:
+        conversionBus.dispatch(
+          eventTypes.GRtoPDA,
+          new GRtoPDA(currentTabInfo.model)
+        );
+        break;
+
+      // addTab({
+      //   title: "NFA to DFA",
+      //   tabType: tabTypes.NFAtoDFA,
+      //   model: new NFAtoDFA(currentTabInfo.model),
+      // });
+
+      // const newStore = [...store];
+      // newStore[activeTabKey].showConversion = true;
+      // newStore[activeTabKey].conversionType = conversionType.NFAtoDFA;
+      // setStore(newStore);
       default:
         throw new Error("Unknown menu item");
     }
@@ -248,6 +261,7 @@ function MenuBar({ activeTabKey, setActiveTabKey }) {
         onItemClick={handleConvertMenu}
       >
         <MenuItem value={tabTypes.NFAtoDFA}>NFA to DFA</MenuItem>
+        <MenuItem value={tabTypes.GRtoPDA}>Grammar to PDA</MenuItem>
       </Menu>
 
       <Menu

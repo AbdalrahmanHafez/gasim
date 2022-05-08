@@ -248,6 +248,7 @@ function GrammarConverter({ ui, grammer }) {
     });
     return Array.from(terminals);
   };
+
   const handleBtnStart = () => {
     console.log("Converting.");
     // TODO: Fix the constant labelData

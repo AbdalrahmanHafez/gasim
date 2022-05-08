@@ -125,9 +125,7 @@ const EditableTable = (props) => {
   ];
 
   const handleDelete = (key) => {
-    setDataSource((dataSource) =>
-      dataSource.filter((item) => item.key !== key)
-    );
+    setDataSource(dataSource.filter((item) => item.key !== key));
   };
   const handleAdd = () => {
     const count = dataSource.length;
@@ -138,7 +136,7 @@ const EditableTable = (props) => {
       to: "?",
     };
 
-    setDataSource((dataSource) => [...dataSource, newData]);
+    setDataSource([...dataSource, newData]);
   };
   const handleSave = (row) => {
     const newData = [...dataSource];
@@ -187,6 +185,7 @@ const EditableTable = (props) => {
         type="default"
         style={{
           marginBottom: 16,
+          marginTop: 5,
         }}
       >
         Add a row
@@ -201,19 +200,27 @@ const productionToData = (productionArray) =>
     from: prod[0],
     to: Epsilonify(prod[1]),
   }));
+const dataToProductions = (data) => data.map((row) => [row.from, row.to]);
 
-const GRComponent = ({ model }) => {
+const GRComponent = ({ model, updateModel }) => {
   console.log("GrammarCompoenent grammar is ", model);
 
-  const [data, setData] = useState(
-    model ? productionToData(model.productions) : []
-  );
+  // const [data, setData] = useState(
+  //   model ? productionToData(model.productions) : []
+  // );
 
-  useEffect(() => {
-    setData(model ? productionToData(model.productions) : []);
-  }, [model]);
+  // useEffect(() => {
+  //   setData(model ? productionToData(model.productions) : []);
+  // }, [model]);
 
-  return <EditableTable dataSource={data} setDataSource={setData} />;
+  const setDataSource = (newData) => {
+    // console.log("newData", newData);
+    // console.log("new data is ", dataToProductions(newData));
+    updateModel(new GRModel(dataToProductions(newData)));
+  };
+  const data = productionToData(model.productions);
+
+  return <EditableTable dataSource={data} setDataSource={setDataSource} />;
 };
 
 export default GRComponent;

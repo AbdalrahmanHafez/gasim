@@ -31,6 +31,7 @@ function FSAView({ model, updateModel }) {
   const getCy = () => cy.current;
 
   useEffect(() => {
+    // Conversion event from menu bar
     conversionBus.on(eventTypes.NFAtoDFA, (NFAtoDFAModel) => {
       console.log("FSAView recived conversion model ", NFAtoDFAModel);
       setNFAtoDFAModel(NFAtoDFAModel);

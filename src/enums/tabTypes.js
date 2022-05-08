@@ -5,6 +5,7 @@ const tabTypes = {
   GR: "Grammer",
   RE: "Regular Expression",
   NFAtoDFA: "NFA to DFA",
+  GRtoPDA: "GR to PDA",
 };
 
 export default tabTypes;

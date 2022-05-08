@@ -33,12 +33,12 @@ addLabelDataForExampleElements(elmTM3, tabTypes.TM);
 
 const initialState = [
   {
-    title: "RegEx",
+    title: "RegEx STUB",
     tabType: tabTypes.RE,
     model: new REModel("ab*c"),
   },
   {
-    title: "Grammar",
+    title: "Grammar STUB",
     tabType: tabTypes.GR,
     model: new GRModel(grammarExamples.g1),
   },
@@ -47,12 +47,12 @@ const initialState = [
   { title: "TM 3 STUB", tabType: tabTypes.TM, model: new TMModel(elmTM3, 2) },
   {
     tabType: tabTypes.PDA,
-    title: "PDA STUB remove me",
+    title: "PDA STUB",
     model: new PDAModel(elmPDA),
   },
   {
     tabType: tabTypes.FA,
-    title: "NFA STUB remove me",
+    title: "NFA STUB",
     model: new FSAModel(elm1),
   },
 ];

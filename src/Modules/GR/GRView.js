@@ -1,21 +1,34 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import GRComponent from "./GRComponent";
 import { Table, Input, Button, Popconfirm, Form, Space, Checkbox } from "antd";
 import GRModel from "./GRModel";
+import { conversionBus, eventTypes } from "../../Events";
+import { GRtoPDAComponent } from "../Conversion";
 
 const Epsilonify = (value) => (value ? value : "ε");
 const Deepsilonify = (value) => (value === "ε" ? "" : value);
 const dataToProductions = (data) =>
   data.map((row) => [row.from, Deepsilonify(row.to)]);
 
-function GRView({ model }) {
+function GRView({ model, updateModel }) {
   const [, forceRender] = useState({});
 
-  const [showSim, setShowSim] = useState(false);
+  // const [showSim, setShowSim] = useState(false);
   const [simRunning, setSimRunning] = useState(false);
   const [simData, setSimData] = useState([]);
   const [simStep, setSimStep] = useState(1);
   const [simUserInput, setSimUserInput] = useState("");
+
+  const [GRtoPDAModel, setGRtoPDAModel] = useState(null);
+  const [idxToShow, setIdxToShow] = useState(null);
+  useEffect(() => {
+    // Conversion event from menu bar
+    conversionBus.on(eventTypes.GRtoPDA, (GRtoPDAModel) => {
+      console.log("GRView recived conversion model ", GRtoPDAModel);
+      setGRtoPDAModel(GRtoPDAModel);
+      setIdxToShow(1);
+    });
+  }, []);
 
   const handleBtnStart = async () => {
     console.log("Started");
@@ -75,52 +88,72 @@ function GRView({ model }) {
     return `Derived ${Epsilonify(to)} from ${Epsilonify(from)}`;
   };
 
+  function displayRightSide() {
+    if (idxToShow === null) return null;
+    if (idxToShow === 0)
+      return (
+        <div>
+          <h4 style={{ margin: "auto" }}>{label_what_happens()}</h4>
+          <Input
+            value={simUserInput}
+            onChange={(e) => setSimUserInput(e.target.value)}
+            placeholder="Enter target string"
+            style={{ marginBottom: "0.40em" }}
+          />
+          <Space size="small">
+            <Button
+              type="primary"
+              disabled={simRunning}
+              onClick={handleBtnStart}
+            >
+              Start
+            </Button>
+            <Button disabled={!simRunning} onClick={handleBtnPause}>
+              Pause
+            </Button>
+            <Button
+              disabled={!(!simRunning && simStep < simData.length)}
+              onClick={handleBtnStep}
+            >
+              Step
+            </Button>
+            {/* <Checkbox>Show all</Checkbox> */}
+          </Space>
+          <Table
+            pagination={false}
+            dataSource={format_sim_ds(simData)}
+            columns={simColumns}
+            bordered
+          />
+        </div>
+      );
+
+    if (idxToShow === 1)
+      // TODO: style span the avaible width
+      return (
+        <div style={{ minWidth: "60em" }}>
+          <GRtoPDAComponent model={GRtoPDAModel} />
+        </div>
+      );
+
+    throw new Error("Unknown index to show inside GRView");
+  }
+
   return (
     <>
-      <button onClick={() => setShowSim(true)}>simulate</button>
+      <Button onClick={() => setIdxToShow(0)}>Simulate</Button>
       <h5>
         leave cell empty to indicate 'ε'. First production must start with S
       </h5>
       <Space direction="horizontal" align="start" size="large">
-        <div style={{ minWidth: "30em" }}>
-          <GRComponent model={model} />
+        <div style={{ minWidth: "28em" }}>
+          <GRComponent model={model} updateModel={updateModel} />
         </div>
 
-        {showSim && (
-          <div>
-            <h4 style={{ margin: "auto" }}>{label_what_happens()}</h4>
-            <Input
-              value={simUserInput}
-              onChange={(e) => setSimUserInput(e.target.value)}
-              placeholder="Enter target string"
-              style={{ marginBottom: "0.40em" }}
-            />
-            <Space size="small">
-              <Button
-                type="primary"
-                disabled={simRunning}
-                onClick={handleBtnStart}
-              >
-                Start
-              </Button>
-              <Button disabled={!simRunning} onClick={handleBtnPause}>
-                Pause
-              </Button>
-              <Button
-                disabled={!(!simRunning && simStep < simData.length)}
-                onClick={handleBtnStep}
-              >
-                Step
-              </Button>
-              {/* <Checkbox>Show all</Checkbox> */}
-            </Space>
-            <Table
-              pagination={false}
-              dataSource={format_sim_ds(simData)}
-              columns={simColumns}
-              bordered
-            />
-          </div>
+        {displayRightSide()}
+
+        {idxToShow !== null && (
+          <Button onClick={() => setIdxToShow(null)}>close</Button>
         )}
       </Space>
     </>
