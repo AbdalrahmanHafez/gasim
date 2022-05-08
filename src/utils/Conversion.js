@@ -9,12 +9,12 @@ export const tabTypeToConversionOptions = (tabType) => {
       return [tabTypes.GRtoPDA];
 
     case tabTypes.RE:
-      return [tabTypes.REtooNFA];
+      return [tabTypes.REtoNFA];
 
     case tabTypes.PDA:
       return [tabTypes.PDAtoGR];
 
     default:
-      throw new Error("Unknown tab type inside tabTypeToConversionOptions");
+      return [];
   }
 };

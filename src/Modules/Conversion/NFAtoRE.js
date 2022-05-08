@@ -4,6 +4,7 @@ import {
   verifyInitalStateExists,
 } from "../../utils";
 import axios from "axios";
+import { baseurl } from "../../Helpers/Constatns";
 
 export default class NFAtoRE {
   constructor(FSAModel) {
@@ -34,7 +35,7 @@ export default class NFAtoRE {
 
     try {
       const result = await axios.post(
-        `http://localhost:5050/js`,
+        `${baseurl}js`,
         `code=edu.duke.cs.jflap.JFLAP.FSAtoRE('${encodeURIComponent(
           graphDataStr
         )}');`

@@ -6,6 +6,7 @@ import {
 } from "../../utils";
 import axios from "axios";
 import { GRModel } from "../GR";
+import { baseurl } from "../../Helpers/Constatns";
 
 export default class PDAtoGR {
   constructor(PDAModel) {
@@ -70,7 +71,7 @@ export default class PDAtoGR {
 
     axios
       .post(
-        `http://localhost:5050/js`,
+        `${baseurl}js`,
         `code=edu.duke.cs.jflap.JFLAP.PDAtoGrammar('${encodeURIComponent(
           graphDataStr
         )}');`

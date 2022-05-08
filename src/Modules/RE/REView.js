@@ -1,8 +1,6 @@
 import React, { useRef, useEffect, useState } from "react";
 import { Button, Input } from "antd";
 import { machineExamples } from "../../Helpers/Constatns";
-import axios from "axios";
-import FSAComponent from "../FSA/FSAComponent";
 import { FSAModel } from "../FSA";
 import { REtoNFA, REtoNFAComponent } from "../Conversion";
 import { conversionBus, eventTypes } from "../../Events";

@@ -4,6 +4,7 @@ import {
   verifyInitalStateExists,
 } from "../../utils";
 import axios from "axios";
+import { baseurl } from "../../Helpers/Constatns";
 
 export default class REtoNFA {
   constructor(REModel) {
@@ -30,9 +31,7 @@ export default class REtoNFA {
     const { states, transitions, initialState, finalStates } = dataStub;
 
     axios
-      .get(
-        `http://localhost:5050/js?code=edu.duke.cs.jflap.JFLAP.REtoNFA('${input}')`
-      )
+      .get(`${baseurl}js?code=edu.duke.cs.jflap.JFLAP.REtoNFA('${input}')`)
       .then((res) => {
         // clear old graph
         cy.remove("node");

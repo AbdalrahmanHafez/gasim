@@ -285,9 +285,13 @@ function MenuBar({ activeTabKey, setActiveTabKey }) {
         }
         onItemClick={handleConvertMenu}
       >
-        {tabTypeToConversionOptions(currentTabInfo.tabType).map((option) => (
-          <MenuItem value={option}>{option}</MenuItem>
-        ))}
+        {tabTypeToConversionOptions(currentTabInfo.tabType).map(
+          (option, idx) => (
+            <MenuItem key={idx} value={option}>
+              {option}
+            </MenuItem>
+          )
+        )}
         {/* <MenuItem value={tabTypes.NFAtoDFA}>NFA to DFA</MenuItem>
         <MenuItem value={tabTypes.GRtoPDA}>Grammar to PDA</MenuItem>
         <MenuItem value={tabTypes.NFAtoRE}>NFA to Regex</MenuItem>
