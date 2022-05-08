@@ -1,5 +1,3 @@
-import Grammar from "../classes/Grammar";
-
 export const symbols = {
   epsilon: "ε",
   rectangle: "▢",

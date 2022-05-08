@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import SimPanel_OLD from "./SimPanel";
 import { StoreContext } from "../Store.js";
-import UI from "../classes/UI";
+import UI from "../classes/UI_OLD";
 import { Menu, Dropdown, Checkbox } from "antd";
 import { DownOutlined } from "@ant-design/icons";
 import steppingStrategies from "../enums/steppingStrategies";
