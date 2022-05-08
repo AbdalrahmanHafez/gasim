@@ -15,9 +15,11 @@ import { PDAModel } from "../Modules/PDA";
 import NFAtoDFA from "../Modules/Conversion/NFAtoDFA";
 import { conversionBus, eventTypes } from "../Events";
 import { GRtoPDA, NFAtoRE, PDAtoGR, REtoNFA } from "../Modules/Conversion";
+import { tabTypeToConversionOptions } from "../utils";
 
 function MenuBar({ activeTabKey, setActiveTabKey }) {
   const [store, setStore, { addTab }] = useContext(StoreContext);
+  const currentTabInfo = store[activeTabKey];
 
   const addUniqueLabel = (baseLabel) => {
     const existCount = store.filter((tab) =>
@@ -95,8 +97,6 @@ function MenuBar({ activeTabKey, setActiveTabKey }) {
   };
 
   const handleConvertMenu = ({ value }) => {
-    const currentTabInfo = store[activeTabKey];
-
     switch (value) {
       case tabTypes.NFAtoDFA:
         conversionBus.dispatch(
@@ -285,11 +285,14 @@ function MenuBar({ activeTabKey, setActiveTabKey }) {
         }
         onItemClick={handleConvertMenu}
       >
-        <MenuItem value={tabTypes.NFAtoDFA}>NFA to DFA</MenuItem>
+        {tabTypeToConversionOptions(currentTabInfo.tabType).map((option) => (
+          <MenuItem value={option}>{option}</MenuItem>
+        ))}
+        {/* <MenuItem value={tabTypes.NFAtoDFA}>NFA to DFA</MenuItem>
         <MenuItem value={tabTypes.GRtoPDA}>Grammar to PDA</MenuItem>
         <MenuItem value={tabTypes.NFAtoRE}>NFA to Regex</MenuItem>
         <MenuItem value={tabTypes.REtoNFA}>RE to NFA</MenuItem>
-        <MenuItem value={tabTypes.PDAtoGR}>PDA to GR</MenuItem>
+        <MenuItem value={tabTypes.PDAtoGR}>PDA to GR</MenuItem> */}
       </Menu>
 
       <Menu
