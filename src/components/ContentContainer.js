@@ -46,7 +46,7 @@ function ContentContainer({ tabInfo }) {
 
   if (tabType === tabTypes.RE) {
     const model = tabInfo.model;
-    return <REView model={model} />;
+    return <REView model={model} updateModel={updateModel} />;
   }
 
   // Conversions

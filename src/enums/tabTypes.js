@@ -7,6 +7,7 @@ const tabTypes = {
   NFAtoDFA: "NFA to DFA",
   GRtoPDA: "GR to PDA",
   NFAtoRE: "NFA to RE",
+  REtoNFA: "RE to NFA",
 };
 
 export default tabTypes;

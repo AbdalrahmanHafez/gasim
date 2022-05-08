@@ -14,7 +14,7 @@ import { REModel } from "../Modules/RE";
 import { PDAModel } from "../Modules/PDA";
 import NFAtoDFA from "../Modules/Conversion/NFAtoDFA";
 import { conversionBus, eventTypes } from "../Events";
-import { GRtoPDA, NFAtoRE } from "../Modules/Conversion";
+import { GRtoPDA, NFAtoRE, REtoNFA } from "../Modules/Conversion";
 
 function MenuBar({ activeTabKey, setActiveTabKey }) {
   const [store, setStore, { addTab }] = useContext(StoreContext);
@@ -79,6 +79,7 @@ function MenuBar({ activeTabKey, setActiveTabKey }) {
         addTab({
           tabType: tabTypes.RE,
           title: addUniqueLabel("Regular Expression"),
+          model: new REModel(""),
         });
         break;
       default:
@@ -111,6 +112,13 @@ function MenuBar({ activeTabKey, setActiveTabKey }) {
         conversionBus.dispatch(
           eventTypes.NFAtoRE,
           new NFAtoRE(currentTabInfo.model)
+        );
+        break;
+
+      case tabTypes.REtoNFA:
+        conversionBus.dispatch(
+          eventTypes.REtoNFA,
+          new REtoNFA(currentTabInfo.model)
         );
         break;
 
@@ -270,6 +278,7 @@ function MenuBar({ activeTabKey, setActiveTabKey }) {
         <MenuItem value={tabTypes.NFAtoDFA}>NFA to DFA</MenuItem>
         <MenuItem value={tabTypes.GRtoPDA}>Grammar to PDA</MenuItem>
         <MenuItem value={tabTypes.NFAtoRE}>NFA to Regex</MenuItem>
+        <MenuItem value={tabTypes.REtoNFA}>RE to NFA</MenuItem>
       </Menu>
 
       <Menu
