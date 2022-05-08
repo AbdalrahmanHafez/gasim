@@ -14,7 +14,7 @@ import { REModel } from "../Modules/RE";
 import { PDAModel } from "../Modules/PDA";
 import NFAtoDFA from "../Modules/Conversion/NFAtoDFA";
 import { conversionBus, eventTypes } from "../Events";
-import { GRtoPDA } from "../Modules/Conversion";
+import { GRtoPDA, NFAtoRE } from "../Modules/Conversion";
 
 function MenuBar({ activeTabKey, setActiveTabKey }) {
   const [store, setStore, { addTab }] = useContext(StoreContext);
@@ -104,6 +104,13 @@ function MenuBar({ activeTabKey, setActiveTabKey }) {
         conversionBus.dispatch(
           eventTypes.GRtoPDA,
           new GRtoPDA(currentTabInfo.model)
+        );
+        break;
+
+      case tabTypes.NFAtoRE:
+        conversionBus.dispatch(
+          eventTypes.NFAtoRE,
+          new NFAtoRE(currentTabInfo.model)
         );
         break;
 
@@ -262,6 +269,7 @@ function MenuBar({ activeTabKey, setActiveTabKey }) {
       >
         <MenuItem value={tabTypes.NFAtoDFA}>NFA to DFA</MenuItem>
         <MenuItem value={tabTypes.GRtoPDA}>Grammar to PDA</MenuItem>
+        <MenuItem value={tabTypes.NFAtoRE}>NFA to Regex</MenuItem>
       </Menu>
 
       <Menu

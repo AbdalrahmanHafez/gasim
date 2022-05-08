@@ -6,6 +6,7 @@ const tabTypes = {
   RE: "Regular Expression",
   NFAtoDFA: "NFA to DFA",
   GRtoPDA: "GR to PDA",
+  NFAtoRE: "NFA to RE",
 };
 
 export default tabTypes;

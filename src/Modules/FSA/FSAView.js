@@ -9,6 +9,7 @@ import SimPanel from "./SimPanel";
 import { clearHighlighted, highlightConfigs } from "../../utils";
 import { conversionBus, eventTypes } from "../../Events";
 import NFAtoDFAComponent from "../Conversion/NFAtoDFAComponent";
+import { NFAtoREComponent } from "../Conversion";
 
 const simulationOptions = [
   steppingStrategies.STEP_BY_STATE,
@@ -20,6 +21,7 @@ function FSAView({ model, updateModel }) {
   const stFastRunChecked = useState(false);
   const [, forceRender] = useState({});
   const [NFAtoDFAModel, setNFAtoDFAModel] = useState(null);
+  const [NFAtoREModel, setNFAtoREModel] = useState(null);
 
   // const showNFAtoDFA = Boolean(NFAtoDFAModel);
   // const [showSim, setShowSim] = useState(false);
@@ -36,6 +38,12 @@ function FSAView({ model, updateModel }) {
       console.log("FSAView recived conversion model ", NFAtoDFAModel);
       setNFAtoDFAModel(NFAtoDFAModel);
       setWhatToShowRightPanel(1);
+    });
+
+    conversionBus.on(eventTypes.NFAtoRE, (NFAtoREModel) => {
+      console.log("FSAView recived conversion model ", NFAtoREModel);
+      setNFAtoREModel(NFAtoREModel);
+      setWhatToShowRightPanel(2);
     });
   }, []);
 
@@ -104,8 +112,18 @@ function FSAView({ model, updateModel }) {
             onReset={handleResetSimulation}
           />
         );
+
       case 1:
         return <NFAtoDFAComponent model={NFAtoDFAModel} />;
+
+      case 2:
+        return (
+          <div>
+            <label>The resulting Regular Expression</label>
+            <NFAtoREComponent model={NFAtoREModel} />
+          </div>
+        );
+
       default:
         throw new Error("unknown right panel content");
     }

@@ -4,6 +4,9 @@ export { default as NFAtoDFA } from "./NFAtoDFA";
 export { default as GRtoPDAComponent } from "./GRtoPDAComponent";
 export { default as GRtoPDA } from "./GRtoPDA";
 
+export { default as NFAtoREComponent } from "./NFAtoREComponent";
+export { default as NFAtoRE } from "./NFAtoRE";
+
 /**
  * 	Conversion happes as follows
  * 	Class model for the conversion that contain the information about the convertions forex: NFAtoDFA.js
