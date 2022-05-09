@@ -90,7 +90,9 @@ const EditableCell = ({
 
 const EditableTable = (props) => {
   const { dataSource, setDataSource, editable } = props;
+
   const allowEdits = editable ? true : false;
+
   const columns = [
     {
       title: "From",

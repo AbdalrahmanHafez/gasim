@@ -147,7 +147,11 @@ function GRView({ model, updateModel }) {
       </h5>
       <Space direction="horizontal" align="start" size="large">
         <div style={{ minWidth: "28em" }}>
-          <GRComponent model={model} updateModel={updateModel} />
+          <GRComponent
+            model={model}
+            updateModel={updateModel}
+            editable={true}
+          />
         </div>
 
         {displayRightSide()}
