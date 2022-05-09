@@ -1,4 +1,4 @@
-export const baseurl = "https://ow9rzi-ip-102-43-162-25.expose.sh/";
+export const baseurl = "https://e5cb-102-43-162-25.ngrok.io/";
 // export const baseurl = "http://localhost:5050/";
 
 export const symbols = {
