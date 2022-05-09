@@ -3,7 +3,7 @@ import tabTypes from "../enums/tabTypes";
 export const tabTypeToConversionOptions = (tabType) => {
   switch (tabType) {
     case tabTypes.FA:
-      return [tabTypes.NFAtoDFA, tabTypes.NFAtoRE];
+      return [tabTypes.NFAtoDFA, tabTypes.FSAtoRE];
 
     case tabTypes.GR:
       return [tabTypes.GRtoPDA];

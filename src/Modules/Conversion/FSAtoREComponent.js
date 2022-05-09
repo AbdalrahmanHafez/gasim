@@ -3,20 +3,20 @@ import { v4 as uuidv4 } from "uuid";
 import { addElementsToCy, injectEmptyCy, getNodeClosure } from "../../utils";
 import { Button, Input } from "antd";
 
-function NFAtoREComponent({ model }) {
+function FSAtoREComponent({ model }) {
   const [inputValue, setInputValue] = useState("Loading...");
   const CY_ID = `cy-${uuidv4()}`;
   const cy = useRef(null);
 
   useEffect(() => {
     async function fetchData() {
-      console.log("[NFAtoREcomponent] useEffect");
+      console.log("[FSAtoREcomponent] useEffect");
       cy.current = injectEmptyCy(CY_ID);
       addElementsToCy(cy.current, model.FSAModel.elements);
 
       const resultREexp = model.convert(cy.current);
 
-      console.log("NFAtoRE result is ", resultREexp);
+      console.log("FSAtoRE result is ", resultREexp);
 
       cy.current.layout({ name: "cose" }).run();
 
@@ -34,4 +34,4 @@ function NFAtoREComponent({ model }) {
   );
 }
 
-export default NFAtoREComponent;
+export default FSAtoREComponent;

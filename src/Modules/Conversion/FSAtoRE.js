@@ -9,7 +9,7 @@ import {
 import axios from "axios";
 import { symbols, baseurl } from "../../Helpers/Constatns";
 
-export default class NFAtoRE {
+export default class FSAtoRE {
   constructor(FSAModel) {
     this.FSAModel = FSAModel;
     this.cy = null; // filled during convert()

@@ -1,7 +1,7 @@
 const events = {
   NFAtoDFA: "NFAtoDFA Event",
   GRtoPDA: "GRtoPDA Event",
-  NFAtoRE: "NFAtoRE Event",
+  FSAtoRE: "FSAtoRE Event",
   REtoNFA: "REtoNFA Event",
   PDAtoGR: "PDAtoGR Event",
 };

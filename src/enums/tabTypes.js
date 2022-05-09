@@ -4,8 +4,9 @@ const tabTypes = {
   TM: "Turing Machine",
   GR: "Grammer",
   RE: "Regular Expression",
+
   NFAtoDFA: "NFA to DFA",
-  NFAtoRE: "NFA to Regular Expression",
+  FSAtoRE: "FSA to Regular Expression",
   GRtoPDA: "Grammar to PDA",
   REtoNFA: "Regex to NFA",
   PDAtoGR: "PDA to Grammar",

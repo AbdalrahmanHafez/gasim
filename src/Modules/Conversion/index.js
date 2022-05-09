@@ -4,8 +4,8 @@ export { default as NFAtoDFA } from "./NFAtoDFA";
 export { default as GRtoPDAComponent } from "./GRtoPDAComponent";
 export { default as GRtoPDA } from "./GRtoPDA";
 
-export { default as NFAtoREComponent } from "./NFAtoREComponent";
-export { default as NFAtoRE } from "./NFAtoRE";
+export { default as FSAtoREComponent } from "./FSAtoREComponent";
+export { default as FSAtoRE } from "./FSAtoRE";
 
 export { default as REtoNFAComponent } from "./REtoNFAComponent";
 export { default as REtoNFA } from "./REtoNFA";

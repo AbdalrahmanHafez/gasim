@@ -57,7 +57,7 @@ const initialState = [
   },
   {
     tabType: tabTypes.FA,
-    title: "NFAtoRE STUB",
+    title: "FSAtoRE STUB",
     model: new FSAModel(machineExamples.elmFSAtoRE),
   },
 ];
