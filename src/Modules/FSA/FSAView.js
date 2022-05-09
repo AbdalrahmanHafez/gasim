@@ -42,6 +42,7 @@ function FSAView({ model, updateModel }) {
 
     conversionBus.on(eventTypes.NFAtoRE, (NFAtoREModel) => {
       console.log("FSAView recived conversion model ", NFAtoREModel);
+      NFAtoREModel.alertVerify();
       setNFAtoREModel(NFAtoREModel);
       setWhatToShowRightPanel(2);
     });

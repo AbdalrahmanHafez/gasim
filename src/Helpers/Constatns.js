@@ -3,6 +3,8 @@ export const baseurl = "http://localhost:5050/";
 
 export const symbols = {
   epsilon: "ε",
+  lamda: "λ",
+  empty: "Ø",
   rectangle: "▢",
   arrow: "→",
 };
@@ -285,6 +287,35 @@ export class machineExamples {
         { data: { id: "q1q3", source: "q1", target: "q3", label: "ε" } },
         { data: { id: "q0q2", source: "q0", target: "q2", label: "a" } },
         { data: { id: "q2q3", source: "q2", target: "q3", label: "c" } },
+      ],
+    };
+  }
+
+  static get elmFSAtoRE() {
+    return {
+      nodes: [
+        {
+          data: { id: "q0", name: "q0", inital: true, final: false },
+        },
+        {
+          data: { id: "q1", name: "q1", inital: false, final: false },
+        },
+        {
+          data: { id: "q3", name: "q3", inital: false, final: false },
+        },
+        {
+          data: { id: "q2", name: "q2", inital: false, final: false },
+        },
+        {
+          data: { id: "q4", name: "q4", inital: false, final: true },
+        },
+      ],
+      edges: [
+        { data: { id: "q0q1", source: "q0", target: "q1", label: "a" } },
+        { data: { id: "q1q3", source: "q1", target: "q3", label: "b" } },
+        { data: { id: "q1q2", source: "q1", target: "q2", label: "c" } },
+        { data: { id: "q3q4", source: "q3", target: "q4", label: "d" } },
+        { data: { id: "q2q4", source: "q2", target: "q4", label: "d" } },
       ],
     };
   }

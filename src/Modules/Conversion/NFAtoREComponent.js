@@ -5,12 +5,21 @@ import { Button, Input } from "antd";
 
 function NFAtoREComponent({ model }) {
   const [inputValue, setInputValue] = useState("Loading...");
+  const CY_ID = `cy-${uuidv4()}`;
+  const cy = useRef(null);
 
   useEffect(() => {
     async function fetchData() {
       console.log("[NFAtoREcomponent] useEffect");
+      cy.current = injectEmptyCy(CY_ID);
+      addElementsToCy(cy.current, model.FSAModel.elements);
 
-      const resultREexp = await model.convert();
+      const resultREexp = model.convert(cy.current);
+
+      console.log("NFAtoRE result is ", resultREexp);
+
+      cy.current.layout({ name: "cose" }).run();
+
       setInputValue(resultREexp);
     }
 
@@ -18,8 +27,10 @@ function NFAtoREComponent({ model }) {
   }, []);
 
   return (
-    <Input value={inputValue} />
-    // <Input value={inputValue} onChange={(e) => setInputValue(e.target.value)} />
+    <>
+      <Input value={inputValue} />
+      <div id={CY_ID} className="cy"></div>;
+    </>
   );
 }
 

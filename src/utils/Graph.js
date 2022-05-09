@@ -869,3 +869,7 @@ export const verifyOnlyOneFinalState = (cyinst) => {
   }
   return true;
 };
+
+export const getFinalNodes = (cy) => {
+  return cy.$("node[?final]");
+};

@@ -55,6 +55,11 @@ const initialState = [
     title: "NFA STUB",
     model: new FSAModel(elm1),
   },
+  {
+    tabType: tabTypes.FA,
+    title: "NFAtoRE STUB",
+    model: new FSAModel(machineExamples.elmFSAtoRE),
+  },
 ];
 // { tabType: tabTypes.FA, title: "NFA 1", showConversion: false },
 // { tabType: tabTypes.FA, title: "NFA 2" },
