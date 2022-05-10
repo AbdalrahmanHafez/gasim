@@ -802,8 +802,18 @@ export const parsePDAEdgeLabel = (label) => {
   // TODO: not true that its only 3 chars forex
   // "ε , Z ; SZ
 
-  assert(label.length === 3, "label must be a 3 characters");
-  const [symbol, pop, push] = label.split("");
+  // assert(label.length === 3, "label must be a 3 characters");
+  // const [symbol, pop, push] = label.split("");
+
+  const symbol = label[0];
+  const pop = label[1];
+  const push = label.substring(2);
+
+  // This is for PDAtoGR
+  // const symbol = label[0] === "ε" ? "" : label[0];
+  // const pop = label[1] === "ε" ? "" : label[1];
+  // const push = label.substring(2).replace("ε", "");
+
   return { symbol, pop, push };
 };
 // TODO: TM Label

@@ -51,8 +51,8 @@ function PDAView({ model, updateModel }) {
     console.log("clicked start simulation PDA");
     console.log("choosen", choiceStepping);
 
-    const userInputString = "abc";
-    // const userInputString = prompt("Enter input string");
+    // const userInputString = "abc";
+    const userInputString = prompt("Enter input string");
 
     try {
       simulation.current = new PDASimulation(

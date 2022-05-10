@@ -9,6 +9,7 @@ function PDAtoGRComponent({ model }) {
   useEffect(() => {
     console.log("[REtoNFACompoenn] useEffect");
 
+    model.checkValid();
     model.convert(setDisplayedGRModel);
   }, []);
 

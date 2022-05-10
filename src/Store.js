@@ -30,6 +30,8 @@ let elmTM3 = machineExamples.elmTM3;
 addLabelDataForExampleElements(elmTM, tabTypes.TM);
 addLabelDataForExampleElements(elmTM2, tabTypes.TM);
 addLabelDataForExampleElements(elmTM3, tabTypes.TM);
+let elmPDAtoGR = machineExamples.elmPDAtoGR;
+addLabelDataForExampleElements(elmPDAtoGR, tabTypes.PDA);
 
 const initialState = [
   {
@@ -45,6 +47,11 @@ const initialState = [
   { title: "TM 1 STUB", tabType: tabTypes.TM, model: new TMModel(elmTM, 2) },
   { title: "TM 2 STUB", tabType: tabTypes.TM, model: new TMModel(elmTM2, 1) },
   { title: "TM 3 STUB", tabType: tabTypes.TM, model: new TMModel(elmTM3, 2) },
+  {
+    tabType: tabTypes.PDA,
+    title: "PDAtoGR STUB",
+    model: new PDAModel(elmPDAtoGR),
+  },
   {
     tabType: tabTypes.PDA,
     title: "PDA STUB",
