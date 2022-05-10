@@ -23,6 +23,14 @@ function REView({ model, updateModel }) {
     // Conversion event from menu bar
     conversionBus.on(eventTypes.REtoNFA, (REtoNFAModel) => {
       console.log("REView recived conversion model ", REtoNFAModel);
+
+      // Verify inputs
+      const input = REtoNFAModel.REModel.inputRegex;
+      if (typeof input !== "string" && input.trim() === "") {
+        alert("Please enter a none empty regular expression");
+        return;
+      }
+
       setREtoNFAModel(REtoNFAModel);
     });
   }, []);

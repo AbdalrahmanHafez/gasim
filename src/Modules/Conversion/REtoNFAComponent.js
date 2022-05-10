@@ -12,6 +12,8 @@ function REtoNFAComponent({ model }) {
     cy.current = injectEmptyCy(CY_ID);
 
     model.convert(cy.current);
+
+    cy.current.layout({ name: "cose" }).run();
   }, []);
 
   return <div id={CY_ID} className="cy"></div>;
