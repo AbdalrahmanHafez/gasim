@@ -197,11 +197,21 @@ export default class REtoNFA {
     // 			JOptionPane.ERROR_MESSAGE);
     // 	return;
     // }
+
+    if (this.action !== 0) {
+      return;
+    }
+
     this.action = this.#requiredAction(transition.data("label"));
+    if (this.action === 0) {
+      return;
+    }
+
     this.transition = transition;
     this.todo.delete(transition);
     const label = transition.data("label");
     // console.log("action is", this.action);
+    // console.log("transitionCheck action is ", this.action);
 
     switch (this.action) {
       case this.DEPARENS: {
@@ -253,13 +263,13 @@ export default class REtoNFA {
 
         break;
       default:
-        throw new Error("unrechable");
     }
 
     this.#nextStep();
   }
 
   #completeStep() {
+    // console.log("in completestep action is ", this.action);
     if (this.action === 0) {
       const it = this.todo.values();
       const edge = it.next().value;
@@ -268,6 +278,7 @@ export default class REtoNFA {
 
     const fromNode = this.transition.source();
     const toNode = this.transition.target();
+
     switch (this.action) {
       case this.DEPARENS:
         // Probably a deparenthesization, or whatever.
@@ -317,10 +328,9 @@ export default class REtoNFA {
         this.#lambda(fromNode, toNode);
         this.#lambda(toNode, fromNode);
         break;
-
       default:
-        throw new Error("unreachable");
     }
+
     this.transitionNeeded = 0;
     this.#nextStep();
   }
@@ -360,8 +370,7 @@ export default class REtoNFA {
     //   case DESTAR:
     //     convertPane.mainLabel.setText("De-staring " + transition.getLabel());
     //     break;
-    //   default:
-    //     throw new Error("unreachable");
+    //  default:
     // }
   }
 
@@ -411,10 +420,16 @@ export default class REtoNFA {
     // End of constructor
 
     while (this.action !== 0 || this.todo.size > 0) {
-      console.log("action", this.action, " todo", this.todo);
+      // console.log("loop action", this.action);
+      // console.log("todo values");
+      // for (let value of this.todo.values()) {
+      // console.log(value);
+      // }
+
       this.#completeStep();
     }
 
-    window.step = () => this.#completeStep();
+    // Debug
+    // window.step = () => this.#completeStep();
   }
 }

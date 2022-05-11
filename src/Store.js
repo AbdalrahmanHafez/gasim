@@ -37,7 +37,7 @@ const initialState = [
   {
     title: "RegEx STUB",
     tabType: tabTypes.RE,
-    model: new REModel("ab*c"),
+    model: new REModel("ab*(c)"),
   },
   {
     title: "Grammar STUB",

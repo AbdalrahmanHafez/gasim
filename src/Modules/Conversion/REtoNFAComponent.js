@@ -14,7 +14,7 @@ function REtoNFAComponent({ model }) {
     model.convert(cy.current);
 
     cy.current.layout({ name: "cose" }).run();
-  }, []);
+  }, [model]);
 
   return <div id={CY_ID} className="cy"></div>;
 }

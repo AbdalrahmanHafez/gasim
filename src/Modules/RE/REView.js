@@ -33,6 +33,9 @@ function REView({ model, updateModel }) {
 
       setREtoNFAModel(REtoNFAModel);
     });
+
+    // Debug auto click on Convert RE to NFA
+    // conversionBus.dispatch(eventTypes.REtoNFA, new REtoNFA(new REModel(input)));
   }, []);
 
   const handleBtnConvert = () => {
