@@ -10,10 +10,16 @@ import { Set, is } from "immutable";
 export default class NFAtoDFA {
   constructor(FSAModel) {
     this.FSAModel = FSAModel;
+    this.dstCy = null;
+  }
+
+  get exportResult() {
+    return this.dstCy.json().elements;
   }
 
   convert(dstCy) {
     const srcCy = createHeadlessCy(this.FSAModel.elements);
+    this.dstCy = dstCy;
 
     console.log("Converting NFA to DFA");
     const scy = srcCy;

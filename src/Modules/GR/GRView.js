@@ -4,6 +4,9 @@ import { Table, Input, Button, Popconfirm, Form, Space, Checkbox } from "antd";
 import GRModel from "./GRModel";
 import { conversionBus, eventTypes } from "../../Events";
 import { GRtoPDAComponent } from "../Conversion";
+import ExportButton from "../../components/ExportButton";
+import tabTypes from "../../enums/tabTypes";
+import { PDAModel } from "../PDA";
 
 const Epsilonify = (value) => (value ? value : "ε");
 const Deepsilonify = (value) => (value === "ε" ? "" : value);
@@ -131,8 +134,14 @@ function GRView({ model, updateModel }) {
     if (idxToShow === 1)
       // TODO: style span the avaible width
       return (
-        <div style={{ minWidth: "60em" }}>
-          <GRtoPDAComponent model={GRtoPDAModel} />
+        <div>
+          <ExportButton
+            tabObj={{ title: "Result GRtoPDA", tabType: tabTypes.PDA }}
+            modelEvalFn={() => new PDAModel(GRtoPDAModel.exportResult)}
+          />
+          <div style={{ minWidth: "60em" }}>
+            <GRtoPDAComponent model={GRtoPDAModel} />
+          </div>
         </div>
       );
 

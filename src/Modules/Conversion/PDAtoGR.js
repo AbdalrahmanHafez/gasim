@@ -26,6 +26,12 @@ export default class PDAtoGR {
 
     this.MAP = new Map();
     this.UNIQUE_ID = 0;
+
+    this.resultGRModel = null;
+  }
+
+  get exportResult() {
+    return this.resultGRModel;
   }
 
   checkValid() {
@@ -422,6 +428,7 @@ export default class PDAtoGR {
     console.log(grammar);
 
     const newGrammar = new GRModel(grammar.map((prod) => [prod.lhs, prod.rhs]));
+    this.resultGRModel = newGrammar;
     setDisplayedGRModel(newGrammar);
   }
 }

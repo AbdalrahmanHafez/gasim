@@ -25,6 +25,10 @@ export default class REtoNFA {
     this.transitionNeeded = 0;
   }
 
+  get exportResult() {
+    return this.cy.json().elements;
+  }
+
   #delambda(string) {
     return string === symbols.lamda ? "" : string;
   }

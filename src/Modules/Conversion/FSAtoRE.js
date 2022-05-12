@@ -13,6 +13,12 @@ export default class FSAtoRE {
   constructor(FSAModel) {
     this.FSAModel = FSAModel;
     this.cy = null; // filled during convert()
+
+    this.result = null;
+  }
+
+  get exportResult() {
+    return this.result;
   }
 
   alertVerify() {
@@ -334,6 +340,7 @@ export default class FSAtoRE {
     this.#convertToGTG();
 
     const result = this.#getExpressionFromGTG();
+    this.result = result;
 
     return result;
   }

@@ -5,6 +5,8 @@ import { FSAModel } from "../FSA";
 import { REtoNFA, REtoNFAComponent } from "../Conversion";
 import { conversionBus, eventTypes } from "../../Events";
 import REModel from "./REModel";
+import ExportButton from "../../components/ExportButton";
+import tabTypes from "../../enums/tabTypes";
 
 // const CY_ID = "RE-to-NFA-CY";
 
@@ -61,7 +63,15 @@ function REView({ model, updateModel }) {
 
       {/* <FSAComponent cyref={cy} model={CreatedFSAModel} /> */}
 
-      {REtoNFAModel !== null && <REtoNFAComponent model={REtoNFAModel} />}
+      {REtoNFAModel !== null && (
+        <div>
+          <ExportButton
+            tabObj={{ title: "Result REtoNFA", tabType: tabTypes.FA }}
+            modelEvalFn={() => new FSAModel(REtoNFAModel.exportResult)}
+          />
+          <REtoNFAComponent model={REtoNFAModel} />
+        </div>
+      )}
     </>
   );
 }

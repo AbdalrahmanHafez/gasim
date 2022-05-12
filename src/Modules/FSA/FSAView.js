@@ -10,6 +10,10 @@ import { clearHighlighted, highlightConfigs } from "../../utils";
 import { conversionBus, eventTypes } from "../../Events";
 import NFAtoDFAComponent from "../Conversion/NFAtoDFAComponent";
 import { FSAtoREComponent } from "../Conversion";
+import ExportButton from "../../components/ExportButton";
+import tabTypes from "../../enums/tabTypes";
+import FSAModel from "./FSAModel";
+import { REModel } from "../RE";
 
 const simulationOptions = [
   steppingStrategies.STEP_BY_STATE,
@@ -115,12 +119,31 @@ function FSAView({ model, updateModel }) {
         );
 
       case 1:
-        return <NFAtoDFAComponent model={NFAtoDFAModel} />;
+        return (
+          <div>
+            <ExportButton
+              tabObj={{
+                title: "Result NFAtoDFA",
+                tabType: tabTypes.FA,
+              }}
+              modelEvalFn={() => new FSAModel(NFAtoDFAModel.exportResult)}
+            />
+
+            <NFAtoDFAComponent model={NFAtoDFAModel} />
+          </div>
+        );
 
       case 2:
         return (
           <div>
             <label>The resulting Regular Expression</label>
+            <ExportButton
+              tabObj={{
+                title: "Result NFAtoRE",
+                tabType: tabTypes.RE,
+              }}
+              modelEvalFn={() => new REModel(FSAtoREModel.exportResult)}
+            />
             <FSAtoREComponent model={FSAtoREModel} />
           </div>
         );

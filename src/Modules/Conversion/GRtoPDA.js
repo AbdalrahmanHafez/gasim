@@ -1,10 +1,17 @@
 export default class GRtoPDA {
   constructor(GRModel) {
     this.GRModel = GRModel;
+    this.dstCy = null;
+  }
+
+  get exportResult() {
+    return this.dstCy.json().elements;
   }
 
   convert(dstCy) {
+    this.dstCy = dstCy;
     const dataToProductions = (data) => data.map((row) => [row.from, row.to]);
+
     const getRHSTerminals = (productions) => {
       const terminals = new Set();
       const rhs = productions

@@ -80,8 +80,18 @@ const Store = ({ children }) => {
   const [activeTabKey, setActiveTabKey] = useState(forcedSelectedTab);
   // null means is not any tab is selected
 
+  const _addUniqueLabel = (baseLabel) => {
+    const existCount = store.filter((tab) =>
+      tab.title.includes(baseLabel)
+    ).length;
+    if (existCount === 0) return baseLabel;
+    return baseLabel + " " + existCount;
+  };
+
   const addTab = (info) => {
     console.log("[Utility] addTab");
+
+    info.title = _addUniqueLabel(info.title);
     const newStore = [...store, info];
     setStore(newStore);
 

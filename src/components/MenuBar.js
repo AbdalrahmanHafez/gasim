@@ -27,21 +27,13 @@ function MenuBar({ activeTabKey, setActiveTabKey }) {
   // If no tab selectd, currentTabInfo is null
   const currentTabInfo = activeTabKey === null ? null : store[activeTabKey];
 
-  const addUniqueLabel = (baseLabel) => {
-    const existCount = store.filter((tab) =>
-      tab.title.includes(baseLabel)
-    ).length;
-    if (existCount === 0) return baseLabel;
-    return baseLabel + " " + existCount;
-  };
-
   const handleNewMenu = (e) => {
     const { value } = e;
     switch (value) {
       case "FSA":
         addTab({
           tabType: tabTypes.FA,
-          title: addUniqueLabel("Finite State Automata"),
+          title: "Finite State Automata",
           model: new FSAModel([]),
         });
         break;
@@ -55,42 +47,42 @@ function MenuBar({ activeTabKey, setActiveTabKey }) {
       case "TMtape1":
         addTab({
           tabType: tabTypes.TM,
-          title: addUniqueLabel("Turing Machine 1T"),
+          title: "Turing Machine 1T",
           model: new TMModel([], 1),
         });
         break;
       case "TMtape2":
         addTab({
           tabType: tabTypes.TM,
-          title: addUniqueLabel("Turing Machine 2T"),
+          title: "Turing Machine 2T",
           model: new TMModel([], 2),
         });
         break;
       case "TMtape3":
         addTab({
           tabType: tabTypes.TM,
-          title: addUniqueLabel("Turing Machine 3T"),
+          title: "Turing Machine 3T",
           model: new TMModel([], 3),
         });
         break;
       case "TMtapeN":
         addTab({
           tabType: tabTypes.TM,
-          title: addUniqueLabel("Turing Machine nt"),
+          title: "Turing Machine nt",
           model: new TMModel([], +prompt("How many Tapes would you like?", 4)),
         });
         break;
       case "GR":
         addTab({
           tabType: tabTypes.GR,
-          title: addUniqueLabel("Grammar"),
+          title: "Grammar",
           model: new GRModel([]),
         });
         break;
       case "RE":
         addTab({
           tabType: tabTypes.RE,
-          title: addUniqueLabel("Regular Expression"),
+          title: "Regular Expression",
           model: new REModel(""),
         });
         break;

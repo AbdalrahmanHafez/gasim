@@ -14,6 +14,9 @@ import {
 } from "../../utils";
 import { conversionBus, eventTypes } from "../../Events";
 import { PDAtoGRComponent } from "../Conversion";
+import ExportButton from "../../components/ExportButton";
+import tabTypes from "../../enums/tabTypes";
+import { GRModel } from "../GR";
 
 const simulationOptions = [
   steppingStrategies.STEP_BY_STATE,
@@ -111,7 +114,16 @@ function PDAView({ model, updateModel }) {
         />
       );
 
-    if (idxToShow === 1) return <PDAtoGRComponent model={PDAtoGRModel} />;
+    if (idxToShow === 1)
+      return (
+        <div>
+          <ExportButton
+            tabObj={{ title: "Result PDAtoGR", tabType: tabTypes.GR }}
+            modelEvalFn={() => PDAtoGRModel.exportResult}
+          />
+          <PDAtoGRComponent model={PDAtoGRModel} />
+        </div>
+      );
   }
 
   return (
