@@ -2,10 +2,12 @@ import TabsController from "./components/TabsController";
 import { useStoreActions } from "easy-peasy";
 import { useEffect, useContext, useState } from "react";
 import MenuBar from "./components/MenuBar";
+import { StoreContext } from "./Store";
 
 function App() {
   console.log("[APP] render");
-  const [activeTabKey, setActiveTabKey] = useState(0);
+
+  const { activeTabKey, setActiveTabKey } = useContext(StoreContext);
 
   useEffect(() => {
     console.log("[APP] useEffect");

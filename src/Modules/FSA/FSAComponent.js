@@ -9,8 +9,6 @@ function FSAComponent({ cyref, model, updateModel }) {
   const CY_ID = `cy-${uuidv4()}`;
   const LabelHandler = useRef(null);
 
-  const [store, setStore] = useContext(StoreContext);
-
   console.log("[FSAComponent] render");
   console.log("model is ", model);
 

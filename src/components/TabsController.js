@@ -37,7 +37,11 @@ const $ = window.jQuery;
 //   }
 // }
 export default function TabsController({ activeTabKey, setActiveTabKey }) {
-  const [store, setstore] = useContext(StoreContext);
+  const {
+    store,
+    setstore,
+    storeActions: { removeTab },
+  } = useContext(StoreContext);
 
   // const tabs = useStoreState((state) => state.tabs);
   // const activeTab = useStoreState((state) => state.activeTab);
@@ -63,19 +67,32 @@ export default function TabsController({ activeTabKey, setActiveTabKey }) {
 
   console.log("[TabsController] Rendered");
 
+  const handleTabEdit = (targetTabNr, action) => {
+    // Adding a tab, happens directly from menueBar, to the store directly
+    if (action === "remove") removeTab(targetTabNr);
+    else
+      throw new Error("unknown action in handleTabEdit() inside tabController");
+  };
+
   return (
     <>
       <Tabs
-        activeKey={activeTabKey.toString()}
-        onChange={(nKey) => setActiveTabKey(+nKey)}
+        hideAdd
+        activeKey={activeTabKey === null ? null : activeTabKey.toString()}
+        onChange={(nKey) => {
+          console.log("new nkey", nKey);
+          setActiveTabKey(+nKey);
+        }}
         style={{ margin: "0px 7px" }}
+        type="editable-card"
+        onEdit={handleTabEdit}
       >
         {store.map((tab, index) => {
           // TODO: Dynamic Tabs
           const info = store[index];
 
           return (
-            <TabPane tab={info.title} key={index}>
+            <TabPane tab={info.title} key={index} closable={true}>
               <div id={"tab-" + index}>
                 <ContentContainer
                   tabIdx={index}

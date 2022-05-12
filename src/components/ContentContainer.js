@@ -10,7 +10,7 @@ import { StoreContext } from "../Store";
 function ContentContainer({ tabInfo }) {
   const { tabType } = tabInfo;
 
-  const [Store, setStore] = useContext(StoreContext);
+  const { Store, setStore } = useContext(StoreContext);
 
   const updateModel = (newModel) => {
     // this function is here, because the Content Container knows about the current tab, finds it in the store, and updates its model

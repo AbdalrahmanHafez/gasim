@@ -68,23 +68,6 @@ const initialState = [
     model: new FSAModel(machineExamples.elmFSAtoRE),
   },
 ];
-// { tabType: tabTypes.FA, title: "NFA 1", showConversion: false },
-// { tabType: tabTypes.FA, title: "NFA 2" },
-// { tabType: tabTypes.FA, title: "NFA 3" },
-// { tabType: tabTypes.PDA, title: "PDA" },
-// { tabType: tabTypes.TM, title: "MTTM" },
-// { tabType: tabTypes.TM, title: "TM" },
-// { tabType: tabTypes.TM, title: "Enum" },
-// { tabType: tabTypes.IFD, simType: tabTypes.FA, title: "IFD" },
-// {
-//   tabType: tabTypes.FA,
-//   title: "NFA Conversion",
-//   showConversion: false,
-// },
-// { tabType: tabTypes.GR, title: "Grammar" },
-// { tabType: tabTypes.GR, title: "GrammarToPDA" },
-// { tabType: tabTypes.PDA, title: "PDAtoGrammar" },
-// { tabType: tabTypes.RE, title: "RE" },
 
 export const StoreContext = React.createContext();
 export const UtilityContext = React.createContext();
@@ -92,15 +75,38 @@ export const UtilityContext = React.createContext();
 const Store = ({ children }) => {
   const [store, setStore] = useState(initialState);
 
+  const initalSelectedTab = store.length - 1 < 0 ? null : store.length - 1;
+  const forcedSelectedTab = 0;
+  const [activeTabKey, setActiveTabKey] = useState(forcedSelectedTab);
+  // null means is not any tab is selected
+
   const addTab = (info) => {
     console.log("[Utility] addTab");
-    setStore((prev) => [...prev, info]);
+    const newStore = [...store, info];
+    setStore(newStore);
+
+    const newActiveIdx = newStore.length - 1;
+    setActiveTabKey(newActiveIdx);
   };
 
-  const storeActions = { addTab };
+  const removeTab = (tabNr) => {
+    console.log("[Utility] removeTab");
+    const newStore = [...store];
+    newStore.splice(tabNr, 1);
+    setStore(newStore);
+
+    // stay on the same idx if possible, otherwise select one before the removed one
+    const newActiveIdx =
+      newStore.length - 1 < activeTabKey ? activeTabKey - 1 : activeTabKey;
+    setActiveTabKey(newActiveIdx < 0 ? null : newActiveIdx);
+  };
+
+  const storeActions = { addTab, removeTab };
 
   return (
-    <StoreContext.Provider value={[store, setStore, storeActions]}>
+    <StoreContext.Provider
+      value={{ activeTabKey, setActiveTabKey, store, setStore, storeActions }}
+    >
       {/* <UtilityContext.Provider value={{ addTab }}> */}
       {children}
       {/* </UtilityContext.Provider> */}

@@ -18,8 +18,14 @@ import { GRtoPDA, FSAtoRE, PDAtoGR, REtoNFA } from "../Modules/Conversion";
 import { tabTypeToConversionOptions } from "../utils";
 
 function MenuBar({ activeTabKey, setActiveTabKey }) {
-  const [store, setStore, { addTab }] = useContext(StoreContext);
-  const currentTabInfo = store[activeTabKey];
+  const {
+    store,
+    setStore,
+    storeActions: { addTab },
+  } = useContext(StoreContext);
+
+  // If no tab selectd, currentTabInfo is null
+  const currentTabInfo = activeTabKey === null ? null : store[activeTabKey];
 
   const addUniqueLabel = (baseLabel) => {
     const existCount = store.filter((tab) =>
@@ -98,6 +104,8 @@ function MenuBar({ activeTabKey, setActiveTabKey }) {
 
   const handleConvertMenu = ({ value }) => {
     switch (value) {
+      case "ignore":
+        return;
       case tabTypes.NFAtoDFA:
         conversionBus.dispatch(
           eventTypes.NFAtoDFA,
@@ -285,11 +293,15 @@ function MenuBar({ activeTabKey, setActiveTabKey }) {
         }
         onItemClick={handleConvertMenu}
       >
-        {tabTypeToConversionOptions(currentTabInfo.tabType).map(
-          (option, idx) => (
-            <MenuItem key={idx} value={option}>
-              {option}
-            </MenuItem>
+        {currentTabInfo === null ? (
+          <MenuItem value="ignore">Add new Machine to convert</MenuItem>
+        ) : (
+          tabTypeToConversionOptions(currentTabInfo.tabType).map(
+            (option, idx) => (
+              <MenuItem key={idx} value={option}>
+                {option}
+              </MenuItem>
+            )
           )
         )}
         {/* <MenuItem value={tabTypes.NFAtoDFA}>NFA to DFA</MenuItem>

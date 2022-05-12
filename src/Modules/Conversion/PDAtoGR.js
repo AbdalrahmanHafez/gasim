@@ -29,6 +29,13 @@ export default class PDAtoGR {
   }
 
   checkValid() {
+    /** Rules
+      must pop 1 push 0 or 2
+		  transition to final must pop only Z
+		  can only be only one final state
+		
+        Errors: might not be able to represent it uniqly
+     */
     // TODO:
     // Graph validity checks
 
