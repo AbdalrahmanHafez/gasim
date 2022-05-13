@@ -1,4 +1,5 @@
 import TMConfig from "./TMConfig";
+import { symbols } from "../Helpers/Constatns";
 
 export default class TMTape {
   constructor(input) {
@@ -9,7 +10,9 @@ export default class TMTape {
   }
 
   #putElm(elm, position) {
-    this.elements[position] = elm;
+    if (elm === symbols.blank_replacement_tm_tape) {
+      this.elements[position] = undefined;
+    } else this.elements[position] = elm;
   }
 
   get toString() {

@@ -7,6 +7,7 @@ export const symbols = {
   empty: "Ø",
   rectangle: "▢",
   arrow: "→",
+  blank_replacement_tm_tape: "\\",
 };
 Object.freeze(symbols);
 
