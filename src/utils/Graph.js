@@ -435,6 +435,8 @@ export const injectEmptyCy = (cyId, options = {}) => {
       // console.log("dclick on node");
       // Clicked on a Node
       const node = event.target;
+      if (!node.isNode()) return;
+
       const newName = prompt("Enter new name", node.data("name"));
       if (!newName || newName?.trim() === "") {
         return;
@@ -443,6 +445,10 @@ export const injectEmptyCy = (cyId, options = {}) => {
       node.data("name", newName);
     }
   });
+
+  // document.addEventListener("keydown", function (event) {
+  //   console.log("keydown", event);
+  // });
 
   // Context Menu
 
@@ -697,6 +703,17 @@ export const injectEmptyCy = (cyId, options = {}) => {
         },
         hasTrailingDivider: true,
       },
+
+      {
+        id: "layout",
+        content: "Layout Graph",
+        tooltipText: "Layout Graph",
+        coreAsWell: true,
+        onClickFunction: function (event) {
+          cy.layout({ name: "cose" }).run();
+        },
+        hasTrailingDivider: true,
+      },
     ],
   });
 
@@ -802,7 +819,7 @@ cytoscape("core", "toolbar", function (eh, options) {
 
   const cy = this;
 
-  const rtn = cy.popper({
+  const popperElm = cy.popper({
     content: () => {
       const button = document.createElement("button");
 
@@ -866,6 +883,11 @@ cytoscape("core", "toolbar", function (eh, options) {
       ],
     },
   });
+
+  // cy.on("destroy", function () {
+  //   console.log("Destroying popper")
+  //   popperElm.destroy();
+  // });
 
   return this;
 });
