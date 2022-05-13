@@ -8,10 +8,11 @@ import {
 } from "@ant-design/icons";
 import "antd/dist/antd.css";
 import tabTypes from "../../enums/tabTypes.js";
+import { getNodeFromId } from "../../utils/Graph.js";
 
 const DEFAULT_PLAY_SPEED = 20;
 
-const SimCard = ({ config }) => {
+const SimCard = ({ config, simulation }) => {
   return (
     <div
       className={
@@ -19,7 +20,9 @@ const SimCard = ({ config }) => {
         (config.winstate ? "won" : config.winstate === undefined ? "" : "lost")
       }
     >
-      <div className="simCardHeader">state: {config.stateId}</div>
+      <div className="simCardHeader">
+        state: {simulation.getStateDisplayName(config.stateId)}
+      </div>
       <div className="simCardProgress">
         {config.strDone}
         <strong>{config.strRem}</strong>
@@ -28,7 +31,7 @@ const SimCard = ({ config }) => {
   );
 };
 
-function SimPanel({ isFastRun, configs, onStepAll, onReset }) {
+function SimPanel({ isFastRun, simulation, onStepAll, onReset }) {
   const [running, toggleRunning, setRunInterval] = useFastrun(
     onStepAll,
     DEFAULT_PLAY_SPEED
@@ -64,8 +67,8 @@ function SimPanel({ isFastRun, configs, onStepAll, onReset }) {
           <UndoOutlined />
         </button>
       </div>
-      {configs.map((config, index) => (
-        <SimCard key={index} config={config} />
+      {simulation.configs.map((config, index) => (
+        <SimCard key={index} simulation={simulation} config={config} />
       ))}
     </>
   );

@@ -112,7 +112,7 @@ function FSAView({ model, updateModel }) {
         return (
           <SimPanel
             isFastRun={stFastRunChecked[0]}
-            configs={simulation.current.configs}
+            simulation={simulation.current}
             onStepAll={hanldeStepAll}
             onReset={handleResetSimulation}
           />

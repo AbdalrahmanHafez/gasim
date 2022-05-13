@@ -402,9 +402,47 @@ export const injectEmptyCy = (cyId, options = {}) => {
     // promptLabel_for_new_edge(addedEdge, this.tabType);
   });
 
-  // Event Handlers
-  //   setLabelEvents(cy, this.tabType);
   //   TODO:
+  // ===== { Event Handlers } =====
+  cy.on("dbltap", function (event) {
+    // console.log(event);
+    if (event.target === cy) {
+      // console.log("dclick on bg");
+      // Clicked on the Background
+
+      // TODO: addnode function is the same  thhein the context menue down
+
+      const nodesCount = cy.nodes().length;
+      const nodeName = "q" + nodesCount;
+      var data = {
+        group: "nodes",
+        id: nodeName,
+        label: nodeName,
+        inital: false,
+        final: false,
+      };
+
+      var pos = event.position || event.cyPosition;
+
+      cy.add({
+        data: data,
+        position: {
+          x: pos.x,
+          y: pos.y,
+        },
+      });
+    } else {
+      // console.log("dclick on node");
+      // Clicked on a Node
+      const node = event.target;
+      const newName = prompt("Enter new name", node.data("name"));
+      if (!newName || newName?.trim() === "") {
+        return;
+      }
+
+      node.data("name", newName);
+    }
+  });
 
   // Context Menu
 

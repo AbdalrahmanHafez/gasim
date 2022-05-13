@@ -18,6 +18,12 @@ export default class Simulation {
     this.steppingStrategy = steppingStrategy;
   }
 
+  getStateDisplayName(stateId) {
+    const nodeName = getNodeFromId(this.cy, stateId).data("name");
+    if (nodeName === undefined || nodeName === null) return stateId;
+    return stateId + (nodeName === stateId ? "" : ` (${nodeName})`);
+  }
+
   getNextConfigs(config) {
     throw new Error("Method 'getNextConfig()' must be implemented.");
   }

@@ -10,6 +10,7 @@ export default class Config {
 
     this.takenEdges = undefined; // used for highlighting
   }
+
   get nextSymbol() {
     return this.strRem[0];
   }

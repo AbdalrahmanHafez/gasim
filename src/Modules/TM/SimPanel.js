@@ -38,7 +38,7 @@ const TM_Highlight_Head = (tape) => {
   return rendered;
 };
 
-const SimCard = ({ config }) => {
+const SimCard = ({ config, simulation }) => {
   return (
     <div
       className={
@@ -46,7 +46,9 @@ const SimCard = ({ config }) => {
         (config.winstate ? "won" : config.winstate === undefined ? "" : "lost")
       }
     >
-      <div className="simCardHeader">state: {config.stateId}</div>
+      <div className="simCardHeader">
+        state: {simulation.getStateDisplayName(config.stateId)}
+      </div>
       {config.tapes.map((tape, idx) => (
         <div key={idx} className="simCardProgress">
           {TM_Highlight_Head(tape)}
@@ -56,7 +58,7 @@ const SimCard = ({ config }) => {
   );
 };
 
-function SimPanel({ isFastRun, configs, onStepAll, onReset }) {
+function SimPanel({ isFastRun, simulation, onStepAll, onReset }) {
   const [running, toggleRunning, setRunInterval] = useFastrun(
     onStepAll,
     DEFAULT_PLAY_SPEED
@@ -92,8 +94,8 @@ function SimPanel({ isFastRun, configs, onStepAll, onReset }) {
           <UndoOutlined />
         </button>
       </div>
-      {configs.map((config, index) => (
-        <SimCard key={index} config={config} />
+      {simulation.configs.map((config, index) => (
+        <SimCard key={index} config={config} simulation={simulation} />
       ))}
     </>
   );
