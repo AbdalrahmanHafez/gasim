@@ -7,10 +7,23 @@ import tabTypes from "../enums/tabTypes";
 cytoscape.use(edgehandles);
 cytoscape.use(contextMenus);
 cytoscape.use(popper);
+
 // cytoscape.use(edgeEditing);
 // edgeEditing(cytoscape, $, konva); // register extension
 
-export const injectEmptyCy = (cyId) => {
+/**
+ * @method injectEmptyCy
+ * @param {String} cyId
+ * @param {Object} options
+ * @return {Object} cytoscape_objet
+ */
+export const injectEmptyCy = (cyId, options = {}) => {
+  /**  Options Docs:
+   * canAddEdge: bool
+   *
+   *
+   *  */
+
   //   elements.edges?.forEach((edge) => {
   //     edge.data = {
   //       ...edge.data,
@@ -178,9 +191,6 @@ export const injectEmptyCy = (cyId) => {
       // rows: 1,
     },
     wheelSensitivity: 0.3,
-    // ready: function () {
-    //   cy.toolbar();
-    // },
     ready: (e) => {
       // console.log("what is that", e);
       // this.cyinstances.push(e.cy);
@@ -262,6 +272,8 @@ export const injectEmptyCy = (cyId) => {
     noEdgeEventsInDraw: true, // set events:no to edges during draws, prevents mouseouts on compounds
     disableBrowserGestures: true, // during an edge drawing gesture, disable browser gestures such as two-finger trackpad swipe and pinch-to-zoom
   });
+
+  cy.toolbar(eh, options);
 
   // document
   //   .querySelector("#draw-on")
@@ -354,27 +366,27 @@ export const injectEmptyCy = (cyId) => {
     popperNode = null;
   };
 
-  cy.on("mouseover", "node", function (e) {
-    setHandleOn(e.target);
-  });
+  // cy.on("mouseover", "node", function (e) {
+  //   setHandleOn(e.target);
+  // });
 
-  cy.on("grab", "node", function () {
-    removeHandle();
-  });
+  // cy.on("grab", "node", function () {
+  //   removeHandle();
+  // });
 
-  cy.on("tap", function (e) {
-    if (e.target === cy) {
-      removeHandle();
-    }
-  });
+  // cy.on("tap", function (e) {
+  //   if (e.target === cy) {
+  //     removeHandle();
+  //   }
+  // });
 
-  cy.on("zoom pan", function () {
-    removeHandle();
-  });
+  // cy.on("zoom pan", function () {
+  //   removeHandle();
+  // });
 
-  cy.container().addEventListener("mouseup", function (e) {
-    stop();
-  });
+  // cy.container().addEventListener("mouseup", function (e) {
+  //   stop();
+  // });
 
   cy.on("ehstart", function () {
     started = true;
@@ -741,6 +753,84 @@ export const createHeadlessCy = (elements = []) => {
 
   return cy;
 };
+
+cytoscape("core", "toolbar", function (eh, options) {
+  // console.log("toolbar recived", eh);
+  // console.log("options", options);
+
+  if (options.canAddEdge === false) {
+    return this;
+  }
+
+  const cy = this;
+
+  const rtn = cy.popper({
+    content: () => {
+      const button = document.createElement("button");
+
+      button.classList.add("ant-btn");
+      button.classList.add("ant-btn-round");
+      // button.classList.add("ant-btn-primary");
+      button.classList.add("ant-btn-default");
+
+      const icon = document.createElement("img");
+      icon.setAttribute(
+        "src",
+        "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAABmJLR0QA/wD/AP+gvaeTAAACZElEQVR4nO2aP2gUQRSHv/MiXgQVMY0xdoIo2In4pwnpQpp0CcZSQQRBBG0VbFJYKNYaArEQJIW2aSRFYiVCtI1N0CKJglEMxovFKBx6l+ybeTOzS94HW90y+/t+x9292VswDMMwDMMwjB1JLXeALegGDnoce4BDRS/SpRq5GA3gCi7kViINz/U/KmSMzgjwE9iMcCwk9AgiVgmzKSVCiVHCC0mAXQoSITwDLgEbimt+lpycuwDQL6FyBYBuCZUsAFwJNxXW+SI5uUwF7AVGFdZZlZxclgJ2A8+B8wpriT4CZaAGTKD3M3ghbfxw7qM7B5xMGz+M2+hPgoeTGgQwBjTRL8B3E5WUIeLsA76nlPDlDLCGvvwmsJTQw4sTwDL+gvPAddzE2O71d+lU5BwBPuAvPwPs+7NWp11kabfCB4C3+MtP4YalVtqVINoKp6Ib9874yj+k88T6bwmTsSR8qQPT+Ik3gbsFrtFawgPd+GHUgMf4yW8AlwXX+lvCHaXsKozjJ/8NNydIGQGuBadW4gZ+8svA2YDrlmIKHAV+IZdfAk5lyKvKAPADufx74GiGvKqcBr4il38N9GTIq8ox4BNy+Ze4W2GVphdYRC4/yf/TXeXYD7zBb7or8z/ThWgAr5BPd7dyhNWmjruLK5FfBy7mCBuDR8jk14DBLEkjcA+Z/ApwLkvSCFxFJr8IHM+SNALDdL4V1e5YAPqyJI1AP7IRdw7Bg0pV4AnF5acpya5MkzrwlO3lJ8jz5FkStithPF+0dLQroYnOgw2VobWEddytqB1HF+6LcSB3EMMwDMMwDMOT3y4gNcfshNEXAAAAAElFTkSuQmCC"
+      );
+      icon.setAttribute("width", 20);
+      icon.setAttribute("height", 20);
+
+      button.append(icon);
+
+      button.onclick = () => {
+        // toolbarData.canConnect = true;
+        // console.log("new data is", eh);
+        console.log("was ", eh.drawMode);
+        const isTransitioning = eh.drawMode;
+        if (isTransitioning) {
+          eh.disableDrawMode();
+          button.classList.remove("ant-btn-primary");
+          button.classList.add("ant-btn-default");
+          icon.setAttribute(
+            "src",
+            "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAABmJLR0QA/wD/AP+gvaeTAAACZElEQVR4nO2aP2gUQRSHv/MiXgQVMY0xdoIo2In4pwnpQpp0CcZSQQRBBG0VbFJYKNYaArEQJIW2aSRFYiVCtI1N0CKJglEMxovFKBx6l+ybeTOzS94HW90y+/t+x9292VswDMMwDMMwjB1JLXeALegGDnoce4BDRS/SpRq5GA3gCi7kViINz/U/KmSMzgjwE9iMcCwk9AgiVgmzKSVCiVHCC0mAXQoSITwDLgEbimt+lpycuwDQL6FyBYBuCZUsAFwJNxXW+SI5uUwF7AVGFdZZlZxclgJ2A8+B8wpriT4CZaAGTKD3M3ghbfxw7qM7B5xMGz+M2+hPgoeTGgQwBjTRL8B3E5WUIeLsA76nlPDlDLCGvvwmsJTQw4sTwDL+gvPAddzE2O71d+lU5BwBPuAvPwPs+7NWp11kabfCB4C3+MtP4YalVtqVINoKp6Ib9874yj+k88T6bwmTsSR8qQPT+Ik3gbsFrtFawgPd+GHUgMf4yW8AlwXX+lvCHaXsKozjJ/8NNydIGQGuBadW4gZ+8svA2YDrlmIKHAV+IZdfAk5lyKvKAPADufx74GiGvKqcBr4il38N9GTIq8ox4BNy+Ze4W2GVphdYRC4/yf/TXeXYD7zBb7or8z/ThWgAr5BPd7dyhNWmjruLK5FfBy7mCBuDR8jk14DBLEkjcA+Z/ApwLkvSCFxFJr8IHM+SNALDdL4V1e5YAPqyJI1AP7IRdw7Bg0pV4AnF5acpya5MkzrwlO3lJ8jz5FkStithPF+0dLQroYnOgw2VobWEddytqB1HF+6LcSB3EMMwDMMwDMOT3y4gNcfshNEXAAAAAElFTkSuQmCC"
+          );
+        } else {
+          eh.enableDrawMode();
+          button.classList.remove("ant-btn-default");
+          button.classList.add("ant-btn-primary");
+          icon.setAttribute(
+            "src",
+            "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAABmJLR0QA/wD/AP+gvaeTAAACk0lEQVR4nO2aO2gVQRiFz2jEG0VFYuOrE8TCTkStJJ2ksbtBLSwUxEJE0FbBJiCIwU5QCWgRCCkUrGwkhaQSQWxjI4r4Ah8kmNzPYlXCZW+yMzuPuzgf3OoO/3/OYWd3Zhgpk8lkMplMJpP5LzGpBfQCGJS01eG33hgzVLXPgF/ZqwO0JJ2VNKSVjbQcW7yzGRw9AGPMPPBB0s1A/T/bDF4TQMCqGGMmJZ2StBig/BebwUkCkIKG0IwApGAhNCcAKUgIzQpA8h5C8wKQ/oVwyUOprzaD+yYAYIOkUQ+l+v8z2A2wTtKUpCMeyjVrCgBG0h1JxzyVbFYAkm5IOu2xnlUASQGu4J/tqX1VAjgJdAIE4LqJigcwAvwKYP6nrZbo7wDgoKRJhdkJWs//qAEA+yQ9kbTRscSspAuSlnr8b7UIigqwE3hT4/F+Cmz6U6tN+RSaSe2zFGAL8LKG+QcUi6XlNctCeJTKY0+AQWCmhvlxoHSqloQwEdvfigBrgWlH4x3gWoUey0O4FcNXJQAD3HU0vwicsej1N4SrIT1ZAYw5mv8BjDj0awPnQ3ixBrjoaP4jcKhG3/SrQGAUWHIw/xbYn1p/LYBhYN7B/Gtgd2r9tQAOAN8czM8C21LrrwWwB3jvYP4xxVFYcwF2AHMO5ifoWt01DmAz8MLB/DjFUVhzAVrAM0vjHeByau21oVjiTlmaXwBOpNbuBeC2pfnvgK9T37QA1y3NfwIOp9btBeCcpfk5YG9q3V4AjlPs0qryCtiVWrcXgKPYLXGfA5UvKvU9wD0L89P0w67MJxSfvYcVzN8Hol+8ikKFEMZSawxOjxA6gI+LDc2gK4QFoJ1aU3SAAYoX43BqLZlMJpPJZDIZR34DQu4sGS0sKqoAAAAASUVORK5CYII="
+          );
+        }
+
+        console.log("now it's ", eh.drawMode);
+      };
+
+      // div.append(button);
+
+      // document.body.appendChild(div);
+      document.body.appendChild(button);
+
+      return button;
+    },
+    popper: {
+      placement: "right-start",
+      modifiers: [
+        {
+          name: "offset",
+          options: {
+            offset: [+5, +1],
+          },
+        },
+      ],
+    },
+  });
+
+  return this;
+});
 
 export const addElementsToCy = (cy, elements) => {
   cy.add(elements);
