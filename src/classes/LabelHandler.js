@@ -16,6 +16,11 @@ export default class LabelHandler {
       content: () => {
         let div = document.createElement("div");
         div.classList.add("popperInputContainer");
+        div.addEventListener("focusout", (event) => {
+          console.log("focusout event triggered", event);
+          console.log("this is ", this);
+          this.handleInputOutFocus();
+        });
 
         const generatedMasks = this.getInputMasks(edge);
         inputMasks = generatedMasks;
@@ -105,6 +110,7 @@ export default class LabelHandler {
 
     cy.on("tap pan zoom", (e) => {
       if (e.target === cy) {
+        // clicked on the background
         this.handleInputOutFocus();
       }
     });
