@@ -2,7 +2,7 @@ import React, { useContext } from "react";
 import { Menu, MenuItem, MenuButton, SubMenu } from "@szhsin/react-menu";
 import "@szhsin/react-menu/dist/index.css";
 import "@szhsin/react-menu/dist/transitions/slide.css";
-
+import { Space, Divider } from "antd";
 import FSAModel from "../Modules/FSA/FSAModel";
 import { grammarExamples, machineExamples } from "../Helpers/Constatns";
 import { StoreContext, UtilityContext } from "../Store";
@@ -16,6 +16,9 @@ import NFAtoDFA from "../Modules/Conversion/NFAtoDFA";
 import { conversionBus, eventTypes } from "../Events";
 import { GRtoPDA, FSAtoRE, PDAtoGR, REtoNFA } from "../Modules/Conversion";
 import { tabTypeToConversionOptions } from "../utils";
+
+const openMenuClasses =
+  "rounded-sm border-white-500 hover:bg-gray-200 px-2 mx-1";
 
 function MenuBar({ activeTabKey, setActiveTabKey }) {
   const {
@@ -256,13 +259,9 @@ function MenuBar({ activeTabKey, setActiveTabKey }) {
   };
 
   return (
-    <div style={{ display: "flex" }}>
+    <div className="flex bg-gradient-to-t from-gray-100">
       <Menu
-        menuButton={
-          <MenuButton style={{ border: "none", background: "transparent" }}>
-            New
-          </MenuButton>
-        }
+        menuButton={<MenuButton className={openMenuClasses}>New</MenuButton>}
         onItemClick={handleNewMenu}
       >
         <MenuItem value="FSA">Finite State Automaton</MenuItem>
@@ -279,9 +278,7 @@ function MenuBar({ activeTabKey, setActiveTabKey }) {
 
       <Menu
         menuButton={
-          <MenuButton style={{ border: "none", background: "transparent" }}>
-            Convert
-          </MenuButton>
+          <MenuButton className={openMenuClasses}>Convert</MenuButton>
         }
         onItemClick={handleConvertMenu}
       >
@@ -306,18 +303,11 @@ function MenuBar({ activeTabKey, setActiveTabKey }) {
             })()}
           </>
         )}
-        {/* <MenuItem value={tabTypes.NFAtoDFA}>NFA to DFA</MenuItem>
-        <MenuItem value={tabTypes.GRtoPDA}>Grammar to PDA</MenuItem>
-        <MenuItem value={tabTypes.FSAtoRE}>NFA to Regex</MenuItem>
-        <MenuItem value={tabTypes.REtoNFA}>RE to NFA</MenuItem>
-        <MenuItem value={tabTypes.PDAtoGR}>PDA to GR</MenuItem> */}
       </Menu>
 
       <Menu
         menuButton={
-          <MenuButton style={{ border: "none", background: "transparent" }}>
-            Examples
-          </MenuButton>
+          <MenuButton className={openMenuClasses}>Examples</MenuButton>
         }
         onItemClick={handleExamplesMenu}
       >
