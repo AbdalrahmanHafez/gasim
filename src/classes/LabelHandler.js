@@ -95,7 +95,13 @@ export default class LabelHandler {
   }
 
   attatchEventListeners(cy) {
-    cy.on("dbltap", "edge", (e) => this.displayInputs(e.target));
+    cy.on("dbltap", "edge", (e) => {
+      // console.log(cy.data("options"));
+      const graphOptions = cy.data("options");
+      if (graphOptions.editable === false) return;
+
+      this.displayInputs(e.target);
+    });
 
     cy.on("tap pan zoom", (e) => {
       if (e.target === cy) {

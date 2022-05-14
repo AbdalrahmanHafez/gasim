@@ -34,6 +34,7 @@ let elmPDAtoGR = machineExamples.elmPDAtoGR;
 addLabelDataForExampleElements(elmPDAtoGR, tabTypes.PDA);
 
 const initialState = [
+  // { title: "deleteme" },
   {
     title: "RegEx STUB",
     tabType: tabTypes.RE,

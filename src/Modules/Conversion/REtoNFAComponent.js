@@ -9,7 +9,7 @@ function REtoNFAComponent({ model }) {
 
   useEffect(() => {
     console.log("[REtoNFACompoenn] useEffect");
-    cy.current = injectEmptyCy(CY_ID);
+    cy.current = injectEmptyCy(CY_ID, { editable: false });
 
     model.convert(cy.current);
 

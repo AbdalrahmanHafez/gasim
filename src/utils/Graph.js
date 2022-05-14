@@ -2,6 +2,7 @@ import cytoscape from "cytoscape";
 import popper from "cytoscape-popper";
 import edgehandles from "cytoscape-edgehandles";
 import contextMenus from "cytoscape-context-menus";
+import "cytoscape-context-menus/cytoscape-context-menus.css";
 import tabTypes from "../enums/tabTypes";
 
 cytoscape.use(edgehandles);
@@ -18,8 +19,13 @@ cytoscape.use(popper);
  * @return {Object} cytoscape_objet
  */
 export const injectEmptyCy = (cyId, options = {}) => {
+  const defaultOptions = {
+    editable: true,
+  };
+  options = { ...defaultOptions, ...options };
+  // console.log("optoins are ", options);
   /**  Options Docs:
-   * canAddEdge: bool
+   * editable: bool
    *
    *
    *  */
@@ -195,6 +201,9 @@ export const injectEmptyCy = (cyId, options = {}) => {
       // console.log("what is that", e);
       // this.cyinstances.push(e.cy);
       // this.cy = e.cy;
+
+      // Save the options insdoe the cy object
+      cy.data("options", options);
 
       if (!window.cyinst) window.cyinst = [];
       window.cyinst.push(e.cy);
@@ -406,6 +415,8 @@ export const injectEmptyCy = (cyId, options = {}) => {
   // ===== { Event Handlers } =====
   cy.on("dbltap", function (event) {
     // console.log(event);
+    if (options.editable === false) return;
+
     if (event.target === cy) {
       // console.log("dclick on bg");
       // Clicked on the Background
@@ -493,7 +504,8 @@ export const injectEmptyCy = (cyId, options = {}) => {
       cy.edges().unselect();
     }
   };
-  var contextMenu = cy.contextMenus({
+
+  const contextMenu = cy.contextMenus({
     menuItems: [
       {
         id: "setFinalState",
@@ -717,6 +729,27 @@ export const injectEmptyCy = (cyId, options = {}) => {
     ],
   });
 
+  // Based on givin optiosn what menus should be shown or hidden
+
+  console.log("the options are ", options);
+  if (options.editable === false) {
+    console.log("graph options editable false, hidding the add context menu");
+
+    contextMenu.hideMenuItem("add-node");
+    contextMenu.hideMenuItem("remove");
+    contextMenu.hideMenuItem("setFinalState");
+    contextMenu.hideMenuItem("setInitalState");
+
+    // contextMenu.removeMenuItem("add-node");
+    // contextMenu.removeMenuItem("remove");
+    // contextMenu.removeMenuItem("setFinalState");
+    // contextMenu.removeMenuItem("setInitalState");
+  }
+
+  const ctxmEx = window.ctxm || [];
+  // window.ctxm = [...ctxmEx, contextMenu];
+  window.ctxm = [...ctxmEx, cy.contextMenus("get")];
+
   // Edge Bending
 
   // cy.edgeEditing({
@@ -813,7 +846,7 @@ cytoscape("core", "toolbar", function (eh, options) {
   // console.log("toolbar recived", eh);
   // console.log("options", options);
 
-  if (options.canAddEdge === false) {
+  if (options.editable === false) {
     return this;
   }
 

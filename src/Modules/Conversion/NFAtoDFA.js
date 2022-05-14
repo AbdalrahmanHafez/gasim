@@ -143,7 +143,7 @@ export default class NFAtoDFA {
         });
       });
       uniqueLabels = uniqueLabels.remove("ε");
-      console.log("uniqueLabels", uniqueLabels.toJS());
+      // console.log("uniqueLabels", uniqueLabels.toJS());
 
       let moreToExplore = [];
       uniqueLabels.forEach((label) => {
@@ -152,9 +152,9 @@ export default class NFAtoDFA {
           label
         );
 
-        console.log("nodeseet", printId(nodeSet));
-        console.log("targetnodeset", printId(targetNodeSet));
-        console.log("label", label);
+        // console.log("nodeseet", printId(nodeSet));
+        // console.log("targetnodeset", printId(targetNodeSet));
+        // console.log("label", label);
         createTransitionNodeSet(nodeSet, targetNodeSet, label);
 
         moreToExplore.push(targetNodeSet);
@@ -166,7 +166,7 @@ export default class NFAtoDFA {
     let visited = []; // Set[] visited resultant nodes
 
     while (mte.length !== 0) {
-      console.count("EXPANDING");
+      // console.count("EXPANDING");
       mte = mte.flatMap((ns) => {
         let more,
           res = [];
@@ -177,8 +177,8 @@ export default class NFAtoDFA {
         return res;
       });
 
-      console.log("mte", printId(mte));
-      console.log("visited", printId(visited));
+      // console.log("mte", printId(mte));
+      // console.log("visited", printId(visited));
     }
 
     dcy.layout({ name: "cose" }).run();
