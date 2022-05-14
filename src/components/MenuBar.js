@@ -288,13 +288,23 @@ function MenuBar({ activeTabKey, setActiveTabKey }) {
         {currentTabInfo === null ? (
           <MenuItem value="ignore">Add new Machine to convert</MenuItem>
         ) : (
-          tabTypeToConversionOptions(currentTabInfo.tabType).map(
-            (option, idx) => (
-              <MenuItem key={idx} value={option}>
-                {option}
-              </MenuItem>
-            )
-          )
+          <>
+            {(() => {
+              const options = tabTypeToConversionOptions(
+                currentTabInfo.tabType
+              );
+              if (options.length === 0) {
+                return (
+                  <MenuItem value="ignore">No conversion options</MenuItem>
+                );
+              }
+              return options.map((option, idx) => (
+                <MenuItem key={idx} value={option}>
+                  {option}
+                </MenuItem>
+              ));
+            })()}
+          </>
         )}
         {/* <MenuItem value={tabTypes.NFAtoDFA}>NFA to DFA</MenuItem>
         <MenuItem value={tabTypes.GRtoPDA}>Grammar to PDA</MenuItem>
