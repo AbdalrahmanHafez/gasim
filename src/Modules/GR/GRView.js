@@ -35,10 +35,15 @@ function GRView({ model, updateModel }) {
 
   const handleBtnStart = async () => {
     console.log("Started");
+    const inputData = simUserInput.trim();
+
+    if (!model.isDerivable(inputData)) {
+      alert("The input is not derivable");
+      return;
+    }
 
     setSimRunning(true);
     // const grammar = new GRModel(dataToProductions(data));
-    const inputData = simUserInput.trim();
     const displayData = model.bruteForceTo(inputData);
     console.log("found the resutls");
     console.log(displayData);
