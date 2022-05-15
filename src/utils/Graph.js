@@ -900,7 +900,8 @@ cytoscape("core", "toolbar", function (eh, options) {
       // div.append(button);
 
       // document.body.appendChild(div);
-      document.body.appendChild(button);
+      // document.body.appendChild(button);
+      cy.container().appendChild(button);
 
       return button;
     },
