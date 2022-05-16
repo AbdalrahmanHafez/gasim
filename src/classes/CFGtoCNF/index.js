@@ -17,14 +17,14 @@ import { steps } from "./consts/consts";
 // import {cfg} from './consts/var16';
 // import {cfg} from './consts/sample'
 
-import { cfg } from "./consts/varTest";
+// import { cfg } from "./consts/varTest";
 
 const log = (stepCFG, stepMsg) => {
   console.log("\n\x1b[36m%s\x1b[0m", stepMsg);
   console.table(stepCFG);
 };
 // per step algorithm to convert CFG to CNF
-const main = () => {
+const main = (cfg) => {
   log(cfg, steps[0]);
   let step1 = updateStartSymbol(cfg);
   log(step1, steps[1]);
@@ -38,11 +38,16 @@ const main = () => {
   let step5 = normalizeToCNF(step4);
   log(step5, steps[5]);
 
+  if (step5 !== undefined && step5["S"] === undefined) {
+    step5["S"] = step4["S"];
+  }
+
   console.log("STEP5 is", JSON.stringify(step5));
 
   const ev = (v) => (Object.keys(v).length === 0 ? undefined : v);
-  const result =
-    ev(step5) || ev(step4) || ev(step3) || ev(step2) || ev(step1) || ev(cfg);
+  const result = ev(step5) || ev(step4) || ev(step3) || ev(step2) || ev(step1) || ev(cfg);
+  // const result = ev(step5);
+
   console.log("result", JSON.stringify(result));
 
   for (let key of Object.keys(result)) {

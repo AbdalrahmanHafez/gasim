@@ -39,7 +39,7 @@ function GRView({ model, updateModel }) {
 
     if (!model.isDerivable(inputData)) {
       alert("The input is not derivable");
-      return;
+      // return;
     }
 
     setSimRunning(true);
