@@ -360,4 +360,84 @@ export class grammarExamples {
       ["B", ""],
     ];
   }
+
+  static get g2() {
+    return [
+      ["S", "ASB"],
+      ["S", ""],
+      ["A", "aA"],
+      ["A", ""],
+      ["B", "bB"],
+      ["B", ""],
+    ];
+  }
+
+  static get g3() {
+    return [
+      ["S", "0S"],
+      ["S", "1S"],
+      ["S", ""],
+    ];
+  }
+
+  static get g4() {
+    return [
+      ["S", "B"],
+      ["B", "0B"],
+      ["B", "1B"],
+      ["B", ""],
+    ];
+  }
+
+  static get g5() {
+    return [
+      ["S", "ABCd"],
+      ["A", "BC"],
+      ["B", "bB"],
+      ["B", ""],
+      ["C", "cC"],
+      ["C", ""],
+    ];
+  }
+
+  static get g6() {
+    return [
+      ["S", "Aa"],
+      ["S", "B"],
+      ["A", "b"],
+      ["A", "B"],
+      ["B", "A"],
+      ["B", "a"],
+    ];
+  }
+
+  static get g7() {
+    return [
+      ["S", "aSa"],
+      ["S", "bSb"],
+      ["S", "c"],
+    ];
+  }
+
+  static get g8() {
+    return [
+      ["S", "aTb"],
+      ["S", "ab"],
+      ["aT", "aaTb"],
+      ["aT", "ac"],
+    ];
+  }
+
+  static get g9() {
+    return [
+      ["S", "ASB"],
+      ["S", ""],
+      ["A", "aAS"],
+      ["A", "a"],
+      ["A", ""],
+      ["B", "SbS"],
+      ["B", "A"],
+      ["B", "bb"],
+    ];
+  }
 }

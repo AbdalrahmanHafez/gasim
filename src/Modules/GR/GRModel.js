@@ -1,4 +1,5 @@
 import { default as cfgtocnf } from "../../classes/CFGtoCNF/index";
+import { hasEpsilon } from "../../classes/CFGtoCNF/utils";
 class ParseNode {
   constructor(derivation, productions, substiutions) {
     this.derivation = derivation;
@@ -138,9 +139,15 @@ export class GrammarParser {
 
   parse(input) {
     this.target = input;
+    let counter = 0;
     while (this.queue.length !== 0 && !this.paused) {
       console.log("Tick");
       this.#parse();
+
+      if (counter++ === 1000) {
+        alert("Infinite loop stopper!");
+        break;
+      }
     }
   }
 
@@ -331,8 +338,7 @@ export default class GRModel {
       }
     }
 
-    // console.log("TL is ", TL);
-    console.log("T is ", T);
+    // console.log("T is ", T);
 
     return T;
 
@@ -351,70 +357,361 @@ export default class GRModel {
       alreadyThere.push(toPush);
       cfg[prod[0]] = alreadyThere;
     });
-    console.log("cfg", cfg);
+    // console.log("input cfg is", cfg);
+
+    // TODO:
+    /**
+     *
+     * 1. if input string contains a non-terminal, then it is not derivable
+     * 2. if it's context free then run the checker, otherwise return notify the user
+     * 3. webworkers?
+     */
 
     let result = cfgtocnf(cfg);
+    console.log("result is ");
+    console.log(JSON.stringify(result));
+    // const result = JSON.parse(
+    //   '{"$":["0","1","ZS","ZS"],"S":["0","1","ZS","ZS"],"Z":["1"]}'
+    // );
+    // const result = JSON.parse(
+    //   '{"$":["0","1","ZS","XS"],"S":["0","1","ZS","XS"],"Z":["0"],"X":["1"]}'
+    // );
 
-    console.log("result is ", JSON.stringify(result));
+    // if (Object.keys(result).includes("$")) {
+    //   console.log("the results includes $, doing some work");
+    //   let alphabet = "abcdefghijklmnopqrstuvwxyz".toUpperCase().split("");
 
-    if (Object.keys(result).includes("$")) {
-      let alphabet = "abcdefghijklmnopqrstuvwxyz".toUpperCase().split("");
+    //   const updateAlphabet = (char) => {
+    //     if (char.toUpperCase() === char) {
+    //       // console.log("considering", char);
+    //       if (alphabet.includes(char)) {
+    //         // console.log("removing", char);
+    //         alphabet.splice(alphabet.indexOf(char), 1);
+    //       }
+    //     }
+    //   };
 
-      const updateAlphabet = (char) => {
-        if (char.toUpperCase() === char) {
-          // console.log("considering", char);
-          if (alphabet.includes(char)) {
-            // console.log("removing", char);
-            alphabet.splice(alphabet.indexOf(char), 1);
+    //   for (let key of Object.keys(result)) {
+    //     const arr = result[key];
+    //     updateAlphabet(key);
+    //     // console.log("starting key ", key);
+    //     // console.log("its array is ", arr);
+    //     for (let elm of arr) {
+    //       elm.split("").forEach((e) => updateAlphabet(e));
+    //     }
+    //   }
+
+    //   console.log("alphabet after is ", alphabet);
+
+    //   const renameKey = (from, to) => {
+    //     result = { ...result, [to]: result[from] };
+    //     delete result[from];
+    //   };
+
+    //   const ckey = alphabet.shift();
+    //   for (let i = 0; i < result["S"].length; i++) {
+    //     // S -> ..S..S ---> k -> ..k...k
+    //     const str = result["S"][i].replace("S", ckey);
+    //     result["S"][i] = str;
+    //   }
+
+    //   for (let i = 0; i < result["$"].length; i++) {
+    //     // $ -> ..S..S ---> $ -> ..k...k
+    //     const str = result["$"][i].replace("S", ckey);
+    //     result["$"][i] = str;
+    //   }
+
+    //   console.log("ckey", ckey);
+    //   renameKey("S", ckey);
+    //   renameKey("$", "S");
+
+    //   console.log("new result is ", result);
+    // }
+
+    // const grammar = {
+    //   S: ["AB"],
+    //   A: ["a"],
+    //   B: ["b"],
+    // };
+
+    const table = this.cykAlgo(targetString, result);
+
+    for (let arr of table[table.length - 1]) {
+      if (arr.includes("S")) {
+        // console.log("DERIVABLE");
+        return true;
+      }
+    }
+
+    // console.log("NOT DERIVABLE");
+    return false;
+  }
+
+  isDerivable2(targetString) {
+    const cfg = {};
+    this.productions.forEach((prod) => {
+      const alreadyThere = cfg[prod[0]] ? cfg[prod[0]] : [];
+      const toPush = prod[1] === "" ? "ε" : prod[1];
+      alreadyThere.push(toPush);
+      cfg[prod[0]] = alreadyThere;
+    });
+    console.log("input cfg is", cfg);
+
+    const CFGtoCNF = (cfg) => {
+      // ε
+
+      const getUniqueAlpha = (cfg) => {
+        let alphabet = "abcdefghijklmnopqrstuvwxyz".toUpperCase().split("");
+
+        const updateAlphabet = (char) => {
+          if (char.toUpperCase() === char) {
+            if (alphabet.includes(char)) {
+              alphabet.splice(alphabet.indexOf(char), 1);
+            }
+          }
+        };
+
+        for (let [key, arr] of Object.entries(cfg)) {
+          updateAlphabet(key);
+          for (let elm of arr) {
+            elm.split("").forEach((e) => updateAlphabet(e));
+          }
+        }
+
+        // console.log("alphabet after is ", alphabet);
+        const avAlpha = alphabet.shift();
+        return avAlpha;
+      };
+
+      const log = (cfg, msg = "") => {
+        let toPrint = "";
+        for (let [key, value] of Object.entries(cfg)) {
+          toPrint += `${key} -> ${value.join("|")}\n`;
+        }
+        // console.log(JSON.stringify(cfg, null, 1));
+
+        console.log(msg + "\n" + toPrint);
+      };
+
+      const newStartSymbol = (cfg) => {
+        for (let [value] of Object.values(cfg)) {
+          if (value.split("").includes("S")) {
+            // Generate new Start Symbol called $
+            cfg["$"] = ["S"];
+            return;
           }
         }
       };
 
-      for (let key of Object.keys(result)) {
-        const arr = result[key];
-        updateAlphabet(key);
-        // console.log("starting key ", key);
-        // console.log("its array is ", arr);
-        for (let elm of arr) {
-          elm.split("").forEach((e) => updateAlphabet(e));
-        }
-      }
+      const removeEpsilon = (cfg) => {
+        // Step 2. Eliminate null, unit and useless productions.
 
-      console.log("alphabet after is ", alphabet);
+        // TODO: 1. null productions
+        do {
+          const whoHasEpsion = (cfg) => {
+            for (let [key, arr] of Object.entries(cfg)) {
+              for (let string of arr) {
+                if (string.includes("ε") && string.length > 1) {
+                  console.log(
+                    `weird production lhs ${key} -> rhs ${string}, epsilon should not be placed next to other characters`
+                  );
+                }
+                if (string === "ε") {
+                  return key;
+                }
+              }
+            }
+            return null;
+          };
 
-      const renameKey = (from, to) => {
-        result = { ...result, [to]: result[from] };
-        delete result[from];
+          // debugger;
+          const hasEpsilon = whoHasEpsion(cfg);
+          if (!hasEpsilon) return;
+          // console.log(`hasEpsilon is ${hasEpsilon}`);
+
+          // on cfg replace rules with epsilon
+          for (let [key, arr] of Object.entries(cfg)) {
+            for (let str of arr) {
+              if (str.includes(hasEpsilon)) {
+                const toAdd = str.replace(hasEpsilon, "");
+                if (str.length === 1) {
+                  // A -> C ; C is hasEpsilon; then the rule A-> C --> A -> epsilon
+                  arr.push("ε");
+                } else {
+                  if (!arr.includes(toAdd)) arr.push(toAdd);
+                }
+              }
+            }
+          }
+
+          // Remove that epsilon from has epsilon
+          cfg[hasEpsilon] = cfg[hasEpsilon].filter((str) => str !== "ε");
+        } while (hasEpsilon);
       };
 
-      const ckey = alphabet.shift();
-      for (let i = 0; i < result["S"].length; i++) {
-        // S -> ..S..S ---> k -> ..k...k
-        const str = result["S"][i].replace("S", ckey);
-        result["S"][i] = str;
-      }
+      const removeUnit = (cfg) => {
+        // TODO: 2. unit productions
 
-      for (let i = 0; i < result["$"].length; i++) {
-        // $ -> ..S..S ---> $ -> ..k...k
-        const str = result["$"][i].replace("S", ckey);
-        result["$"][i] = str;
-      }
+        const addToKey = (cfg, key, toAdd) => {
+          const arr = cfg[key] || [];
+          arr.push(toAdd);
+          cfg[key] = arr;
+        };
 
-      console.log("ckey", ckey);
-      renameKey("S", ckey);
-      renameKey("$", "S");
+        const Guf = {};
+        const needWorkProductions = new Map();
+        // take only non unit rules; unit rules being A -> B vairable to variable
 
-      console.log("new result is ", result);
-    }
+        for (let [key, arr] of Object.entries(cfg)) {
+          for (let str of arr) {
+            if (str.length === 1 && str.toUpperCase() === str) {
+              // Leave it in cfg
+              needWorkProductions.set(key, str);
+            } else {
+              if (Guf[key]?.includes(str)) continue;
+              addToKey(Guf, key, str);
 
-    const grammar = {
-      S: ["AB"],
-      A: ["a"],
-      B: ["b"],
+              // remove it from cfg
+              // cfg[key] = cfg[key].filter((s) => s !== str);
+            }
+          }
+        }
+
+        const terminalCache = new Map();
+
+        const getTerminals = (variable) => {
+          if (terminalCache.has(variable)) {
+            return terminalCache.get(variable);
+          }
+
+          const done = [];
+          const foundTerminals = [];
+          const recurse = (variable) => {
+            const todoVariables = [];
+
+            for (let str of cfg[variable]) {
+              if (str.length === 1 && str.toUpperCase() === str) {
+                if (!done.includes(str)) todoVariables.push(str);
+              } else {
+                // Its a terminal, not a variable
+                foundTerminals.push(str);
+              }
+            }
+
+            done.push(variable);
+
+            todoVariables.forEach((v) => {
+              recurse(v);
+            });
+          };
+
+          recurse(variable);
+          terminalCache.set(variable, foundTerminals);
+
+          return foundTerminals;
+          console.log("temrinal cach is ", terminalCache);
+        };
+
+        for (let [key, variable] of needWorkProductions.entries()) {
+          const terminals = getTerminals(variable);
+          for (let terminal of terminals) {
+            // if not already there
+            if (Guf[key]?.includes(terminal)) continue;
+            addToKey(Guf, key, terminal);
+          }
+        }
+
+        // log(cfg, "cfg is");
+        // log(Guf, "Guf is");
+
+        // JS is weird stackoverflow.com/a/3638034/6243753
+
+        // Basically set cfg to Guf
+        for (let key of Object.keys(cfg)) delete cfg[key];
+        for (let key of Object.keys(Guf)) cfg[key] = Guf[key];
+      };
+
+      const terminalToNewVariable = (cfg) => {
+        // terminal that is not on the form not _ -> t
+        // _ -> aABC
+        // _ -> baa
+
+        const terminalToVarAssign = new Map();
+        for (let [key, arr] of Object.entries(cfg)) {
+          for (let [index, str] of arr.entries()) {
+            if (str.length !== 1) {
+              // _ -> aABC
+              const terminals = str
+                .split("")
+                .filter((c) => c.toLowerCase() === c);
+
+              for (let terminal of terminals) {
+                if (terminalToVarAssign.has(terminal)) {
+                  const knownVarable = terminalToVarAssign.get(terminal);
+                  cfg[key][index] = cfg[key][index].replace(
+                    terminal,
+                    knownVarable
+                  );
+                } else {
+                  const newVariable = getUniqueAlpha(cfg);
+                  cfg[key][index] = cfg[key][index].replace(
+                    terminal,
+                    newVariable
+                  );
+                  terminalToVarAssign.set(terminal, newVariable);
+                }
+                // console.log(terminalToVarAssign);
+              }
+            }
+          }
+        }
+
+        // Adding new Rules to corresponed to terminalToVarAssign
+        for (let [terminal, variable] of terminalToVarAssign.entries()) {
+          cfg[variable] = [terminal];
+        }
+      };
+
+      const eliminateMoreThanTwo = (cfg) => {
+        for (let [key, arr] of Object.entries(cfg)) {
+          for (let [index, str] of arr.entries()) {
+            while (cfg[key][index].length > 2) {
+              if (str.toLowerCase() === str)
+                throw new Error(
+                  "Expected only Variables to be of length more than 2, not also terminals"
+                );
+
+              const newVariable = getUniqueAlpha(cfg);
+
+              const took = str.slice(0, 2); // took the first two Variables
+              const left = str.slice(2);
+
+              cfg[key][index] = left;
+              cfg[newVariable] = [took];
+            }
+          }
+        }
+      };
+
+      // TODO: 3. useless productions
+      log(cfg, "original");
+      newStartSymbol(cfg);
+      log(cfg, "after new start symbol");
+      removeEpsilon(cfg);
+      log(cfg, "after removeEpsilon");
+      removeUnit(cfg);
+      log(cfg, "after removeUnit");
+      terminalToNewVariable(cfg); //step 3
+      log(cfg, "after terminalToNewVariable");
+      eliminateMoreThanTwo(cfg); //step 4
+      log(cfg, "after eliminateMoreThanTwo");
     };
 
-    const table = this.cykAlgo(targetString, result);
-    // this.cykAlgo("abcc", grammar);
+    CFGtoCNF(cfg); // modifies cfg
+
+    const table = this.cykAlgo("aeiuhb", cfg);
+    // const table = this.cykAlgo(targetString, cfg);
+
     for (let arr of table[table.length - 1]) {
       if (arr.includes("S")) {
         console.log("DERIVABLE");

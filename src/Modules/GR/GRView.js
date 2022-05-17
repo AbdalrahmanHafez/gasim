@@ -24,6 +24,9 @@ function GRView({ model, updateModel }) {
 
   const [GRtoPDAModel, setGRtoPDAModel] = useState(null);
   const [idxToShow, setIdxToShow] = useState(null);
+
+  const [cykIsDerivable, setCykIsDerivable] = useState(null);
+
   useEffect(() => {
     // Conversion event from menu bar
     conversionBus.on(eventTypes.GRtoPDA, (GRtoPDAModel) => {
@@ -33,12 +36,37 @@ function GRView({ model, updateModel }) {
     });
   }, []);
 
+  // TODO:
+  /**
+   * as the user types, run cyk on the input string, and show the result
+   * if the grammar produces epsilon, show a warning, the start variable derives lambda and it will be removed from the new grammar
+   * the cyk can't handle epsilon, so it will be removed from the grammar, if input length > 0
+   *
+   *
+   *
+   */
+
+  const handleOnchagneStringInput = (e) => {
+    const inputString = e.target.value.trim();
+
+    setSimUserInput(inputString);
+
+    if (inputString.length === 0) {
+      setCykIsDerivable(null);
+    } else {
+      const isDerivable = model.isDerivable(inputString);
+      console.log(isDerivable);
+      setCykIsDerivable(isDerivable);
+    }
+  };
+
   const handleBtnStart = async () => {
     console.log("Started");
-    const inputData = simUserInput.trim();
+    const inputData = simUserInput;
 
     if (!model.isDerivable(inputData)) {
-      alert("The input is not derivable");
+      alert("The input is not derivable, String rejected, CONTINEUING");
+
       // return;
     }
 
@@ -104,17 +132,18 @@ function GRView({ model, updateModel }) {
           <h4 style={{ margin: "auto" }}>{label_what_happens()}</h4>
           <Input
             value={simUserInput}
-            onChange={(e) => setSimUserInput(e.target.value)}
+            onChange={(e) => handleOnchagneStringInput(e)}
             placeholder="Enter target string"
             style={{ marginBottom: "0.40em" }}
           />
+
           <Space size="small">
             <Button
               type="primary"
               disabled={simRunning}
               onClick={handleBtnStart}
             >
-              Start
+              BruteForce
             </Button>
             <Button disabled={!simRunning} onClick={handleBtnPause}>
               Pause
@@ -126,6 +155,14 @@ function GRView({ model, updateModel }) {
               Step
             </Button>
             {/* <Checkbox>Show all</Checkbox> */}
+            <h4>
+              CYK algorithm:{" "}
+              {cykIsDerivable === null
+                ? "?"
+                : cykIsDerivable
+                ? "Derivable"
+                : "NOT Derivable"}
+            </h4>
           </Space>
           <Table
             pagination={false}
@@ -156,6 +193,29 @@ function GRView({ model, updateModel }) {
   return (
     <>
       <Button onClick={() => setIdxToShow(0)}>Simulate</Button>
+      <Button onClick={() => model.isDerivable("c")}>CNF</Button>
+      <Button
+        onClick={() => {
+          let isd = false;
+          const str = "000";
+          let changeCtr = -1;
+          for (let i = 0; i < 20; i++) {
+            const res = model.isDerivable(str);
+            console.log("isDerivable", res);
+            if (res !== isd) {
+              console.log("change");
+              changeCtr++;
+              isd = res;
+            }
+          }
+          console.log("changes = ", changeCtr);
+        }}
+      >
+        test derivable
+      </Button>
+      <Button onClick={() => model.isDerivable2("010")}>isDerivable2</Button>
+
+      {/* <Button onClick={() => model.isDerivable("ab")}>CNF</Button> */}
       <h5>
         leave cell empty to indicate 'ε'. First production must start with S
       </h5>

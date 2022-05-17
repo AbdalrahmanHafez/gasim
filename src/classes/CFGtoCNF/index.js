@@ -19,7 +19,9 @@ import { steps } from "./consts/consts";
 
 // import { cfg } from "./consts/varTest";
 
+const enableLog = false;
 const log = (stepCFG, stepMsg) => {
+  if (!enableLog) return;
   console.log("\n\x1b[36m%s\x1b[0m", stepMsg);
   console.table(stepCFG);
 };
@@ -38,20 +40,27 @@ const main = (cfg) => {
   let step5 = normalizeToCNF(step4);
   log(step5, steps[5]);
 
-  if (step5 !== undefined && step5["S"] === undefined) {
-    step5["S"] = step4["S"];
-  }
-
-  console.log("STEP5 is", JSON.stringify(step5));
+  // if (step5 !== undefined && step5["S"] === undefined) {
+  //   step5["S"] = step4["S"];
+  // }
 
   const ev = (v) => (Object.keys(v).length === 0 ? undefined : v);
-  const result = ev(step5) || ev(step4) || ev(step3) || ev(step2) || ev(step1) || ev(cfg);
+  const result =
+    ev(step5) || ev(step4) || ev(step3) || ev(step2) || ev(step1) || ev(cfg);
   // const result = ev(step5);
+  // const result = step5;
 
-  console.log("result", JSON.stringify(result));
+  if (enableLog) {
+    console.log("STEP5 is", JSON.stringify(step5));
 
-  for (let key of Object.keys(result)) {
-    console.log(`${key} -> ${result[key].join(" | ")}`);
+    if (result !== step5) {
+      console.log("[WARN] result is not step5");
+    }
+
+    console.log("result from CFGtoCNF", JSON.stringify(result));
+    for (let key of Object.keys(result)) {
+      console.log(`${key} -> ${result[key].join(" | ")}`);
+    }
   }
 
   return result;
