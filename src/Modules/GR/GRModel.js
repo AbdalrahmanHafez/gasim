@@ -448,6 +448,16 @@ export default class GRModel {
   }
 
   isDerivable2(targetString) {
+    const log = (cfg, msg = "") => {
+      let toPrint = "";
+      for (let [key, value] of Object.entries(cfg)) {
+        toPrint += `${key} -> ${value.join("|")}\n`;
+      }
+      // console.log(JSON.stringify(cfg, null, 1));
+
+      console.log(msg + "\n" + toPrint);
+    };
+
     const cfg = {};
     this.productions.forEach((prod) => {
       const alreadyThere = cfg[prod[0]] ? cfg[prod[0]] : [];
@@ -455,7 +465,8 @@ export default class GRModel {
       alreadyThere.push(toPush);
       cfg[prod[0]] = alreadyThere;
     });
-    console.log("input cfg is", cfg);
+    // console.log("input cfg is", cfg);
+    log(cfg, "input cfg is");
 
     const CFGtoCNF = (cfg) => {
       // ε
@@ -481,16 +492,6 @@ export default class GRModel {
         // console.log("alphabet after is ", alphabet);
         const avAlpha = alphabet.shift();
         return avAlpha;
-      };
-
-      const log = (cfg, msg = "") => {
-        let toPrint = "";
-        for (let [key, value] of Object.entries(cfg)) {
-          toPrint += `${key} -> ${value.join("|")}\n`;
-        }
-        // console.log(JSON.stringify(cfg, null, 1));
-
-        console.log(msg + "\n" + toPrint);
       };
 
       const newStartSymbol = (cfg) => {
@@ -559,14 +560,17 @@ export default class GRModel {
         };
 
         const Guf = {};
-        const needWorkProductions = new Map();
+        const needWorkProductions = []; //array of Maps [ {'S'->'A'} , {'S'->'B'} ]
         // take only non unit rules; unit rules being A -> B vairable to variable
 
         for (let [key, arr] of Object.entries(cfg)) {
           for (let str of arr) {
             if (str.length === 1 && str.toUpperCase() === str) {
               // Leave it in cfg
-              needWorkProductions.set(key, str);
+              // needWorkProductions.set(key, str);
+              const mapSet = new Map();
+              mapSet.set(key, str);
+              needWorkProductions.push(mapSet);
             } else {
               if (Guf[key]?.includes(str)) continue;
               addToKey(Guf, key, str);
@@ -585,7 +589,8 @@ export default class GRModel {
           }
 
           const done = [];
-          const foundTerminals = [];
+          const foundTerminals = []; //should be a set, but no problem since duplicates never insered twice
+
           const recurse = (variable) => {
             const todoVariables = [];
 
@@ -608,16 +613,19 @@ export default class GRModel {
           recurse(variable);
           terminalCache.set(variable, foundTerminals);
 
+          // console.log("temrinal cach is ", terminalCache);
           return foundTerminals;
-          console.log("temrinal cach is ", terminalCache);
         };
 
-        for (let [key, variable] of needWorkProductions.entries()) {
-          const terminals = getTerminals(variable);
-          for (let terminal of terminals) {
-            // if not already there
-            if (Guf[key]?.includes(terminal)) continue;
-            addToKey(Guf, key, terminal);
+        // console.log("need Work are ", needWorkProductions);
+        for (let map of needWorkProductions) {
+          for (let [key, variable] of map.entries()) {
+            const terminals = getTerminals(variable);
+            for (let terminal of terminals) {
+              // if not already there
+              if (Guf[key]?.includes(terminal)) continue;
+              addToKey(Guf, key, terminal);
+            }
           }
         }
 
@@ -694,6 +702,16 @@ export default class GRModel {
       };
 
       // TODO: 3. useless productions
+      // cfg = {
+      //   S: ["AB", "bB", "b", "aA", "a"],
+      //   A: ["aA", "a"],
+      //   B: ["bB", "b"],
+      // };
+
+      // S -> AB|[bB|b]|[aA|a]
+      // A -> aA|a
+      // B -> bB|b
+
       log(cfg, "original");
       newStartSymbol(cfg);
       log(cfg, "after new start symbol");
@@ -705,11 +723,15 @@ export default class GRModel {
       log(cfg, "after terminalToNewVariable");
       eliminateMoreThanTwo(cfg); //step 4
       log(cfg, "after eliminateMoreThanTwo");
+
+      return cfg;
     };
 
-    CFGtoCNF(cfg); // modifies cfg
+    const CNF_cfg = CFGtoCNF(cfg); // modifies cfg
 
-    const table = this.cykAlgo("aeiuhb", cfg);
+    log(CNF_cfg, "Final CFG after CNF");
+
+    const table = this.cykAlgo("bbbaaa", CNF_cfg);
     // const table = this.cykAlgo(targetString, cfg);
 
     for (let arr of table[table.length - 1]) {

@@ -43,12 +43,7 @@ const initialState = [
   {
     title: "Grammar g1 STUB",
     tabType: tabTypes.GR,
-    model: new GRModel(grammarExamples.g1),
-  },
-  {
-    title: "Grammar g2 STUB",
-    tabType: tabTypes.GR,
-    model: new GRModel(grammarExamples.g9),
+    model: new GRModel(grammarExamples.g10),
   },
   { title: "TM 1 STUB", tabType: tabTypes.TM, model: new TMModel(elmTM, 2) },
   { title: "TM 2 STUB", tabType: tabTypes.TM, model: new TMModel(elmTM2, 1) },
@@ -82,7 +77,7 @@ const Store = ({ children }) => {
   const [store, setStore] = useState(initialState);
 
   const initalSelectedTab = store.length - 1 < 0 ? null : store.length - 1;
-  const forcedSelectedTab = 2;
+  const forcedSelectedTab = 1;
   const [activeTabKey, setActiveTabKey] = useState(forcedSelectedTab);
   // null means is not any tab is selected
 

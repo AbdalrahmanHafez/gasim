@@ -440,4 +440,15 @@ export class grammarExamples {
       ["B", "bb"],
     ];
   }
+
+  static get g10() {
+    return [
+      ["S", "Aa"],
+      ["S", "B"],
+      ["A", "b"],
+      ["A", "B"],
+      ["B", "A"],
+      ["B", "a"],
+    ];
+  }
 }
