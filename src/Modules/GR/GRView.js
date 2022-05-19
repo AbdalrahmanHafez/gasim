@@ -64,10 +64,15 @@ function GRView({ model, updateModel }) {
     if (inputString.length === 0) {
       setCykIsDerivable(null);
     } else {
-      const isDerivable = model.isDerivable2(inputString);
-      // const isDerivable = model.isDerivable(inputString);
-      console.log(isDerivable);
-      setCykIsDerivable(isDerivable);
+      try {
+        const isDerivable = model.isDerivable2(inputString);
+
+        // const isDerivable = model.isDerivable(inputString);
+        console.log(isDerivable);
+        setCykIsDerivable(isDerivable);
+      } catch (error) {
+        alert(error);
+      }
     }
   };
 
@@ -231,7 +236,6 @@ function GRView({ model, updateModel }) {
       >
         test derivable
       </Button>
-      <Button onClick={() => model.isDerivable2("010")}>isDerivable2</Button>
 
       {/* <Button onClick={() => model.isDerivable("ab")}>CNF</Button> */}
       <h5>

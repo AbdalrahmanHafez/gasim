@@ -474,10 +474,16 @@ export default class GRModel {
       // ε
 
       const getUniqueAlpha = (cfg) => {
+        // TODO: the whole isDeriable depends on this, small set of variables 26 chars. consider a generic naming scheme
         let alphabet = "abcdefghijklmnopqrstuvwxyz".toUpperCase().split("");
 
         const updateAlphabet = (char) => {
           if (char.toUpperCase() === char) {
+            if (alphabet.length === 0)
+              throw new Error(
+                "Couldn't generate a unique variable for the CNF Grammar"
+              );
+
             if (alphabet.includes(char)) {
               alphabet.splice(alphabet.indexOf(char), 1);
             }
@@ -695,6 +701,10 @@ export default class GRModel {
         for (let [key, arr] of Object.entries(cfg)) {
           for (let [index, str] of arr.entries()) {
             while (cfg[key][index].length > 2) {
+              const str = cfg[key][index];
+
+              // console.log("elimMorethanTwo, ", str);
+
               if (str.toLowerCase() === str)
                 throw new Error(
                   "Expected only Variables to be of length more than 2, not also terminals"
