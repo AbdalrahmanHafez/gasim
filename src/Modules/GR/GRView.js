@@ -46,16 +46,6 @@ function GRView({ model, updateModel }) {
     });
   }, []);
 
-  // TODO:
-  /**
-   * as the user types, run cyk on the input string, and show the result
-   * if the grammar produces epsilon, show a warning, the start variable derives lambda and it will be removed from the new grammar
-   * the cyk can't handle epsilon, so it will be removed from the grammar, if input length > 0
-   *
-   *
-   *
-   */
-
   const handleOnchagneStringInput = (e) => {
     const inputString = e.target.value.trim();
 
@@ -65,9 +55,8 @@ function GRView({ model, updateModel }) {
       setCykIsDerivable(null);
     } else {
       try {
-        const isDerivable = model.isDerivable2(inputString);
+        const isDerivable = model.isDerivable(inputString);
 
-        // const isDerivable = model.isDerivable(inputString);
         console.log(isDerivable);
         setCykIsDerivable(isDerivable);
       } catch (error) {
@@ -80,8 +69,10 @@ function GRView({ model, updateModel }) {
     console.log("Started");
     const inputData = simUserInput;
 
-    if (!model.isDerivable2(inputData)) {
-      alert("The input is not derivable, String rejected, CONTINEUING");
+    if (!model.isDerivable(inputData)) {
+      alert(
+        "The input is not derivable, String rejected, continue with bruteforcing"
+      );
 
       // return;
     }
@@ -181,7 +172,7 @@ function GRView({ model, updateModel }) {
                 : "NOT Derivable"}
             </h4>
 
-            <Popover content="if start variable derives lambda, the grammar fed into CYK algo will not contain this produce lambda string">
+            <Popover content="if start variable derives lambda, the grammar fed into CYK algo will not contain this produced lambda string">
               <Text type="secondary" italic>
                 warnning
               </Text>
@@ -216,26 +207,6 @@ function GRView({ model, updateModel }) {
   return (
     <>
       <Button onClick={() => setIdxToShow(0)}>Simulate</Button>
-      <Button onClick={() => model.isDerivable("c")}>CNF</Button>
-      <Button
-        onClick={() => {
-          let isd = false;
-          const str = "000";
-          let changeCtr = -1;
-          for (let i = 0; i < 20; i++) {
-            const res = model.isDerivable(str);
-            console.log("isDerivable", res);
-            if (res !== isd) {
-              console.log("change");
-              changeCtr++;
-              isd = res;
-            }
-          }
-          console.log("changes = ", changeCtr);
-        }}
-      >
-        test derivable
-      </Button>
 
       {/* <Button onClick={() => model.isDerivable("ab")}>CNF</Button> */}
       <h5>

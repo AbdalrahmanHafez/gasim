@@ -1,5 +1,3 @@
-import { default as cfgtocnf } from "../../classes/CFGtoCNF/index";
-import { hasEpsilon } from "../../classes/CFGtoCNF/utils";
 import { isNumber } from "../../utils";
 
 class ParseNode {
@@ -352,104 +350,6 @@ export default class GRModel {
   }
 
   isDerivable(targetString) {
-    const cfg = {};
-    this.productions.forEach((prod) => {
-      const alreadyThere = cfg[prod[0]] ? cfg[prod[0]] : [];
-      const toPush = prod[1] === "" ? "ε" : prod[1];
-      alreadyThere.push(toPush);
-      cfg[prod[0]] = alreadyThere;
-    });
-    // console.log("input cfg is", cfg);
-
-    // TODO:
-    /**
-     *
-     * 1. if input string contains a non-terminal, then it is not derivable
-     * 2. if it's context free then run the checker, otherwise return notify the user
-     * 3. webworkers?
-     */
-
-    let result = cfgtocnf(cfg);
-    console.log("result is ");
-    console.log(JSON.stringify(result));
-    // const result = JSON.parse(
-    //   '{"$":["0","1","ZS","ZS"],"S":["0","1","ZS","ZS"],"Z":["1"]}'
-    // );
-    // const result = JSON.parse(
-    //   '{"$":["0","1","ZS","XS"],"S":["0","1","ZS","XS"],"Z":["0"],"X":["1"]}'
-    // );
-
-    // if (Object.keys(result).includes("$")) {
-    //   console.log("the results includes $, doing some work");
-    //   let alphabet = "abcdefghijklmnopqrstuvwxyz".toUpperCase().split("");
-
-    //   const updateAlphabet = (char) => {
-    //     if (char.toUpperCase() === char) {
-    //       // console.log("considering", char);
-    //       if (alphabet.includes(char)) {
-    //         // console.log("removing", char);
-    //         alphabet.splice(alphabet.indexOf(char), 1);
-    //       }
-    //     }
-    //   };
-
-    //   for (let key of Object.keys(result)) {
-    //     const arr = result[key];
-    //     updateAlphabet(key);
-    //     // console.log("starting key ", key);
-    //     // console.log("its array is ", arr);
-    //     for (let elm of arr) {
-    //       elm.split("").forEach((e) => updateAlphabet(e));
-    //     }
-    //   }
-
-    //   console.log("alphabet after is ", alphabet);
-
-    //   const renameKey = (from, to) => {
-    //     result = { ...result, [to]: result[from] };
-    //     delete result[from];
-    //   };
-
-    //   const ckey = alphabet.shift();
-    //   for (let i = 0; i < result["S"].length; i++) {
-    //     // S -> ..S..S ---> k -> ..k...k
-    //     const str = result["S"][i].replace("S", ckey);
-    //     result["S"][i] = str;
-    //   }
-
-    //   for (let i = 0; i < result["$"].length; i++) {
-    //     // $ -> ..S..S ---> $ -> ..k...k
-    //     const str = result["$"][i].replace("S", ckey);
-    //     result["$"][i] = str;
-    //   }
-
-    //   console.log("ckey", ckey);
-    //   renameKey("S", ckey);
-    //   renameKey("$", "S");
-
-    //   console.log("new result is ", result);
-    // }
-
-    // const grammar = {
-    //   S: ["AB"],
-    //   A: ["a"],
-    //   B: ["b"],
-    // };
-
-    const table = this.cykAlgo(targetString, result);
-
-    for (let arr of table[table.length - 1]) {
-      if (arr.includes("S")) {
-        // console.log("DERIVABLE");
-        return true;
-      }
-    }
-
-    // console.log("NOT DERIVABLE");
-    return false;
-  }
-
-  isDerivable2(targetString) {
     const log = (cfg, msg = "") => {
       let toPrint = "";
       for (let [key, value] of Object.entries(cfg)) {
@@ -555,7 +455,7 @@ export default class GRModel {
 
           // Remove that epsilon from has epsilon
           cfg[hasEpsilon] = cfg[hasEpsilon].filter((str) => str !== "ε");
-        } while (hasEpsilon);
+        } while (true);
       };
 
       const removeUnit = (cfg) => {
