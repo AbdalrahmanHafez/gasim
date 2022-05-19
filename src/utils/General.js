@@ -21,3 +21,15 @@ export function deepFreeze(object) {
 
   return Object.freeze(object);
 }
+
+export function isNumber(Object) {
+  if (typeof Object === "number") {
+    return true;
+  }
+
+  if (typeof Object === "string") {
+    return !isNaN(+Object);
+  }
+
+  return false;
+}

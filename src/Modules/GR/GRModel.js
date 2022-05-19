@@ -1,5 +1,7 @@
 import { default as cfgtocnf } from "../../classes/CFGtoCNF/index";
 import { hasEpsilon } from "../../classes/CFGtoCNF/utils";
+import { isNumber } from "../../utils";
+
 class ParseNode {
   constructor(derivation, productions, substiutions) {
     this.derivation = derivation;
@@ -565,7 +567,11 @@ export default class GRModel {
 
         for (let [key, arr] of Object.entries(cfg)) {
           for (let str of arr) {
-            if (str.length === 1 && str.toUpperCase() === str) {
+            if (
+              str.length === 1 &&
+              str.toUpperCase() === str &&
+              !isNumber(str)
+            ) {
               // Leave it in cfg
               // needWorkProductions.set(key, str);
               const mapSet = new Map();
@@ -594,8 +600,13 @@ export default class GRModel {
           const recurse = (variable) => {
             const todoVariables = [];
 
+            console.log("variable is ", variable);
             for (let str of cfg[variable]) {
-              if (str.length === 1 && str.toUpperCase() === str) {
+              if (
+                str.length === 1 &&
+                str.toUpperCase() === str &&
+                !isNumber(str)
+              ) {
                 if (!done.includes(str)) todoVariables.push(str);
               } else {
                 // Its a terminal, not a variable
@@ -617,7 +628,7 @@ export default class GRModel {
           return foundTerminals;
         };
 
-        // console.log("need Work are ", needWorkProductions);
+        console.log("need Work are ", needWorkProductions);
         for (let map of needWorkProductions) {
           for (let [key, variable] of map.entries()) {
             const terminals = getTerminals(variable);
@@ -731,7 +742,7 @@ export default class GRModel {
 
     log(CNF_cfg, "Final CFG after CNF");
 
-    const table = this.cykAlgo("bbbaaa", CNF_cfg);
+    const table = this.cykAlgo("0", CNF_cfg);
     // const table = this.cykAlgo(targetString, cfg);
 
     for (let arr of table[table.length - 1]) {

@@ -1,12 +1,22 @@
 import React, { useState, useRef, useEffect } from "react";
 import GRComponent from "./GRComponent";
-import { Table, Input, Button, Popconfirm, Form, Space, Checkbox } from "antd";
+import {
+  Table,
+  Input,
+  Button,
+  Popconfirm,
+  Form,
+  Space,
+  Typography,
+  Popover,
+} from "antd";
 import GRModel from "./GRModel";
 import { conversionBus, eventTypes } from "../../Events";
 import { GRtoPDAComponent } from "../Conversion";
 import ExportButton from "../../components/ExportButton";
 import tabTypes from "../../enums/tabTypes";
 import { PDAModel } from "../PDA";
+const { Text, Link } = Typography;
 
 const Epsilonify = (value) => (value ? value : "ε");
 const Deepsilonify = (value) => (value === "ε" ? "" : value);
@@ -54,7 +64,8 @@ function GRView({ model, updateModel }) {
     if (inputString.length === 0) {
       setCykIsDerivable(null);
     } else {
-      const isDerivable = model.isDerivable(inputString);
+      const isDerivable = model.isDerivable2(inputString);
+      // const isDerivable = model.isDerivable(inputString);
       console.log(isDerivable);
       setCykIsDerivable(isDerivable);
     }
@@ -64,7 +75,7 @@ function GRView({ model, updateModel }) {
     console.log("Started");
     const inputData = simUserInput;
 
-    if (!model.isDerivable(inputData)) {
+    if (!model.isDerivable2(inputData)) {
       alert("The input is not derivable, String rejected, CONTINEUING");
 
       // return;
@@ -137,7 +148,7 @@ function GRView({ model, updateModel }) {
             style={{ marginBottom: "0.40em" }}
           />
 
-          <Space size="small">
+          <Space align="baseline" size="small" className="mb-1">
             <Button
               type="primary"
               disabled={simRunning}
@@ -155,6 +166,7 @@ function GRView({ model, updateModel }) {
               Step
             </Button>
             {/* <Checkbox>Show all</Checkbox> */}
+
             <h4>
               CYK algorithm:{" "}
               {cykIsDerivable === null
@@ -163,6 +175,12 @@ function GRView({ model, updateModel }) {
                 ? "Derivable"
                 : "NOT Derivable"}
             </h4>
+
+            <Popover content="if start variable derives lambda, the grammar fed into CYK algo will not contain this produce lambda string">
+              <Text type="secondary" italic>
+                warnning
+              </Text>
+            </Popover>
           </Space>
           <Table
             pagination={false}
@@ -231,7 +249,7 @@ function GRView({ model, updateModel }) {
         {displayRightSide()}
 
         {idxToShow !== null && (
-          <Button onClick={() => setIdxToShow(null)}>close</Button>
+          <Button onClick={() => setIdxToShow(null)}>&#10005;</Button>
         )}
       </Space>
     </>
