@@ -705,7 +705,7 @@ export default class GRModel {
               const took = str.slice(0, 2); // took the first two Variables
               const left = str.slice(2);
 
-              cfg[key][index] = left;
+              cfg[key][index] = newVariable + left;
               cfg[newVariable] = [took];
             }
           }
@@ -728,6 +728,7 @@ export default class GRModel {
       log(cfg, "after new start symbol");
       removeEpsilon(cfg);
       log(cfg, "after removeEpsilon");
+      // TODO: useLessProductions(cfg); is not implemented
       removeUnit(cfg);
       log(cfg, "after removeUnit");
       terminalToNewVariable(cfg); //step 3
@@ -742,8 +743,8 @@ export default class GRModel {
 
     log(CNF_cfg, "Final CFG after CNF");
 
-    const table = this.cykAlgo("0", CNF_cfg);
-    // const table = this.cykAlgo(targetString, cfg);
+    // const table = this.cykAlgo("aca", CNF_cfg);
+    const table = this.cykAlgo(targetString, cfg);
 
     for (let arr of table[table.length - 1]) {
       if (arr.includes("S")) {
