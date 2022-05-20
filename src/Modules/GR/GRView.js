@@ -204,9 +204,15 @@ function GRView({ model, updateModel }) {
     throw new Error("Unknown index to show inside GRView");
   }
 
+  const handleBtnSimulate = () => {
+    // Verify model values are correct
+    // console.log("ok", model.productions);
+    setIdxToShow(0);
+  };
+
   return (
     <>
-      <Button onClick={() => setIdxToShow(0)}>Simulate</Button>
+      <Button onClick={handleBtnSimulate}>Simulate</Button>
 
       {/* <Button onClick={() => model.isDerivable("ab")}>CNF</Button> */}
       <h5>
