@@ -71,7 +71,7 @@ function GRView({ model, updateModel }) {
 
     if (!model.isDerivable(inputData)) {
       alert(
-        "The input is not derivable, String rejected, continue with bruteforcing"
+        "CYK algorithm says input is not derivable, bruteforcing either way!, the cyk algo is only applicable for Context Free Grammars"
       );
 
       // return;
@@ -166,7 +166,7 @@ function GRView({ model, updateModel }) {
             <h4>
               CYK algorithm:{" "}
               {cykIsDerivable === null
-                ? "?"
+                ? "_"
                 : cykIsDerivable
                 ? "Derivable"
                 : "NOT Derivable"}

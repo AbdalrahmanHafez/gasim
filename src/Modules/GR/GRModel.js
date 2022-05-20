@@ -28,6 +28,9 @@ export class GrammarParser {
     this.#alreadyAdded = [];
     this.#posibilityPrederived = {};
 
+    this.smaller = this.smallerSymbols(grammar); // is a set
+    this.isUnrestricted = this.isUnrestricted();
+
     // UI
     this.consideredNodesCtr = 0;
     this.paused = false;
@@ -99,13 +102,134 @@ export class GrammarParser {
     return possibilities;
   }
 
+  isUnrestricted() {
+    const prods = this.grammar.productions;
+    for (let i = 0; i < prods.length; i++)
+      if (prods[i][0].length !== 1) return true;
+    return false;
+  }
+
+  minimumLength(string, smaller) {
+    let length = 0;
+    for (let j = 0; j < string.length; j++)
+      if (!smaller.has(string.substring(j, j + 1))) length++;
+    return length;
+  }
+
+  count(s, c) {
+    let count = 0;
+    for (let i = 0; i < s.length; i++) if (s.charAt(i) === c) count++;
+    return count;
+  }
+
+  smallerSymbols(grammar) {
+    const smaller = new Set();
+    const prods = grammar.productions;
+    let added;
+    do {
+      added = false;
+      for (let i = 0; i < prods.length; i++) {
+        const left = prods[i][0];
+        const right = prods[i][1];
+        const rightLength = this.minimumLength(right, smaller);
+        const leftLength = this.minimumLength(left, smaller);
+        if (leftLength > rightLength) {
+          for (let j = 0; j < left.length; j++) {
+            const symbol = left.substring(j, j + 1);
+            const s = symbol.charAt(0);
+            if (smaller.has(symbol)) continue;
+            if (this.count(left, s) <= this.count(right, s)) continue;
+            smaller.add(symbol);
+            added = true;
+          }
+        }
+      }
+    } while (added);
+    return smaller;
+  }
+
   isPossiableDerivation(derivation) {
     // NOTE: MAYBE
     /**
      * unrestricted grammers allow more than one symbol in 'from'
      * only restricted grammers the method isPossiableDerivation runs over
      */
-    return true;
+
+    if (this.isUnrestricted) {
+      // unrestricted check
+      const res =
+        this.minimumLength(derivation, this.smaller) <= this.target.length;
+      // console.log("isPossiableDerivation", res);
+
+      return res;
+      // return this.minimumLength(derivation, this.smaller) <= this.target.length;
+    } else {
+      // Restricted check
+
+      if (this.minimumLength(derivation, this.smaller) > this.target.length) {
+        // console.log("isPossiableDerivation", false);
+        return false;
+      }
+
+      let startBookend = false;
+      let endBookend = false;
+      const discrete = [];
+      let sb = "";
+      let start = -1;
+
+      /*
+       * Set the start and end "bookeneds", that is, the derivation is padded
+       * with terminals on either it's left or right sides.
+       */
+
+      const isVariable = (s) => s.toUpperCase() === s;
+
+      const isTerminal = (s) => !isVariable(s);
+
+      if (derivation.length === 0) {
+        startBookend = false;
+        endBookend = false;
+      } else {
+        startBookend = !isVariable(derivation.substring(0, 1));
+        endBookend = !isVariable(
+          derivation.substring(derivation.length - 1, derivation.length)
+        );
+      }
+
+      /* Break up groups of terminals into the "discrete" array. */
+      for (let i = 0; i <= derivation.length; i++) {
+        const symbol =
+          i === derivation.length ? null : derivation.substring(i, i + 1);
+        if (symbol == null || isVariable(symbol)) {
+          // if (symbol == null) endBookend = true;
+          if (sb.length === 0) continue;
+          if (start === -1) continue;
+          discrete.push(derivation.substring(start, i));
+          start = -1;
+        } else if (isTerminal(symbol)) {
+          if (start === -1) start = i;
+          sb += symbol;
+          // if (i==0) startBookend = true;
+        }
+      }
+      let cp = 0;
+      for (let i = 0; i < discrete.length; i++) {
+        const e = discrete[i];
+        if (startBookend && i === 0) {
+          if (!this.target.startsWith(e)) return false;
+          cp = e.length;
+        } else if (endBookend && i === discrete.length - 1) {
+          if (!this.target.endsWith(e)) return false;
+        } else {
+          cp = this.target.indexOf(e, cp);
+          if (cp === -1) return false;
+          cp += e.length;
+        }
+      }
+
+      // console.log("isPossiableDerivation", true);
+      return true;
+    }
   }
   #parse() {
     // debugger;
@@ -145,7 +269,7 @@ export class GrammarParser {
       this.#parse();
 
       if (counter++ === 1000) {
-        alert("Infinite loop stopper!");
+        alert("Loop protection limit reached");
         break;
       }
     }
