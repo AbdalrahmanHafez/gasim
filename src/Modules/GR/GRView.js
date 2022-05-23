@@ -174,11 +174,11 @@ function GRView({ model, updateModel }) {
                 : "NOT Derivable"}
             </h4>
 
-            <Popover content="if start variable derives lambda, the grammar fed into CYK algo will not contain this produced lambda string">
+            {/* <Popover content="if start variable derives lambda, the grammar fed into CYK algo will not contain this produced lambda string">
               <Text type="secondary" italic>
                 warnning
               </Text>
-            </Popover>
+            </Popover> */}
           </Space>
           <Table
             pagination={false}
