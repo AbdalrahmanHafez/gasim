@@ -327,9 +327,7 @@ const GRTable = ({ dataSource, setDataSource, editable }) => {
                   isEmpty(From) ||
                   isEmpty(To) ||
                   From.split("").includes(" ") ||
-                  To.split("").includes(" ") ||
-                  From.split("").includes("?") ||
-                  To.split("").includes("?")
+                  To.split("").includes(" ")
                 ) {
                   throw new Error("Production can't contain empty string");
                 }

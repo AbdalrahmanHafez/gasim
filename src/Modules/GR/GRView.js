@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useContext } from "react";
 import GRComponent from "./GRComponent";
 import {
   Table,
@@ -16,6 +16,8 @@ import { GRtoPDAComponent } from "../Conversion";
 import ExportButton from "../../components/ExportButton";
 import tabTypes from "../../enums/tabTypes";
 import { PDAModel } from "../PDA";
+import { StoreContext } from "../../Store";
+import { grammarExamples } from "../../Helpers/Constatns";
 const { Text, Link } = Typography;
 
 const Epsilonify = (value) => (value ? value : "ε");
@@ -206,13 +208,37 @@ function GRView({ model, updateModel }) {
 
   const handleBtnSimulate = () => {
     // Verify model values are correct
-    // console.log("ok", model.productions);
+    console.log("Model productions", model.productions);
     setIdxToShow(0);
+  };
+
+  const { store, setStore } = useContext(StoreContext);
+
+  const handleTempExamle = (model) => {
+    setStore((prevStore) => {
+      const newStore = [...prevStore];
+      newStore[1] = {
+        ...prevStore[1],
+        model: new GRModel(model),
+      };
+      return newStore;
+    });
   };
 
   return (
     <>
       <Button onClick={handleBtnSimulate}>Simulate</Button>
+
+      <Button onClick={() => handleTempExamle(grammarExamples.g1)}>g1</Button>
+      <Button onClick={() => handleTempExamle(grammarExamples.g2)}>g2</Button>
+      <Button onClick={() => handleTempExamle(grammarExamples.g3)}>g3</Button>
+      <Button onClick={() => handleTempExamle(grammarExamples.g4)}>g4</Button>
+      <Button onClick={() => handleTempExamle(grammarExamples.g5)}>g5</Button>
+      <Button onClick={() => handleTempExamle(grammarExamples.g6)}>g6</Button>
+      <Button onClick={() => handleTempExamle(grammarExamples.g7)}>g7</Button>
+      <Button onClick={() => handleTempExamle(grammarExamples.g8)}>g8</Button>
+      <Button onClick={() => handleTempExamle(grammarExamples.g9)}>g9</Button>
+      <Button onClick={() => handleTempExamle(grammarExamples.g10)}>g10</Button>
 
       {/* <Button onClick={() => model.isDerivable("ab")}>CNF</Button> */}
       <h5>
