@@ -285,6 +285,9 @@ export class GrammarParser {
     const simResult = [];
     const display = [[[], "S"]];
     let current = this.solutionNode;
+
+    if (current === null) return null;
+
     do {
       simResult.push(current);
       current = current.parent;

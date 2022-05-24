@@ -39,6 +39,7 @@ function GRView({ model, updateModel }) {
   const [idxToShow, setIdxToShow] = useState(null);
 
   const [cykIsDerivable, setCykIsDerivable] = useState(null);
+  const [bruteforceMsg, setBruteforceMsg] = useState("");
 
   const isContextSensitive = model.isContextSensitive();
 
@@ -56,6 +57,8 @@ function GRView({ model, updateModel }) {
 
     setSimUserInput(inputString);
 
+    setBruteforceMsg("");
+
     // CYK algorithm
     if (isContextSensitive) return;
 
@@ -64,8 +67,6 @@ function GRView({ model, updateModel }) {
     } else {
       try {
         const isDerivable = model.isDerivable(inputString);
-
-        // TODO: set able to bruteforce
 
         console.log(isDerivable);
         setCykIsDerivable(isDerivable);
@@ -79,21 +80,21 @@ function GRView({ model, updateModel }) {
     console.log("Started");
     const inputData = simUserInput;
 
-    // if (model.isContextSensitive() && !model.isDerivable(inputData)) {
-    //   alert(
-    //     "CYK algorithm says input is not derivable, bruteforcing either way!"
-    //   );
-
-    // }
-
     setSimRunning(true);
     // const grammar = new GRModel(dataToProductions(data));
     const displayData = model.bruteForceTo(inputData);
-    console.log("found the resutls");
-    console.log(displayData);
-    setSimData(displayData);
+    if (displayData === null) {
+      console.log("getAnswer is null");
+      setSimData([]);
+      setSimStep(1);
+      setBruteforceMsg("String Rejected");
+    } else {
+      console.log("found the resutls");
+      console.log(displayData);
+      setSimData(displayData);
+      setSimStep(1);
+    }
     setSimRunning(false);
-    setSimStep(1);
   };
 
   const handleBtnPause = () => {
@@ -188,14 +189,13 @@ function GRView({ model, updateModel }) {
             {/* <Checkbox>Show all</Checkbox> */}
 
             <h4>
-              CYK:
               {isContextSensitive
-                ? "context sensitive"
+                ? bruteforceMsg
                 : cykIsDerivable === null
-                ? "_"
+                ? ""
                 : cykIsDerivable
-                ? "Derivable"
-                : "NOT Derivable"}
+                ? "CYK:Derivable"
+                : "CYK:NOT Derivable"}
             </h4>
 
             {/* TODO: <Popover content="if start variable derives lambda, the grammar fed into CYK algo will not contain this produced lambda string">
@@ -298,3 +298,20 @@ function GRView({ model, updateModel }) {
 // }, 1000);
 
 export default GRView;
+
+/**
+ * [dr visit] - 22/5/2022
+ *[1] for G8
+ *  by the doctor which is wrong
+    S -> aTb -> aaTbb -> aaaTbbb -> aaaacbbb
+    the correct one is
+    S  -> aTb	(aTb)
+    aT -> aaTb 	(aaTbb)
+    aT -> aaTb 	(aaaTbbb)
+    aT -> c 	(aaacbbb)
+  
+  while bruteforcing getAnswer was returning null. which is fixed to display 'string is not derived'
+
+  [2] for G5
+  string: bbd, why A is not derived first
+ */
