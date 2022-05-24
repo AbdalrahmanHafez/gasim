@@ -43,7 +43,7 @@ const initialState = [
   {
     title: "Grammar g1 STUB",
     tabType: tabTypes.GR,
-    model: new GRModel(grammarExamples.g8),
+    model: new GRModel(grammarExamples.g5),
   },
   { title: "TM 1 STUB", tabType: tabTypes.TM, model: new TMModel(elmTM, 2) },
   { title: "TM 2 STUB", tabType: tabTypes.TM, model: new TMModel(elmTM2, 1) },

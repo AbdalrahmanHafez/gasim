@@ -86,14 +86,13 @@ function GRView({ model, updateModel }) {
     if (displayData === null) {
       console.log("getAnswer is null");
       setSimData([]);
-      setSimStep(1);
       setBruteforceMsg("String Rejected");
     } else {
       console.log("found the resutls");
       console.log(displayData);
       setSimData(displayData);
-      setSimStep(1);
     }
+    setSimStep(1);
     setSimRunning(false);
   };
 
@@ -313,5 +312,34 @@ export default GRView;
   while bruteforcing getAnswer was returning null. which is fixed to display 'string is not derived'
 
   [2] for G5
-  string: bbd, why A is not derived first
+  string: bbd, why A is not derived first, how does the algorithm works?
+  
+Manual
+S -> ABCd (ABCd)
+A -> BC	  (BCBCd)	
+B -> bB	  (bBCBCd)
+B -> e	  (bCBCd)
+C -> e	  (bBCd)
+B -> bB	  (bBCd)
+B -> bB	  (bbBCd)
+B -> e	  (bbCd)
+C -> e	  (bbd)
+
+JFLAP
+S->ABCd (ABCd)
+B -> bB	(AbBCd)
+A -> BC	(BCbBCd)
+B -> bB	(BCbbBCd)
+B -> ε	(CbbBCd)
+C -> ε	(bbBCd)
+B -> ε	(bbCd)
+C -> ε	(bbd)
+
+S
+S->ABCd			ABCd
+B->bB			AbBCd
+A->BC,B->bB		BCbbBCd
+B->e, C->e		bbd
+
+
  */

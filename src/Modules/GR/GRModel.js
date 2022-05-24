@@ -148,6 +148,30 @@ export class GrammarParser {
     return smaller;
   }
 
+  isLeafNode(node) {
+    return node.children.length === 0;
+  }
+
+  removeFutility(node) {
+    console.log("started to remove futility");
+    try {
+      while (this.isLeafNode(node)) {
+        // ((ParseNode) node.getParent()).remove(node);
+        const parent = node.parent;
+        console.log("children before ", parent.children.length);
+        parent.children = parent.children.filter((child) => child !== node);
+        console.log("children after ", parent.children.length);
+
+        // deletedNodes++;
+        // node = (ParseNode) node.getParent();
+        node = parent;
+      }
+    } catch (error) {
+      // The parent didn't exist, so we're done.
+    }
+    console.log("DONE to remove futility");
+  }
+
   isPossiableDerivation(derivation) {
     // NOTE: MAYBE
     /**
@@ -231,6 +255,7 @@ export class GrammarParser {
       return true;
     }
   }
+
   #parse() {
     // debugger;
     const node = this.queue.shift();
@@ -249,16 +274,18 @@ export class GrammarParser {
       this.consideredNodesCtr++;
 
       if (pNode.derivation === this.target) {
-        // console.log("Found the target");
-
         pNode.parent = node;
         this.queue = [];
         this.solutionNode = pNode;
+
+        console.log("Found the target, solution node is", this.solutionNode);
         return;
       }
     }
 
-    // MAYBE: redundant parent removeval
+    if (this.isLeafNode(node)) {
+      this.removeFutility(node);
+    }
   }
 
   parse(input) {
