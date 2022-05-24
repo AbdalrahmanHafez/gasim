@@ -18,6 +18,7 @@ import tabTypes from "../../enums/tabTypes";
 import { PDAModel } from "../PDA";
 import { StoreContext } from "../../Store";
 import { grammarExamples } from "../../Helpers/Constatns";
+
 const { Text, Link } = Typography;
 
 const Epsilonify = (value) => (value ? value : "ε");
@@ -39,6 +40,8 @@ function GRView({ model, updateModel }) {
 
   const [cykIsDerivable, setCykIsDerivable] = useState(null);
 
+  const isContextSensitive = model.isContextSensitive();
+
   useEffect(() => {
     // Conversion event from menu bar
     conversionBus.on(eventTypes.GRtoPDA, (GRtoPDAModel) => {
@@ -53,11 +56,16 @@ function GRView({ model, updateModel }) {
 
     setSimUserInput(inputString);
 
+    // CYK algorithm
+    if (isContextSensitive) return;
+
     if (inputString.length === 0) {
       setCykIsDerivable(null);
     } else {
       try {
         const isDerivable = model.isDerivable(inputString);
+
+        // TODO: set able to bruteforce
 
         console.log(isDerivable);
         setCykIsDerivable(isDerivable);
@@ -67,17 +75,16 @@ function GRView({ model, updateModel }) {
     }
   };
 
-  const handleBtnStart = async () => {
+  const handleBtnBruteforce = () => {
     console.log("Started");
     const inputData = simUserInput;
 
-    if (!model.isDerivable(inputData)) {
-      alert(
-        "CYK algorithm says input is not derivable, bruteforcing either way!, the cyk algo is only applicable for Context Free Grammars"
-      );
+    // if (model.isContextSensitive() && !model.isDerivable(inputData)) {
+    //   alert(
+    //     "CYK algorithm says input is not derivable, bruteforcing either way!"
+    //   );
 
-      // return;
-    }
+    // }
 
     setSimRunning(true);
     // const grammar = new GRModel(dataToProductions(data));
@@ -100,6 +107,10 @@ function GRView({ model, updateModel }) {
     setSimStep((simStep) => simStep + 1);
   };
 
+  const handleBtnShowAll = () => {
+    setSimStep((simStep) => simData.length);
+  };
+
   const simColumns = [
     {
       title: "Production",
@@ -113,15 +124,19 @@ function GRView({ model, updateModel }) {
     },
   ];
 
-  const format_sim_ds = (data) => {
+  const format_sim_table_ds = (data) => {
     return data
       .map(([prod, string], i) => ({
         key: i,
-        from: `${Epsilonify(prod[0])} -> ${Epsilonify(prod[1])}`,
+        from:
+          prod.length === 0
+            ? ""
+            : `${Epsilonify(prod[0])} -> ${Epsilonify(prod[1])}`,
         to: string,
       }))
       .slice(0, simStep);
   };
+
   const label_what_happens = () => {
     if (simRunning) return "Calculating ...";
     if (simData.length === 0) return "Input string to begin";
@@ -140,6 +155,7 @@ function GRView({ model, updateModel }) {
         <div>
           <h4 style={{ margin: "auto" }}>{label_what_happens()}</h4>
           <Input
+            allowClear
             value={simUserInput}
             onChange={(e) => handleOnchagneStringInput(e)}
             placeholder="Enter target string"
@@ -149,8 +165,8 @@ function GRView({ model, updateModel }) {
           <Space align="baseline" size="small" className="mb-1">
             <Button
               type="primary"
-              disabled={simRunning}
-              onClick={handleBtnStart}
+              disabled={simRunning || cykIsDerivable === false}
+              onClick={handleBtnBruteforce}
             >
               BruteForce
             </Button>
@@ -163,18 +179,26 @@ function GRView({ model, updateModel }) {
             >
               Step
             </Button>
+            <Button
+              disabled={!(!simRunning && simStep < simData.length)}
+              onClick={handleBtnShowAll}
+            >
+              Show all
+            </Button>
             {/* <Checkbox>Show all</Checkbox> */}
 
             <h4>
-              CYK algorithm:{" "}
-              {cykIsDerivable === null
+              CYK:
+              {isContextSensitive
+                ? "context sensitive"
+                : cykIsDerivable === null
                 ? "_"
                 : cykIsDerivable
                 ? "Derivable"
                 : "NOT Derivable"}
             </h4>
 
-            {/* <Popover content="if start variable derives lambda, the grammar fed into CYK algo will not contain this produced lambda string">
+            {/* TODO: <Popover content="if start variable derives lambda, the grammar fed into CYK algo will not contain this produced lambda string">
               <Text type="secondary" italic>
                 warnning
               </Text>
@@ -182,7 +206,7 @@ function GRView({ model, updateModel }) {
           </Space>
           <Table
             pagination={false}
-            dataSource={format_sim_ds(simData)}
+            dataSource={format_sim_table_ds(simData)}
             columns={simColumns}
             bordered
           />
@@ -212,6 +236,7 @@ function GRView({ model, updateModel }) {
     setIdxToShow(0);
   };
 
+  // TODO: remove examples from GRView
   const { store, setStore } = useContext(StoreContext);
 
   const handleTempExamle = (model) => {
@@ -226,7 +251,7 @@ function GRView({ model, updateModel }) {
   };
 
   return (
-    <>
+    <div>
       <Button onClick={handleBtnSimulate}>Simulate</Button>
 
       <Button onClick={() => handleTempExamle(grammarExamples.g1)}>g1</Button>
@@ -259,7 +284,7 @@ function GRView({ model, updateModel }) {
           <Button onClick={() => setIdxToShow(null)}>&#10005;</Button>
         )}
       </Space>
-    </>
+    </div>
   );
 }
 

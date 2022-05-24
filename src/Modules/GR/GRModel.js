@@ -790,4 +790,8 @@ export default class GRModel {
     console.log("NOT DERIVABLE");
     return false;
   }
+
+  isContextSensitive() {
+    return this.productions.some(([lhs, rhs]) => lhs.length > 1);
+  }
 }

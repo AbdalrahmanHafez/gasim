@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState, useRef } from "react";
 import useFastrun from "../../Hooks/useFastrun.js";
 import { Slider, Space, Divider } from "antd";
 import {
@@ -9,6 +9,7 @@ import {
 import "antd/dist/antd.css";
 import tabTypes from "../../enums/tabTypes.js";
 import { getNodeFromId } from "../../utils/Graph.js";
+import { useAutoAnimate } from "@formkit/auto-animate/react";
 
 const DEFAULT_PLAY_SPEED = 20;
 
@@ -37,13 +38,41 @@ function SimPanel({ isFastRun, simulation, onStepAll, onReset }) {
     DEFAULT_PLAY_SPEED
   );
 
+  const [parent] = useAutoAnimate(/* optional config */);
+
+  // const [items, setItems] = useState([0, 1]);
+  // const add = () => setItems([...items, items.length]);
+  // return (
+  //   <>
+  //     <ul ref={parent}>
+  //       {items.map((item) => (
+  //         <span key={item}>{item}</span>
+  //       ))}
+  //     </ul>
+  //     <ul ref={parent}>
+  //       {items.map((item) => (
+  //         <span key={item}>{item}</span>
+  //       ))}
+  //     </ul>
+  //     <div ref={parent}>
+  //       <strong className="dropdown-label" onClick={add}>
+  //         Click me to open!
+  //       </strong>
+  //       {items.length % 2 === 0 && (
+  //         <p className="dropdown-content">Lorum ipsum...</p>
+  //       )}
+  //     </div>
+  //     <button onClick={add}>Add number</button>
+  //   </>
+  // );
+
   console.log("[SimPanel] Rendered");
 
   return (
     <>
       Simulation Panel
       <br />
-      <div style={{ display: "flex" }}>
+      <div style={{ display: "flex" }} ref={parent}>
         {isFastRun ? (
           <>
             <button onClick={toggleRunning} className="ui-button">
@@ -67,9 +96,11 @@ function SimPanel({ isFastRun, simulation, onStepAll, onReset }) {
           <UndoOutlined />
         </button>
       </div>
-      {simulation.configs.map((config, index) => (
-        <SimCard key={index} simulation={simulation} config={config} />
-      ))}
+      <div ref={parent}>
+        {simulation.configs.map((config, index) => (
+          <SimCard key={index} simulation={simulation} config={config} />
+        ))}
+      </div>
     </>
   );
 }
