@@ -7,60 +7,25 @@ import {
   getNodeClosure,
   createHeadlessCy,
 } from "../../../utils";
+import DFAEquality from "./DFAEquality";
 
 class AutomatonToDFA {
   constructor() {}
 
-  test() {
-    const nfaA = new FSAModel({
-      nodes: [
-        {
-          data: { id: "a", name: "a", inital: true, final: false },
-        },
-        {
-          data: { id: "b", name: "b", inital: false, final: false },
-        },
-        {
-          data: { id: "s", name: "s", inital: false, final: false },
-        },
-        { data: { id: "f", name: "f", inital: false, final: true } },
-      ],
-      edges: [
-        { data: { id: "ab", source: "a", target: "b", label: "a" } },
-        { data: { id: "bf", source: "b", target: "f", label: "b" } },
-        { data: { id: "as", source: "a", target: "s", label: "ε" } },
-        { data: { id: "sb", source: "s", target: "b", label: "ε" } },
-      ],
-    });
-    const nfaB = new FSAModel({
-      nodes: [
-        {
-          data: { id: "a", name: "a", inital: true, final: false },
-        },
-        {
-          data: { id: "b", name: "b", inital: false, final: false },
-        },
-        { data: { id: "f", name: "f", inital: false, final: true } },
-      ],
-      edges: [
-        { data: { id: "ab", source: "a", target: "b", label: "a" } },
-        { data: { id: "bf", source: "b", target: "f", label: "b" } },
-      ],
-    });
-
-    return this.convert(nfaA);
-  }
-
   convertFSA(fsa) {
-    const dstcy = createHeadlessCy(fsa.elements);
+    const dstcy = createHeadlessCy();
 
     const converter = new NFAtoDFA();
     converter.FSAModel = fsa;
-    converter.convert(dstcy);
 
-    console.log("dstcy", dstcy);
+    try {
+      converter.convert(dstcy);
+    } catch (error) {
+      // noInitalNode
+      alert(error);
+    }
 
-    return JSON.stringify(dstcy.json().elements);
+    return new FSAModel(dstcy.json().elements);
   }
 
   convert(automaton) {
