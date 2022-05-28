@@ -1,12 +1,13 @@
 import { DataGrid, GridCellEditStopReasons } from "@mui/x-data-grid";
 import { useEffect, useRef, useState } from "react";
-import { Typography, Button } from "antd";
+import { Input, Typography, Button } from "antd";
 import TextField from "@mui/material/TextField";
 import Tooltip, { tooltipClasses } from "@mui/material/Tooltip";
 import { v4 as uuidv4 } from "uuid";
 import { addElementsToCy, injectEmptyCy, getNodeClosure } from "../utils";
 import AutomatonToDFA from "../Modules/Exercises/Classes/AutomatonToDFA";
 import FSAModel from "../Modules/FSA/FSAModel";
+import REModel from "../Modules/RE/REModel";
 import DFAEquality from "../Modules/Exercises/Classes/DFAEquality";
 import FSAComponent from "../Modules/FSA/FSAComponent";
 
@@ -70,15 +71,16 @@ const TestPage = () => {
   const [modelA, setmodelA] = useState(nfaA);
   const [modelB, setmodelB] = useState(nfaB);
 
+  const [inputvalue, setinputvalue] = useState("ab*(c)");
+
   const cya = useRef(null);
   const cyb = useRef(null);
 
   useEffect(() => {}, [cya, cyb]);
 
-  const test = () => {
+  const compareDFA = () => {
     const converter = new AutomatonToDFA();
-    // const a = converter.convert(nfaA);
-    // const b = converter.convert(nfaC);
+
     const a = converter.convertFSA(modelA);
     const b = converter.convertFSA(modelB);
     console.log("a after conversion", a);
@@ -87,22 +89,35 @@ const TestPage = () => {
     console.log("equality result", DFAEquality(a, b));
   };
 
+  const convertREtoDFA = () => {
+    const converter = new AutomatonToDFA();
+    const resultDfa = converter.convert(new REModel(inputvalue));
+    console.log("result RE to DFA", resultDfa);
+
+    cya.current.json({ elements: resultDfa.elements });
+  };
+
   // TODO: test if inital and final state at the same node
   return (
     <div>
+      <Input
+        value={inputvalue}
+        onChange={(e) => setinputvalue(e.target.value)}
+        placeholder="regex"
+      />
       <Button
         onClick={() => {
-          const result = test();
+          compareDFA();
         }}
       >
-        TEST AutomatonToDFA
+        compare DFA
       </Button>
       <Button
         onClick={() => {
-          console.log();
+          convertREtoDFA();
         }}
       >
-        SHOW BTN
+        convert RE to DFA
       </Button>
       <div style={{ display: "flex" }}>
         <FSAComponent

@@ -11,7 +11,12 @@ function REtoNFAComponent({ model }) {
     console.log("[REtoNFACompoenn] useEffect");
     cy.current = injectEmptyCy(CY_ID, { editable: false });
 
-    model.convert(cy.current);
+    try {
+      model.convert(cy.current);
+      // TODO: don't show the conversion result in REtoNFAview if it failed
+    } catch (error) {
+      alert(error);
+    }
 
     cy.current.layout({ name: "cose" }).run();
   }, [model]);
