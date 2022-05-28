@@ -4,6 +4,7 @@ import {
   getNodeClosure,
   getNodeFromId,
 } from "../../utils";
+import { v4 as uuidv4 } from "uuid";
 
 import { Set, is } from "immutable";
 
@@ -70,6 +71,7 @@ export default class NFAtoDFA {
 
     const createTransitionNodeSet = (nodesetA, nodesetB, label) => {
       // TODO: assume they aren't in the graph already
+
       const addNode = (nodeSet) => {
         // if node exists
         // debugger;
@@ -78,13 +80,16 @@ export default class NFAtoDFA {
         if (alreadyNode.length > 0 && !originalNodes.includes(alreadyNode[0]))
           return alreadyNode[0];
 
+        const isInital = nodeSet.some((node) => node.data("inital"));
+        const isFinal = nodeSet.some((node) => node.data("final"));
+
         return dcy.add({
           group: "nodes",
           data: {
             id: `cnv-${nodeName}`,
             name: nodeName,
-            inital: false,
-            final: false,
+            inital: isInital,
+            final: isFinal,
           },
         });
       };

@@ -20,6 +20,8 @@ const addLabelDataForExampleElements = (elements, tabType) => {
 /**
  * Each {tabType: tabTypes, title: string, simType: tabType, showConversion:boolean}
  */
+let elm0 = machineExamples.elm0;
+addLabelDataForExampleElements(elm0, tabTypes.FA);
 let elm1 = machineExamples.elm1;
 addLabelDataForExampleElements(elm1, tabTypes.FA);
 let elmPDA = machineExamples.elmPDA;
@@ -61,6 +63,11 @@ const initialState = [
   {
     tabType: tabTypes.FA,
     title: "NFA STUB",
+    model: new FSAModel(elm0),
+  },
+  {
+    tabType: tabTypes.FA,
+    title: "NFA 2 STUB",
     model: new FSAModel(elm1),
   },
   {
@@ -77,7 +84,7 @@ const Store = ({ children }) => {
   const [store, setStore] = useState(initialState);
 
   const initalSelectedTab = store.length - 1 < 0 ? null : store.length - 1;
-  const forcedSelectedTab = 1;
+  const forcedSelectedTab = 8;
   const [activeTabKey, setActiveTabKey] = useState(forcedSelectedTab);
   // null means is not any tab is selected
 
