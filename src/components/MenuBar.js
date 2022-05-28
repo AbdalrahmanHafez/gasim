@@ -5,7 +5,7 @@ import "@szhsin/react-menu/dist/transitions/slide.css";
 import { Space, Divider } from "antd";
 import FSAModel from "../Modules/FSA/FSAModel";
 import { grammarExamples, machineExamples } from "../Helpers/Constatns";
-import { StoreContext, UtilityContext } from "../Store";
+import { StoreContext, UtilityContext } from "../Stores/Store";
 import tabTypes from "../enums/tabTypes";
 import { parseExampleLabels } from "../Helpers/GraphLabel";
 import { TMModel } from "../Modules/TM";

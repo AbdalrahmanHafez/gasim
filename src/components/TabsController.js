@@ -3,7 +3,7 @@ import { useStoreState, useStoreActions } from "easy-peasy";
 import Button from "@mui/material/Button";
 import ContentContainer from "./ContentContainer";
 import SimPanel from "./SimPanel";
-import { StoreContext } from "../Store";
+import { StoreContext } from "../Stores/Store";
 import "antd/dist/antd.css";
 
 import { Tabs } from "antd";

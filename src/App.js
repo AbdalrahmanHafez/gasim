@@ -2,7 +2,7 @@ import TabsController from "./components/TabsController";
 import { useStoreActions } from "easy-peasy";
 import { useEffect, useContext, useState } from "react";
 import MenuBar from "./components/MenuBar";
-import { StoreContext } from "./Store";
+import { StoreContext } from "./Stores/Store";
 
 function App() {
   console.log("[APP] render");

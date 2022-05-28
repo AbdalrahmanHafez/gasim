@@ -16,7 +16,7 @@ import { GRtoPDAComponent } from "../Conversion";
 import ExportButton from "../../components/ExportButton";
 import tabTypes from "../../enums/tabTypes";
 import { PDAModel } from "../PDA";
-import { StoreContext } from "../../Store";
+import { StoreContext } from "../../Stores/Store";
 import { grammarExamples } from "../../Helpers/Constatns";
 
 const { Text, Link } = Typography;

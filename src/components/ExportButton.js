@@ -1,6 +1,6 @@
 import { Button } from "antd";
 import React, { useContext } from "react";
-import { StoreContext } from "../Store";
+import { StoreContext } from "../Stores/Store";
 
 function ExportButton({ tabObj, modelEvalFn, ...rest }) {
   /**

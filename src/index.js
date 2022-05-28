@@ -2,22 +2,43 @@ import React from "react";
 import ReactDOM from "react-dom";
 import "./index.css";
 import App from "./App";
+import AdminApp from "./AdminApp";
 import reportWebVitals from "./reportWebVitals";
 import { useRef, useEffect, useState } from "react";
 import { StoreProvider, createStore } from "easy-peasy";
 import model from "./model";
-import Store from "./Store";
+import Store from "./Stores/Store";
+import AdminStore from "./Stores/AdminStore";
 import TestPage from "./TestPages/index.js";
 
 const store = createStore(model);
 
+const basedOnPath = () => {
+  switch (window.location.pathname) {
+    case "/test":
+      return (
+        <Store>
+          <TestPage />
+        </Store>
+      );
+    case "/admin":
+      return (
+        <AdminStore>
+          <AdminApp />
+        </AdminStore>
+      );
+    default:
+      return (
+        <Store>
+          <App />
+        </Store>
+      );
+  }
+};
+
 ReactDOM.render(
   <React.StrictMode>
-    <StoreProvider store={store}>
-      <Store>
-        {window.location.pathname === "/test" ? <TestPage /> : <App />}
-      </Store>
-    </StoreProvider>
+    <StoreProvider store={store}>{basedOnPath()}</StoreProvider>
   </React.StrictMode>,
   document.getElementById("root")
 );

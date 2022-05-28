@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useRef } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { injectEmptyCy, addElementsToCy } from "../../utils";
 import FSALabelHandler from "./FSALabelHandler";
-import { StoreContext } from "../../Store";
+import { StoreContext } from "../../Stores/Store";
 import FSAModel from "./FSAModel";
 
 function FSAComponent({ cyref, model, updateModel }) {

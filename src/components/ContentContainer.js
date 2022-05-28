@@ -5,7 +5,7 @@ import { PDAView } from "../Modules/PDA/";
 import { TMView } from "../Modules/TM/";
 import { GRView, GRModel } from "../Modules/GR/";
 import { REView } from "../Modules/RE/";
-import { StoreContext } from "../Store";
+import { StoreContext } from "../Stores/Store";
 import {
   GRtoPDA,
   GRtoPDAComponent,
