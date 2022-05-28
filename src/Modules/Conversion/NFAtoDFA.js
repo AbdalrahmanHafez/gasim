@@ -27,6 +27,8 @@ export default class NFAtoDFA {
     const dcy = dstCy;
 
     const initalNode = scy.$("node[?inital]")[0];
+    if (!initalNode) throw new Error("No inital node found");
+
     const initalNodes = getNodeClosure(initalNode);
     const originalNodes = scy.nodes();
 
@@ -94,10 +96,17 @@ export default class NFAtoDFA {
         });
       };
       const connectNodes = (nodeA, nodeB, label) => {
+        const alreadyExists = dcy.$(
+          `edge[id="cnve-${nodeA.data("name")}${nodeB.data(
+            "name"
+          )}-lbl:${label}"]`
+        );
+        if (alreadyExists.length > 0) return;
+
         dcy.add({
           group: "edges",
           data: {
-            id: `cnve-${nodeA.data("name")}${nodeB.data("name")}`,
+            id: `cnve-${nodeA.data("name")}${nodeB.data("name")}-lbl:${label}`,
             source: nodeA.data("id"),
             target: nodeB.data("id"),
             label: label,
@@ -111,6 +120,7 @@ export default class NFAtoDFA {
     };
 
     let mte = [new Set([...initalNodes, initalNode])];
+
     const expand = (nodeSet) => {
       /** Algorithm
           initalNodeSet = NodeSet(closure(initalNode))
@@ -157,9 +167,33 @@ export default class NFAtoDFA {
           label
         );
 
+        // TODO: there's something wrong, with the following example machine, i prevented it by not adding another duplicate edge
+        /**
+         *  nodes: [
+        {
+          data: { id: "a", name: "a", inital: true, final: false },
+        },
+        {
+          data: { id: "b", name: "b", inital: false, final: false },
+        },
+        {
+          data: { id: "s", name: "s", inital: false, final: false },
+        },
+        { data: { id: "f", name: "f", inital: false, final: true } },
+      ],
+      edges: [
+        { data: { id: "ab", source: "a", target: "b", label: "a" } },
+        { data: { id: "bf", source: "b", target: "f", label: "b" } },
+        { data: { id: "as", source: "a", target: "s", label: "ε" } },
+        { data: { id: "sb", source: "s", target: "b", label: "e" } },
+      ],
+      
+         */
+        // console.log("-----------");
         // console.log("nodeseet", printId(nodeSet));
         // console.log("targetnodeset", printId(targetNodeSet));
         // console.log("label", label);
+
         createTransitionNodeSet(nodeSet, targetNodeSet, label);
 
         moreToExplore.push(targetNodeSet);

@@ -14,7 +14,12 @@ function NFAtoDFAComponent({ model, editable }) {
     // addElementsToCy(cyref.current, graphElements);
     // cy.current.layout({ name: "cose" }).run();
 
-    model.convert(cy.current);
+    // TODO: don't show the right panel if conversion failed. look into FSAView.js
+    try {
+      model.convert(cy.current);
+    } catch (error) {
+      alert(error);
+    }
   }, [model, CY_ID]);
 
   return <div id={CY_ID} className="cy"></div>;

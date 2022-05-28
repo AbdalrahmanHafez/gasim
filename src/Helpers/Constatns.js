@@ -73,7 +73,7 @@ export class machineExamples {
         { data: { id: "ab", source: "a", target: "b", label: "a" } },
         { data: { id: "bf", source: "b", target: "f", label: "b" } },
         { data: { id: "as", source: "a", target: "s", label: "ε" } },
-        { data: { id: "sb", source: "s", target: "b", label: "ε" } },
+        { data: { id: "sb", source: "s", target: "b", label: "e" } },
       ],
     };
   }
