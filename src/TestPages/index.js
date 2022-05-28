@@ -4,12 +4,22 @@ import { Input, Typography, Button } from "antd";
 import TextField from "@mui/material/TextField";
 import Tooltip, { tooltipClasses } from "@mui/material/Tooltip";
 import { v4 as uuidv4 } from "uuid";
-import { addElementsToCy, injectEmptyCy, getNodeClosure } from "../utils";
+import {
+  addElementsToCy,
+  injectEmptyCy,
+  getNodeClosure,
+  addLabelDataForExampleElements,
+} from "../utils";
 import AutomatonToDFA from "../Modules/Exercises/Classes/AutomatonToDFA";
 import FSAModel from "../Modules/FSA/FSAModel";
 import REModel from "../Modules/RE/REModel";
 import DFAEquality from "../Modules/Exercises/Classes/DFAEquality";
 import FSAComponent from "../Modules/FSA/FSAComponent";
+import { GRComponent, GRModel } from "../Modules/GR";
+import { grammarExamples, machineExamples } from "../Helpers/Constatns";
+import { PDAModel } from "../Modules/PDA";
+import tabTypes from "../enums/tabTypes";
+import PDAtoGR from "..//Modules/Conversion/PDAtoGR";
 
 const { Text, Link } = Typography;
 
@@ -71,8 +81,6 @@ const TestPage = () => {
   const [modelA, setmodelA] = useState(nfaA);
   const [modelB, setmodelB] = useState(nfaB);
 
-  const [inputvalue, setinputvalue] = useState("ab*(c)");
-
   const cya = useRef(null);
   const cyb = useRef(null);
 
@@ -91,20 +99,39 @@ const TestPage = () => {
 
   const convertREtoDFA = () => {
     const converter = new AutomatonToDFA();
-    const resultDfa = converter.convert(new REModel(inputvalue));
-    console.log("result RE to DFA", resultDfa);
 
-    cya.current.json({ elements: resultDfa.elements });
+    const dfaA = converter.convert(new REModel("(a+b)*"));
+    const dfaB = converter.convert(new REModel("(a*b*)*"));
+
+    // console.log("result RE to DFA", resultDfa);
+
+    cya.current.json({ elements: dfaA.elements });
+    cyb.current.json({ elements: dfaB.elements });
   };
 
-  // TODO: test if inital and final state at the same node
+  const checkStringInGR = () => {
+    const model = new GRModel(grammarExamples.g1);
+    console.log("grammar is ", model.productions);
+
+    console.log("is Derivable =", model.isDerivable("aaa"));
+  };
+
+  const checkStringInPDA = () => {
+    let elmPDAtoGR = machineExamples.elmPDAtoGR;
+    addLabelDataForExampleElements(elmPDAtoGR, tabTypes.PDA);
+    const model = new PDAModel(elmPDAtoGR);
+    const converter = new PDAtoGR(model);
+
+    const resultGRmodel = converter.convert(() => {});
+
+    console.log("pda model is ", model);
+    console.log("result GR model is ", resultGRmodel);
+
+    console.log("is Derivable =", resultGRmodel.isDerivable("akc"));
+  };
+
   return (
     <div>
-      <Input
-        value={inputvalue}
-        onChange={(e) => setinputvalue(e.target.value)}
-        placeholder="regex"
-      />
       <Button
         onClick={() => {
           compareDFA();
@@ -119,6 +146,23 @@ const TestPage = () => {
       >
         convert RE to DFA
       </Button>
+
+      <Button
+        onClick={() => {
+          checkStringInGR();
+        }}
+      >
+        Check string in Grammar
+      </Button>
+
+      <Button
+        onClick={() => {
+          checkStringInPDA();
+        }}
+      >
+        Check string in PDA
+      </Button>
+
       <div style={{ display: "flex" }}>
         <FSAComponent
           model={modelA}

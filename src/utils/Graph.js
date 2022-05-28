@@ -4,6 +4,7 @@ import edgehandles from "cytoscape-edgehandles";
 import contextMenus from "cytoscape-context-menus";
 import "cytoscape-context-menus/cytoscape-context-menus.css";
 import tabTypes from "../enums/tabTypes";
+import { parseExampleLabels } from "../Helpers/GraphLabel";
 
 cytoscape.use(edgehandles);
 cytoscape.use(contextMenus);
@@ -1066,4 +1067,13 @@ export const verifyOnlyOneFinalState = (cyinst) => {
 
 export const getFinalNodes = (cy) => {
   return cy.$("node[?final]");
+};
+
+export const addLabelDataForExampleElements = (elements, tabType) => {
+  elements.edges?.forEach((edge) => {
+    edge.data = {
+      ...edge.data,
+      ...parseExampleLabels(edge.data.label, tabType),
+    };
+  });
 };

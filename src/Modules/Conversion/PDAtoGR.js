@@ -430,5 +430,7 @@ export default class PDAtoGR {
     const newGrammar = new GRModel(grammar.map((prod) => [prod.lhs, prod.rhs]));
     this.resultGRModel = newGrammar;
     setDisplayedGRModel(newGrammar);
+
+    return this.resultGRModel;
   }
 }

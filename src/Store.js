@@ -1,21 +1,13 @@
 import React, { useState, useRef } from "react";
 import tabTypes from "./enums/tabTypes";
 import { grammarExamples, machineExamples } from "./Helpers/Constatns";
-import { parseExampleLabels } from "./Helpers/GraphLabel";
 import { FSAModel } from "./Modules/FSA/";
 import { PDAModel } from "./Modules/PDA/";
 import { TMModel } from "./Modules/TM/";
 import { GRModel } from "./Modules/GR/";
 import { REModel } from "./Modules/RE/";
+import { addLabelDataForExampleElements } from "./utils";
 
-const addLabelDataForExampleElements = (elements, tabType) => {
-  elements.edges?.forEach((edge) => {
-    edge.data = {
-      ...edge.data,
-      ...parseExampleLabels(edge.data.label, tabType),
-    };
-  });
-};
 // TODO: consider making it (tabType, simulationtype) pair
 /**
  * Each {tabType: tabTypes, title: string, simType: tabType, showConversion:boolean}
