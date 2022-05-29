@@ -12,6 +12,7 @@ import { FSAComponent, FSAModel } from "../../FSA";
 import { PDAModel, PDAComponent } from "../../PDA";
 import { GRComponent, GRModel } from "../../GR";
 import { InputNumber, Collapse } from "antd";
+import { changeConfirmLocale } from "antd/lib/modal/locale";
 const { Panel } = Collapse;
 
 const GrammarBlock = ({ info, grref }) => {
@@ -298,15 +299,25 @@ const BlockView = ({ content, updateContent }) => {
   );
 };
 
+const FreeInput = ({ onChange }) => {
+  const [value, setvalue] = useState("");
+  return (
+    <Input
+      value={value}
+      onChange={(e) => {
+        setvalue(e.target.value);
+        onChange();
+      }}
+    />
+  );
+};
+
 function RenderNewBlock({ blockType, setSaveObject }) {
   const [textValue, setTextValue] = useState("");
   const [numberChoices, setNumberChoices] = useState(2);
-  const [choices, setchoices] = useState([]);
-  // const choices = new Array(numberChoices).fill("").map((_, i) => ({
-  //   id: i,
-  //   selected: false,
-  //   value: "",
-  // }));
+  const [selectedChoice, setSelectedChoice] = useState(0);
+
+  const radref = useRef(null);
 
   switch (blockType) {
     case "text":
@@ -324,31 +335,46 @@ function RenderNewBlock({ blockType, setSaveObject }) {
       );
 
     case "choice":
+      const saveChoices = () => {
+        const options = [];
+
+        [...radref.current.querySelectorAll('input[type="text"]')]
+          .map((e) => e.value)
+          .forEach((v) => options.push(v));
+
+        const finalObject = {
+          type: "choice",
+          options,
+          answer: options[selectedChoice],
+        };
+
+        setSaveObject(finalObject);
+        // [...temp1.current.querySelectorAll('input[type="radio"]')].map(e=>e.checked)
+        // [...temp1.current.querySelectorAll('input[type="text"]')].map(e=>e.value)
+
+        // radref.current.querySelectorAll('input[type="radio"]')
+        // setSaveObject()
+      };
+
       return (
         <div>
           <InputNumber
             min={2}
             value={numberChoices}
-            onChange={(nc) => {
-              setchoices(choices=>{
-                let newChoice = [...choices];
-                while (choices.length < nc) {
-                  choices.push({
-                    id: choices.length,
-                    selected: false,
-                    value: "",
-                  });
-                }
-              })
-              
-
-            }}
+            onChange={(nc) => setNumberChoices(nc)}
           />
 
-          <Radio.Group>
-            {choices.map((choice) => (
-              <Radio key={choice.id}>
-                <Input value="abc" />
+          <Radio.Group
+            ref={radref}
+            value={selectedChoice}
+            onChange={(e) => {
+              setSelectedChoice(e.target.value);
+              saveChoices();
+            }}
+          >
+            {new Array(numberChoices).fill(0).map((_, i) => (
+              <Radio key={i} value={i}>
+                <FreeInput onChange={saveChoices} />
               </Radio>
             ))}
           </Radio.Group>
@@ -382,10 +408,7 @@ const AddBlock = ({ addBlockToEx }) => {
         break;
 
       case "choice":
-        addBlockToEx({
-          type: blockType,
-          value: savedObject.current,
-        });
+        addBlockToEx(savedObject.current);
         break;
 
       default:
