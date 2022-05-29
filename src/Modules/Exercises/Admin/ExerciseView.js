@@ -314,10 +314,13 @@ const FreeInput = ({ onChange }) => {
 
 function RenderNewBlock({ blockType, setSaveObject }) {
   const [textValue, setTextValue] = useState("");
+
   const [numberChoices, setNumberChoices] = useState(2);
   const [selectedChoice, setSelectedChoice] = useState(0);
-
   const radref = useRef(null);
+
+  const [questionType, setquestionType] = useState("DFA");
+  const [answerType, setanswerType] = useState("DFA");
 
   switch (blockType) {
     case "text":
@@ -380,6 +383,54 @@ function RenderNewBlock({ blockType, setSaveObject }) {
           </Radio.Group>
         </div>
       );
+
+    case "equivalence":
+      // const saveData = () => {
+      //   const finalObject = {
+      //     type: "equivalence",
+      //     question: {
+      //       type: questionType,
+      //     },
+      //     answer: {
+      //       type: answerType,
+      //     },
+      //   };
+      //   setSaveObject(finalObject);
+      // };
+
+      return (
+        <div>
+          <div className="flex">
+            <div className="w-1/2">
+              <h3>Question Type</h3>
+              <Radio.Group
+                value={questionType}
+                onChange={(e) => setquestionType(e.target.value)}
+              >
+                <Radio value="DFA"> DFA </Radio>
+                <Radio value="NFA"> NFA </Radio>
+                <Radio value="RE"> RE </Radio>
+              </Radio.Group>
+            </div>
+
+            <div className="w-1/2">
+              <h3>Answer Type</h3>
+              <Radio.Group
+                value={answerType}
+                onChange={(e) => setanswerType(e.target.value)}
+              >
+                <Radio value="DFA"> DFA </Radio>
+                <Radio value="NFA"> NFA </Radio>
+                <Radio value="RE"> RE </Radio>
+              </Radio.Group>
+            </div>
+          </div>
+          <div className="h-40 bg-red-400">
+            {/* TODO: Based on answer selection, prompt to enter the specified machine answer */}
+          </div>
+        </div>
+      );
+      break;
 
     default:
       return null;
