@@ -14,9 +14,25 @@ import { GRComponent, GRModel } from "../../GR";
 import { Collapse } from "antd";
 const { Panel } = Collapse;
 
-const RenderMachine = ({ info }) => {
-  const cyrefFSA = useRef(null);
-  const cyrefPDA = useRef(null);
+const GrammarBlock = ({ info, grref }) => {
+  const [model, setmodel] = useState(new GRModel(info.productions));
+
+  return (
+    <div>
+      <GRComponent
+        model={model}
+        updateModel={(newModel) => {
+          grref.current = newModel;
+          setmodel(newModel);
+        }}
+      />
+    </div>
+  );
+};
+
+const RenderMachine = ({ info, cyref, reref, grref }) => {
+  // const cyrefFSA = useRef(null);
+  // const cyrefPDA = useRef(null);
   const [inputValue, setInputValue] = useState(info.string || "");
 
   console.log("[RenderMachine] rerendered");
@@ -27,7 +43,7 @@ const RenderMachine = ({ info }) => {
     return (
       <div style={{ height: "25vh" }}>
         <FSAComponent
-          cyref={cyrefFSA}
+          cyref={cyref}
           model={new FSAModel(info.elements)}
           updateModel={() => {}}
         />
@@ -39,6 +55,7 @@ const RenderMachine = ({ info }) => {
     return (
       <div>
         <Input
+          ref={reref}
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
         />
@@ -47,21 +64,14 @@ const RenderMachine = ({ info }) => {
   }
 
   if (info.type === "GR") {
-    return (
-      <div>
-        <GRComponent
-          model={new GRModel(info.productions)}
-          updateModel={() => {}}
-        />
-      </div>
-    );
+    return <GrammarBlock grref={grref} info={info} />;
   }
 
   if (info.type === "PDA") {
     return (
       <div style={{ height: "25vh" }}>
         <PDAComponent
-          cyref={cyrefPDA}
+          cyref={cyref}
           model={new PDAModel(info.elements)}
           updateModel={() => {}}
         />
@@ -89,9 +99,45 @@ const TextBlock = ({ content, updateText }) => {
   );
 };
 
-const RenderContent = ({ content, updateChoice, updateText }) => {
+const QuestionType = ({ content, updateQuestionType }) => {
+  const [visiable, setvisiable] = useState(true);
+  const [value, setValue] = useState(content.question.type);
+
+  return (
+    <h3 className="text-slate-400">
+      Question is of type a/an {content.question.type}{" "}
+      {visiable ? (
+        <strong onClick={() => setvisiable(false)}>change</strong>
+      ) : (
+        <>
+          <Radio.Group
+            value={value}
+            buttonStyle="solid"
+            onChange={(e) => setValue(e.target.value)}
+          >
+            <Radio.Button value="NFA">NFA</Radio.Button>
+            <Radio.Button value="DFA">DFA</Radio.Button>
+            <Radio.Button value="RE">RE</Radio.Button>
+          </Radio.Group>
+          <Button onClick={() => updateQuestionType(value)}>save</Button>
+        </>
+      )}
+    </h3>
+  );
+};
+
+const RenderContent = ({
+  content,
+  updateChoice,
+  updateText,
+  updateMachine,
+  updateQuestionType,
+}) => {
   console.log("[RenderContent] rerendered");
   const { type } = content;
+  const cyref = useRef(null);
+  const reref = useRef(null);
+  const grref = useRef(null);
 
   switch (type) {
     case "text":
@@ -119,25 +165,58 @@ const RenderContent = ({ content, updateChoice, updateText }) => {
     case "equivalence":
       return (
         <div>
-          <h3 className="text-slate-400 italic">
-            Question is of type a/an {content.question.type}
-          </h3>
+          <QuestionType
+            content={content}
+            updateQuestionType={updateQuestionType}
+          />
 
           <Collapse defaultActiveKey={["1"]}>
             <Panel header="Answer" key="1">
-              <RenderMachine info={content.answer} />
-              <Button>Update Answer</Button>
+              <RenderMachine
+                reref={reref}
+                cyref={cyref}
+                info={content.answer}
+              />
+              <Button
+                onClick={() => {
+                  if (content.answer.type === "RE") {
+                    updateMachine(reref.current.input.value);
+                  } else updateMachine(cyref.current.json().elements);
+                }}
+              >
+                Update Answer
+              </Button>
             </Panel>
           </Collapse>
         </div>
       );
 
     case "stringAcceptance":
-      // return <h4>STRIGACCEPTANCE</h4>;
       return (
         <div>
-          <RenderMachine info={content.question} />
-          <Button>Update Answer</Button>
+          <RenderMachine
+            reref={reref}
+            cyref={cyref}
+            grref={grref}
+            info={content.machine}
+          />
+          <Button
+            onClick={() => {
+              if (content.machine.type === "GR") {
+                updateMachine(grref.current.productions);
+              } else if (
+                content.machine.type === "NFA" ||
+                content.machine.type === "DFA" ||
+                content.machine.type === "PDA"
+              )
+                updateMachine(cyref.current.json().elements);
+              else if (content.machine.type === "RE") {
+                updateMachine(reref.current.input.value);
+              }
+            }}
+          >
+            Update Answer
+          </Button>
         </div>
       );
 
@@ -158,16 +237,64 @@ const BlockView = ({ content, updateContent }) => {
     updateContent({ ...content, value: newText });
   };
 
+  const updateQuestionType = (newType) => {
+    updateContent({
+      ...content,
+      question: { ...content.question, type: newType },
+    });
+  };
+
+  const updateMachine = (newElements) => {
+    // updateContent({ ...content, value: newText });
+    const { type } = content;
+    if (type === "equivalence") {
+      // then we're updating the answer
+      if (content.answer.type === "NFA" || content.answer.type === "DFA") {
+        updateContent({
+          ...content,
+          answer: { ...content.answer, elements: newElements },
+        });
+      } else if (content.answer.type === "RE") {
+        updateContent({
+          ...content,
+          answer: { ...content.answer, string: newElements },
+        });
+      }
+    } else if (type === "stringAcceptance") {
+      if (content.machine.type === "GR") {
+        updateContent({
+          ...content,
+          machine: { ...content.machine, productions: newElements },
+        });
+      } else if (
+        content.machine.type === "NFA" ||
+        content.machine.type === "DFA" ||
+        content.machine.type === "PDA"
+      ) {
+        updateContent({
+          ...content,
+          machine: { ...content.machine, elements: newElements },
+        });
+      } else if (content.machine.type === "RE") {
+        updateContent({
+          ...content,
+          machine: { ...content.machine, string: newElements },
+        });
+      }
+    }
+  };
+
   return (
     <div className="m-4 border-2 relative">
       <h3 className="absolute right-px top-px text-slate-400 z-10">
         {capitalizeFirst(content.type)}
-        <Button onClick={() => {}}>edit</Button>
       </h3>
       <RenderContent
         content={content}
         updateChoice={updateChoice}
         updateText={updateText}
+        updateMachine={updateMachine}
+        updateQuestionType={updateQuestionType}
       />
     </div>
   );

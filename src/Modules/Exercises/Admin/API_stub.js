@@ -15,7 +15,7 @@ const ExercisesStub = [
     content: [
       {
         type: "choice",
-        title: "1 + 2 = 3 is that true?",
+        title: "1 + 2 = 3 is this true?",
         options: ["True", "False"],
         answer: "True",
       },
@@ -139,7 +139,7 @@ const ExercisesStub = [
       },
       {
         type: "stringAcceptance",
-        question: {
+        machine: {
           type: "GR",
           productions: [
             ["S", "AB"],
@@ -158,7 +158,7 @@ const ExercisesStub = [
       },
       {
         type: "stringAcceptance",
-        question: { type: "PDA", elements: elmPDA },
+        machine: { type: "PDA", elements: elmPDA },
       },
 
       {
@@ -167,7 +167,7 @@ const ExercisesStub = [
       },
       {
         type: "stringAcceptance",
-        question: {
+        machine: {
           type: "NFA",
           elements: {
             nodes: [
@@ -190,7 +190,7 @@ const ExercisesStub = [
       },
       {
         type: "stringAcceptance",
-        question: {
+        machine: {
           type: "DFA",
           elements: {
             nodes: [
@@ -212,7 +212,7 @@ const ExercisesStub = [
       },
       {
         type: "stringAcceptance",
-        question: { type: "RE", string: "ab*c" },
+        machine: { type: "RE", string: "ab*c" },
       },
     ],
   },
