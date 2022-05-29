@@ -27,6 +27,7 @@ function FSAComponent({ cyref, model, updateModel }) {
 
     console.log("[FSAComponent] useEffect");
     cyref.current = injectEmptyCy(CY_ID);
+    console.log("adding elementes to CY", graphElements);
     addElementsToCy(cyref.current, graphElements);
     cyref.current.layout({ name: "cose" }).run();
 

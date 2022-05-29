@@ -3,9 +3,9 @@ import { useStoreActions } from "easy-peasy";
 import { useEffect, useContext, useState } from "react";
 import MenuBar from "./components/MenuBar";
 import { AdminStoreCtx } from "./Stores/AdminStore";
-import { ExercisesStub } from "./Modules/Exercises/API_stub";
-import ExList from "./Modules/Exercises/ExList";
-import ExerciseView from "./Modules/Exercises/ExerciseView";
+import { ExercisesStub } from "./Modules/Exercises/Admin/API_stub";
+import ExList from "./Modules/Exercises/Admin/ExList";
+import ExerciseView from "./Modules/Exercises/Admin/ExerciseView";
 
 function AdminApp() {
   console.log("[AdminApp] render");
@@ -20,7 +20,7 @@ function AdminApp() {
   }, []);
 
   const handleExSelection = (key) => {
-    console.log("selected exId:", key);
+    // console.log("selected exId:", key);
     setViewEx(key);
   };
 
@@ -34,13 +34,15 @@ function AdminApp() {
     setExData(newExData);
   };
 
-  const content = () => {
+  const Content = () => {
     if (viewEx === null) {
       return <ExList list={exData} onSelect={handleExSelection} />;
     }
     if (viewEx === -1) {
       return <div>ADDINGN a new EXCERISE</div>;
     }
+    if (exData[viewEx] === undefined)
+      return <div>Invalid Excersice Id({viewEx})</div>;
 
     return <ExerciseView ex={exData[viewEx]} updateEx={updateEx} />;
   };
@@ -49,7 +51,7 @@ function AdminApp() {
     <div className="AdminApp">
       <h1>Graphical Automata Simulator :: Welcome Admin</h1>
 
-      {content()}
+      <Content />
     </div>
   );
 }

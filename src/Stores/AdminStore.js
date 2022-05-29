@@ -12,7 +12,7 @@ export const AdminStoreCtx = React.createContext();
 
 const AdminStore = ({ children }) => {
   const [exData, setExData] = useState([]);
-  const [viewEx, setViewEx] = useState(null);
+  const [viewEx, setViewEx] = useState(0);
 
   return (
     <AdminStoreCtx.Provider value={{ exData, setExData, viewEx, setViewEx }}>

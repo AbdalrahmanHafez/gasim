@@ -1,6 +1,6 @@
-import tabTypes from "../../enums/tabTypes";
-import { machineExamples } from "../../Helpers/Constatns";
-import { addLabelDataForExampleElements } from "../../utils";
+import tabTypes from "../../../enums/tabTypes";
+import { machineExamples } from "../../../Helpers/Constatns";
+import { addLabelDataForExampleElements } from "../../../utils";
 
 let elmPDA = machineExamples.elmPDA;
 addLabelDataForExampleElements(elmPDA, tabTypes.PDA);
