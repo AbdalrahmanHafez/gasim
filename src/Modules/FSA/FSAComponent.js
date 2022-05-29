@@ -10,7 +10,7 @@ function FSAComponent({ cyref, model, updateModel }) {
   const LabelHandler = useRef(null);
 
   console.log("[FSAComponent] render");
-  console.log("model is ", model);
+  // console.log("model is ", model);
 
   // const updateModel = (newModel) => {
   //   setStore((store) => {
@@ -27,7 +27,7 @@ function FSAComponent({ cyref, model, updateModel }) {
 
     console.log("[FSAComponent] useEffect");
     cyref.current = injectEmptyCy(CY_ID);
-    console.log("adding elementes to CY", graphElements);
+
     addElementsToCy(cyref.current, graphElements);
     cyref.current.layout({ name: "cose" }).run();
 

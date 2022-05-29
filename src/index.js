@@ -10,6 +10,7 @@ import model from "./model";
 import Store from "./Stores/Store";
 import AdminStore from "./Stores/AdminStore";
 import TestPage from "./TestPages/index.js";
+import TestRerender from "./TestPages/TestRerender";
 
 const store = createStore(model);
 
@@ -27,6 +28,10 @@ const basedOnPath = () => {
           <AdminApp />
         </AdminStore>
       );
+
+    case "/test2":
+      return <TestRerender />;
+
     default:
       return (
         <Store>

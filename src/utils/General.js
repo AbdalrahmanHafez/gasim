@@ -33,3 +33,9 @@ export function isNumber(Object) {
 
   return false;
 }
+
+export function capitalizeFirst(stringInput) {
+  return (
+    stringInput.charAt(0).toUpperCase() + stringInput.slice(1).toLowerCase()
+  );
+}

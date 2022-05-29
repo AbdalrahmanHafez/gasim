@@ -111,8 +111,31 @@ const ExercisesStub = [
 
       {
         type: "text",
-        value:
-          "Enter a string that is accepted by the following Regular Expression",
+        value: "Please Convert the following NFA to it's equivalent RE",
+      },
+      {
+        type: "equivalence",
+        question: {
+          type: "NFA",
+          elements: {
+            nodes: [
+              { data: { id: "a", name: "a", inital: true, final: false } },
+              { data: { id: "b", name: "b", inital: false, final: false } },
+              { data: { id: "c", name: "c", inital: false, final: true } },
+            ],
+            edges: [
+              { data: { id: "ab", source: "a", target: "b", label: "a" } },
+              { data: { id: "bb", source: "b", target: "b", label: "b" } },
+              { data: { id: "bc", source: "b", target: "c", label: "c" } },
+            ],
+          },
+        },
+        answer: { type: "RE", string: "ab*c" },
+      },
+
+      {
+        type: "text",
+        value: "Enter a string that is accepted by the following Grammar",
       },
       {
         type: "stringAcceptance",

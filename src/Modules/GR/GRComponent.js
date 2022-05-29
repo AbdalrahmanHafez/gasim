@@ -230,7 +230,7 @@ const GRTable = ({ dataSource, setDataSource, editable }) => {
         <DataGrid
           experimentalFeatures={{ newEditingApi: true }}
           sx={{
-            fontSize: 20,
+            fontSize: 17,
           }}
           columns={[
             {
@@ -397,7 +397,7 @@ const productionToData2 = (productionArray) =>
 const dataToProductions = (data) => data.map((row) => [row.From, row.To]);
 
 const GRComponent = ({ model, updateModel, editable }) => {
-  console.log("GrammarCompoenent grammar is ", model);
+  // console.log("GrammarCompoenent grammar is ", model);
 
   // by default it's editable, unless specified
 

@@ -732,7 +732,7 @@ export const injectEmptyCy = (cyId, options = {}) => {
 
   // Based on givin optiosn what menus should be shown or hidden
 
-  console.log("the options are ", options);
+  // console.log("the options are ", options);
   if (options.editable === false) {
     console.log("graph options editable false, hidding the add context menu");
 

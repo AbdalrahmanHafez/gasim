@@ -236,24 +236,24 @@ function GRView({ model, updateModel }) {
   };
 
   // TODO: remove examples from GRView
-  const { store, setStore } = useContext(StoreContext);
+  // const { store, setStore } = useContext(StoreContext);
 
-  const handleTempExamle = (model) => {
-    setStore((prevStore) => {
-      const newStore = [...prevStore];
-      newStore[1] = {
-        ...prevStore[1],
-        model: new GRModel(model),
-      };
-      return newStore;
-    });
-  };
+  // const handleTempExamle = (model) => {
+  //   setStore((prevStore) => {
+  //     const newStore = [...prevStore];
+  //     newStore[1] = {
+  //       ...prevStore[1],
+  //       model: new GRModel(model),
+  //     };
+  //     return newStore;
+  //   });
+  // };
 
   return (
     <div>
       <Button onClick={handleBtnSimulate}>Simulate</Button>
 
-      <Button onClick={() => handleTempExamle(grammarExamples.g1)}>g1</Button>
+      {/* <Button onClick={() => handleTempExamle(grammarExamples.g1)}>g1</Button>
       <Button onClick={() => handleTempExamle(grammarExamples.g2)}>g2</Button>
       <Button onClick={() => handleTempExamle(grammarExamples.g3)}>g3</Button>
       <Button onClick={() => handleTempExamle(grammarExamples.g4)}>g4</Button>
@@ -262,7 +262,7 @@ function GRView({ model, updateModel }) {
       <Button onClick={() => handleTempExamle(grammarExamples.g7)}>g7</Button>
       <Button onClick={() => handleTempExamle(grammarExamples.g8)}>g8</Button>
       <Button onClick={() => handleTempExamle(grammarExamples.g9)}>g9</Button>
-      <Button onClick={() => handleTempExamle(grammarExamples.g10)}>g10</Button>
+      <Button onClick={() => handleTempExamle(grammarExamples.g10)}>g10</Button> */}
 
       {/* <Button onClick={() => model.isDerivable("ab")}>CNF</Button> */}
       <h5>

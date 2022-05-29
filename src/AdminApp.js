@@ -2,7 +2,7 @@ import TabsController from "./components/TabsController";
 import { useStoreActions } from "easy-peasy";
 import { useEffect, useContext, useState } from "react";
 import MenuBar from "./components/MenuBar";
-import { AdminStoreCtx } from "./Stores/AdminStore";
+import { AdminStoreCtx, AdminViews } from "./Stores/AdminStore";
 import { ExercisesStub } from "./Modules/Exercises/Admin/API_stub";
 import ExList from "./Modules/Exercises/Admin/ExList";
 import ExerciseView from "./Modules/Exercises/Admin/ExerciseView";
@@ -10,7 +10,7 @@ import ExerciseView from "./Modules/Exercises/Admin/ExerciseView";
 function AdminApp() {
   console.log("[AdminApp] render");
 
-  const { exData, setExData, viewEx, setViewEx } = useContext(AdminStoreCtx);
+  const { exData, setExData, view, setView } = useContext(AdminStoreCtx);
 
   useEffect(() => {
     console.log("[AdminApp] useEffect");
@@ -19,32 +19,39 @@ function AdminApp() {
     setExData(ExercisesStub);
   }, []);
 
-  const handleExSelection = (key) => {
-    // console.log("selected exId:", key);
-    setViewEx(key);
-  };
-
   if (!exData) {
     return <div>Loading...</div>;
   }
 
-  const updateEx = (newExercise) => {
-    const newExData = [...exData];
-    newExData[viewEx] = newExercise;
-    setExData(newExData);
-  };
-
   const Content = () => {
-    if (viewEx === null) {
-      return <ExList list={exData} onSelect={handleExSelection} />;
-    }
-    if (viewEx === -1) {
-      return <div>ADDINGN a new EXCERISE</div>;
-    }
-    if (exData[viewEx] === undefined)
-      return <div>Invalid Excersice Id({viewEx})</div>;
+    const { type } = view;
+    switch (type) {
+      case AdminViews.LIST_ALL:
+        const handleExSelection = (key) => {
+          // console.log("selected exId:", key);
+          setView({ type: AdminViews.VIEW_EXE, key: key });
+        };
+        return <ExList list={exData} onSelect={handleExSelection} />;
 
-    return <ExerciseView ex={exData[viewEx]} updateEx={updateEx} />;
+      case AdminViews.ADD_EXE:
+        return <div>ADDINGN a new EXCERISE</div>;
+
+      case AdminViews.EDIT_EXE:
+        return <div>Edit an Excersice</div>;
+
+      case AdminViews.VIEW_EXE:
+        const { key } = view;
+        const updateEx = (newExercise) => {
+          const newExData = [...exData];
+          newExData[key] = newExercise;
+          setExData(newExData);
+        };
+
+        return <ExerciseView ex={exData[key]} updateEx={updateEx} />;
+
+      default:
+        return <div>Invalid Excersice State {JSON.stringify(view)} </div>;
+    }
   };
 
   return (

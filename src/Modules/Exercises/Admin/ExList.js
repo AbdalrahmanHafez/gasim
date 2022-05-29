@@ -11,20 +11,16 @@ function ExerciseItem({ title, description, onClick }) {
 }
 
 function ExList({ list, onSelect }) {
-  const onClick = (key) => {
-    onSelect(key);
-  };
-
   return (
     <div>
       <Divider orientation="left">Exercises</Divider>
 
-      {list.map((ex, i) => (
+      {list.map((ex, key) => (
         <ExerciseItem
-          key={i}
+          key={key}
           title={ex.title}
           description={ex.description}
-          onClick={() => onClick(i)}
+          onClick={() => onSelect(key)}
         />
       ))}
 
