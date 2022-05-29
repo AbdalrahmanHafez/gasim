@@ -11,7 +11,7 @@ import { capitalizeFirst } from "../../../utils";
 import { FSAComponent, FSAModel } from "../../FSA";
 import { PDAModel, PDAComponent } from "../../PDA";
 import { GRComponent, GRModel } from "../../GR";
-import { Collapse } from "antd";
+import { InputNumber, Collapse } from "antd";
 const { Panel } = Collapse;
 
 const GrammarBlock = ({ info, grref }) => {
@@ -146,8 +146,6 @@ const RenderContent = ({
     case "choice":
       return (
         <div>
-          <h4>{content.title}</h4>
-          {"Answer"}{" "}
           <Radio.Group
             buttonStyle="solid"
             value={content.answer}
@@ -300,6 +298,144 @@ const BlockView = ({ content, updateContent }) => {
   );
 };
 
+function RenderNewBlock({ blockType, setSaveObject }) {
+  const [textValue, setTextValue] = useState("");
+  const [numberChoices, setNumberChoices] = useState(2);
+  const [choices, setchoices] = useState([]);
+  // const choices = new Array(numberChoices).fill("").map((_, i) => ({
+  //   id: i,
+  //   selected: false,
+  //   value: "",
+  // }));
+
+  switch (blockType) {
+    case "text":
+      return (
+        <div>
+          <h3>Enter the text </h3>
+          <Input
+            value={textValue}
+            onChange={(e) => {
+              setTextValue(e.target.value);
+              setSaveObject(e.target.value);
+            }}
+          />
+        </div>
+      );
+
+    case "choice":
+      return (
+        <div>
+          <InputNumber
+            min={2}
+            value={numberChoices}
+            onChange={(nc) => {
+              setchoices(choices=>{
+                let newChoice = [...choices];
+                while (choices.length < nc) {
+                  choices.push({
+                    id: choices.length,
+                    selected: false,
+                    value: "",
+                  });
+                }
+              })
+              
+
+            }}
+          />
+
+          <Radio.Group>
+            {choices.map((choice) => (
+              <Radio key={choice.id}>
+                <Input value="abc" />
+              </Radio>
+            ))}
+          </Radio.Group>
+        </div>
+      );
+
+    default:
+      return null;
+  }
+}
+
+const AddBlock = ({ addBlockToEx }) => {
+  const [bool, setbool] = useState(true);
+  const [blockType, setBlockType] = useState(null);
+
+  const savedObject = useRef(null);
+
+  const resetState = () => {
+    setbool(true);
+    setBlockType(null);
+  };
+
+  const handleSaveBlock = () => {
+    // TODO:
+    switch (blockType) {
+      case "text":
+        addBlockToEx({
+          type: blockType,
+          value: savedObject.current,
+        });
+        break;
+
+      case "choice":
+        addBlockToEx({
+          type: blockType,
+          value: savedObject.current,
+        });
+        break;
+
+      default:
+        break;
+    }
+
+    resetState();
+  };
+
+  const setSaveObject = (saveObject) => {
+    savedObject.current = saveObject;
+  };
+
+  if (blockType) {
+    return (
+      <div>
+        <RenderNewBlock blockType={blockType} setSaveObject={setSaveObject} />
+        <Button onClick={() => handleSaveBlock()}> Save Block</Button>
+        <Button onClick={() => resetState()}>Cancel</Button>
+      </div>
+    );
+  }
+
+  return (
+    <div className="h-40 m-4">
+      {bool ? (
+        <Button block onClick={() => setbool(false)}>
+          Add Block
+        </Button>
+      ) : (
+        <div className="flex">
+          <h3>Select block type</h3>
+          <Button onClick={() => setBlockType("text")}>Text</Button>
+          <Button onClick={() => setBlockType("choice")}>Choice</Button>
+          <Button onClick={() => setBlockType("equivalence")}>
+            Equivalence
+          </Button>
+          <Button onClick={() => setBlockType("stringAcceptance")}>
+            String Acceptance
+          </Button>
+
+          <h3 className="italic text-slate-500" onClick={() => resetState}>
+            Cancel
+          </h3>
+        </div>
+      )}
+    </div>
+  );
+};
+
 function ExerciseView({ ex, updateEx }) {
   const { setViewEx } = useContext(AdminStoreCtx);
   console.log("[ExerciseView] rerendered");
@@ -312,6 +448,12 @@ function ExerciseView({ ex, updateEx }) {
     // i is the key
     const newEx = { ...ex };
     newEx.content[i] = newContent;
+    updateEx(newEx);
+  };
+
+  const addBlockToEx = (addedContent) => {
+    const newEx = { ...ex };
+    newEx.content.push(addedContent);
     updateEx(newEx);
   };
 
@@ -332,7 +474,7 @@ function ExerciseView({ ex, updateEx }) {
         />
       ))}
 
-      <Button block>Add Block</Button>
+      <AddBlock addBlockToEx={addBlockToEx} />
     </div>
   );
 }

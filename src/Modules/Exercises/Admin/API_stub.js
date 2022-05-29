@@ -14,22 +14,33 @@ const ExercisesStub = [
     description: "This is a description of the exercise",
     content: [
       {
+        type: "text",
+        value: "1 + 2 = 3 is this true?",
+      },
+      {
         type: "choice",
-        title: "1 + 2 = 3 is this true?",
         options: ["True", "False"],
         answer: "True",
       },
 
       {
+        type: "text",
+        value: "Choose the Correct option. (Hint): ends with a vowel",
+      },
+
+      {
         type: "choice",
-        title: "Choose the Correct option. (Hint): ends with a vowel",
         options: ["Abcd", "Klmn", "ghi", "weqewqc", "ewqel"],
         answer: "ghi",
       },
 
       {
+        type: "text",
+        value: "Select the number which is divisable by 2",
+      },
+
+      {
         type: "choice",
-        title: "Select the number which is divisable by 2",
         options: ["123", "532", "21315"],
         answer: "532",
       },
