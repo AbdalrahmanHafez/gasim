@@ -26,6 +26,7 @@ const GrammarBlock = ({ info, grref }) => {
           grref.current = newModel;
           setmodel(newModel);
         }}
+        editable={true}
       />
     </div>
   );
@@ -80,7 +81,7 @@ const RenderMachine = ({ info, cyref, reref, grref }) => {
     );
   }
 
-  return <div className="bg-red-500">TODO: Still not implemented</div>;
+  return <div className="bg-red-500">Unexpected</div>;
 };
 
 const TextBlock = ({ content, updateText }) => {
@@ -325,6 +326,9 @@ function RenderNewBlock({ blockType, setSaveObject }) {
   const cyref = useRef(null);
   const [inputValue, setInputValue] = useState("");
 
+  const [machineType, setMachineType] = useState("DFA");
+  const [grmodel, setgrmodel] = useState(new GRModel([["S", ""]]));
+
   switch (blockType) {
     case "text":
       return (
@@ -454,7 +458,6 @@ function RenderNewBlock({ blockType, setSaveObject }) {
             ) : answerType === "RE" ? (
               <div>
                 <Input
-                  ref={cyref}
                   value={inputValue}
                   onChange={(e) => {
                     setInputValue(e.target.value);
@@ -468,6 +471,87 @@ function RenderNewBlock({ blockType, setSaveObject }) {
           </div>
         </div>
       );
+
+    case "stringAcceptance": {
+      const saveData = () => {
+        const finalObject = {
+          type: "stringAcceptance",
+          machine: {
+            type: machineType,
+            [machineType === "RE"
+              ? "string"
+              : machineType === "GR"
+              ? "productions"
+              : "elements"]:
+              machineType === "RE"
+                ? cyref.current
+                : machineType === "GR"
+                ? cyref.current.productions
+                : cyref.current?.json?.().elements,
+          },
+        };
+        setSaveObject(finalObject);
+      };
+      return (
+        <div>
+          <h3>Choose the type</h3>
+          <Radio.Group
+            value={machineType}
+            onChange={(e) => {
+              setMachineType(e.target.value);
+              saveData();
+            }}
+          >
+            <Radio value="DFA"> DFA </Radio>
+            <Radio value="NFA"> NFA </Radio>
+            <Radio value="RE"> RE </Radio>
+            <Radio value="PDA"> PDA </Radio>
+            <Radio value="GR"> Grammar </Radio>
+          </Radio.Group>
+
+          {machineType === "NFA" || machineType === "DFA" ? (
+            <div style={{ height: "25vh" }}>
+              <FSAComponent
+                cyref={cyref}
+                model={new FSAModel([])}
+                updateModel={() => saveData()}
+              />
+            </div>
+          ) : machineType === "PDA" ? (
+            <div style={{ height: "25vh" }}>
+              <PDAComponent
+                cyref={cyref}
+                model={new PDAModel([])}
+                updateModel={() => saveData()}
+              />
+            </div>
+          ) : machineType === "RE" ? (
+            <div>
+              <Input
+                value={inputValue}
+                onChange={(e) => {
+                  setInputValue(e.target.value);
+                  cyref.current = e.target.value;
+                  saveData();
+                }}
+              />
+            </div>
+          ) : machineType === "GR" ? (
+            <GRComponent
+              model={grmodel}
+              updateModel={(newModel) => {
+                setgrmodel(newModel);
+                cyref.current = newModel;
+                saveData();
+              }}
+              editable={true}
+            />
+          ) : (
+            "Select a type"
+          )}
+        </div>
+      );
+    }
 
     default:
       return null;
@@ -486,7 +570,6 @@ const AddBlock = ({ addBlockToEx }) => {
   };
 
   const handleSaveBlock = () => {
-    // TODO:
     switch (blockType) {
       case "text":
         addBlockToEx({
@@ -500,6 +583,10 @@ const AddBlock = ({ addBlockToEx }) => {
         break;
 
       case "equivalence":
+        addBlockToEx(savedObject.current);
+        break;
+
+      case "stringAcceptance":
         addBlockToEx(savedObject.current);
         break;
 
@@ -531,16 +618,19 @@ const AddBlock = ({ addBlockToEx }) => {
           Add Block
         </Button>
       ) : (
-        <div className="flex">
+        <div className="flex items-baseline w-full justify-evenly">
           <h3>Select block type</h3>
-          <Button onClick={() => setBlockType("text")}>Text</Button>
-          <Button onClick={() => setBlockType("choice")}>Choice</Button>
-          <Button onClick={() => setBlockType("equivalence")}>
-            Equivalence
-          </Button>
-          <Button onClick={() => setBlockType("stringAcceptance")}>
-            String Acceptance
-          </Button>
+
+          <div>
+            <Button onClick={() => setBlockType("text")}>Text</Button>
+            <Button onClick={() => setBlockType("choice")}>Choice</Button>
+            <Button onClick={() => setBlockType("equivalence")}>
+              Equivalence
+            </Button>
+            <Button onClick={() => setBlockType("stringAcceptance")}>
+              String Acceptance
+            </Button>
+          </div>
 
           <h3 className="italic text-slate-500" onClick={() => resetState}>
             Cancel
