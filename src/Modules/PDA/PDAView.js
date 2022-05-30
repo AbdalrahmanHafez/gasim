@@ -132,7 +132,9 @@ function PDAView({ model, updateModel }) {
       <SimulateDropDown options={simulationOptions} onClick={handleSimulate} />
 
       <div style={{ display: "flex" }}>
-        <PDAComponent cyref={cy} model={model} updateModel={updateModel} />
+        <div style={{ height: "30rem", width: "100%" }}>
+          <PDAComponent cyref={cy} model={model} updateModel={updateModel} />
+        </div>
 
         {idxToShow !== null && (
           <RightPanel setShowPanel={() => setIdxToShow(null)}>

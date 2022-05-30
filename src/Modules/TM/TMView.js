@@ -90,7 +90,9 @@ function TMView({ model }) {
       <SimulateDropDown options={simulationOptions} onClick={handleSimulate} />
 
       <div style={{ display: "flex" }}>
-        <TMComponent cyref={cy} model={model} />
+        <div style={{ height: "30rem", width: "100%" }}>
+          <TMComponent cyref={cy} model={model} />
+        </div>
 
         {showSim && (
           <RightPanel setShowPanel={setShowSim}>

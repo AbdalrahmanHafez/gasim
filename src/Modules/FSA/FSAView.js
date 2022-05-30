@@ -168,8 +168,10 @@ function FSAView({ model, updateModel }) {
       <FastRunCheckBox stChecked={stFastRunChecked} />
       <SimulateDropDown options={simulationOptions} onClick={handleSimulate} />
 
-      <div style={{ display: "flex" }}>
-        <FSAComponent cyref={cy} model={model} updateModel={updateModel} />
+      <div style={{ display: "flex" }} className="bg-red-300">
+        <div style={{ height: "30rem", width: "100%" }}>
+          <FSAComponent cyref={cy} model={model} updateModel={updateModel} />
+        </div>
 
         {whatToShowRightPanel !== null ? (
           <RightPanel setShowPanel={() => setWhatToShowRightPanel(null)}>

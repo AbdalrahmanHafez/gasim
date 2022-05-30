@@ -69,7 +69,10 @@ function REView({ model, updateModel }) {
             tabObj={{ title: "Result REtoNFA", tabType: tabTypes.FA }}
             modelEvalFn={() => new FSAModel(REtoNFAModel.exportResult)}
           />
-          <REtoNFAComponent model={REtoNFAModel} />
+
+          <div style={{ height: "30rem", width: "100%" }}>
+            <REtoNFAComponent model={REtoNFAModel} />
+          </div>
         </div>
       )}
     </>
