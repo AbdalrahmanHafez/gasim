@@ -321,6 +321,9 @@ function RenderNewBlock({ blockType, setSaveObject }) {
 
   const [questionType, setquestionType] = useState("DFA");
   const [answerType, setanswerType] = useState("DFA");
+  const [answer, setanswer] = useState(null);
+  const cyref = useRef(null);
+  const [inputValue, setInputValue] = useState("");
 
   switch (blockType) {
     case "text":
@@ -385,18 +388,24 @@ function RenderNewBlock({ blockType, setSaveObject }) {
       );
 
     case "equivalence":
-      // const saveData = () => {
-      //   const finalObject = {
-      //     type: "equivalence",
-      //     question: {
-      //       type: questionType,
-      //     },
-      //     answer: {
-      //       type: answerType,
-      //     },
-      //   };
-      //   setSaveObject(finalObject);
-      // };
+      const saveData = () => {
+        const finalObject = {
+          type: "equivalence",
+          question: {
+            type: questionType,
+          },
+          answer: {
+            type: answerType,
+            [answerType === "RE" ? "string" : "elements"]:
+              answerType === "RE"
+                ? inputValue
+                : cyref.current?.json?.().elements,
+          },
+        };
+        setSaveObject(finalObject);
+      };
+
+      saveData();
 
       return (
         <div>
@@ -405,7 +414,10 @@ function RenderNewBlock({ blockType, setSaveObject }) {
               <h3>Question Type</h3>
               <Radio.Group
                 value={questionType}
-                onChange={(e) => setquestionType(e.target.value)}
+                onChange={(e) => {
+                  setquestionType(e.target.value);
+                  saveData();
+                }}
               >
                 <Radio value="DFA"> DFA </Radio>
                 <Radio value="NFA"> NFA </Radio>
@@ -417,7 +429,10 @@ function RenderNewBlock({ blockType, setSaveObject }) {
               <h3>Answer Type</h3>
               <Radio.Group
                 value={answerType}
-                onChange={(e) => setanswerType(e.target.value)}
+                onChange={(e) => {
+                  setanswerType(e.target.value);
+                  saveData();
+                }}
               >
                 <Radio value="DFA"> DFA </Radio>
                 <Radio value="NFA"> NFA </Radio>
@@ -425,12 +440,34 @@ function RenderNewBlock({ blockType, setSaveObject }) {
               </Radio.Group>
             </div>
           </div>
-          <div className="h-40 bg-red-400">
-            {/* TODO: Based on answer selection, prompt to enter the specified machine answer */}
+
+          <div className="h-40">
+            <h3>The answer</h3>
+            {answerType === "NFA" || answerType === "DFA" ? (
+              <div style={{ height: "25vh" }}>
+                <FSAComponent
+                  cyref={cyref}
+                  model={new FSAModel([])}
+                  updateModel={() => saveData()}
+                />
+              </div>
+            ) : answerType === "RE" ? (
+              <div>
+                <Input
+                  ref={cyref}
+                  value={inputValue}
+                  onChange={(e) => {
+                    setInputValue(e.target.value);
+                    saveData();
+                  }}
+                />
+              </div>
+            ) : (
+              "Select a type"
+            )}
           </div>
         </div>
       );
-      break;
 
     default:
       return null;
@@ -459,6 +496,10 @@ const AddBlock = ({ addBlockToEx }) => {
         break;
 
       case "choice":
+        addBlockToEx(savedObject.current);
+        break;
+
+      case "equivalence":
         addBlockToEx(savedObject.current);
         break;
 
