@@ -6,7 +6,7 @@ import React, {
   useCallback,
 } from "react";
 import { Input, Button, Radio } from "antd";
-import { AdminStoreCtx } from "../../../Stores/AdminStore";
+import { AdminStoreCtx, AdminViews } from "../../../Stores/AdminStore";
 import { capitalizeFirst } from "../../../utils";
 import { FSAComponent, FSAModel } from "../../FSA";
 import { PDAModel, PDAComponent } from "../../PDA";
@@ -285,8 +285,8 @@ const BlockView = ({ content, updateContent }) => {
   };
 
   return (
-    <div className="m-4 border-2 relative">
-      <h3 className="absolute right-px top-px text-slate-400 z-10">
+    <div className="m-4  relative">
+      <h3 className="absolute right-2 top-px text-slate-400 z-10">
         {capitalizeFirst(content.type)}
       </h3>
       <RenderContent
@@ -614,7 +614,7 @@ const AddBlock = ({ addBlockToEx }) => {
   return (
     <div className="h-40 m-4">
       {bool ? (
-        <Button block onClick={() => setbool(false)}>
+        <Button block type="primary" onClick={() => setbool(false)}>
           Add Block
         </Button>
       ) : (
@@ -632,9 +632,12 @@ const AddBlock = ({ addBlockToEx }) => {
             </Button>
           </div>
 
-          <h3 className="italic text-slate-500" onClick={() => resetState}>
+          <button
+            className="italic text-slate-500"
+            onClick={() => resetState()}
+          >
             Cancel
-          </h3>
+          </button>
         </div>
       )}
     </div>
@@ -642,11 +645,15 @@ const AddBlock = ({ addBlockToEx }) => {
 };
 
 function ExerciseView({ ex, updateEx }) {
-  const { setViewEx } = useContext(AdminStoreCtx);
+  const { setView } = useContext(AdminStoreCtx);
   console.log("[ExerciseView] rerendered");
 
   const BackButton = () => {
-    return <Button onClick={() => setViewEx(null)}>Back</Button>;
+    return (
+      <Button onClick={() => setView({ type: AdminViews.LIST_ALL })}>
+        Back
+      </Button>
+    );
   };
 
   const updateContent = (newContent, i) => {

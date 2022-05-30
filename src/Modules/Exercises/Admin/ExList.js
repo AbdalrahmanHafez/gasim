@@ -3,8 +3,8 @@ import { Space, Col, Divider, Row, Button } from "antd";
 
 function ExerciseItem({ title, description, onClick }) {
   return (
-    <div onClick={onClick} style={{ width: "80vh", backgroundColor: "snow" }}>
-      <h3>{title}</h3>
+    <div onClick={onClick} className="border-2 p-3 rounded cursor-pointer">
+      <h3 className="font-bold">{title}</h3>
       <h4>{description}</h4>
     </div>
   );
@@ -12,7 +12,7 @@ function ExerciseItem({ title, description, onClick }) {
 
 function ExList({ list, onSelect }) {
   return (
-    <div>
+    <div className="w-auto m-4 p-2 ">
       <Divider orientation="left">Exercises</Divider>
 
       {list.map((ex, key) => (
@@ -24,7 +24,7 @@ function ExList({ list, onSelect }) {
         />
       ))}
 
-      <Space dir="horizontal">
+      <Space className="mt-4" dir="horizontal">
         <Button>Add New</Button>
       </Space>
     </div>
