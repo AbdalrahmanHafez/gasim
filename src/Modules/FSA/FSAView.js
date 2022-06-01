@@ -40,15 +40,21 @@ function FSAView({ model, updateModel }) {
     // Conversion event from menu bar
     conversionBus.on(eventTypes.NFAtoDFA, (NFAtoDFAModel) => {
       console.log("FSAView recived conversion model ", NFAtoDFAModel);
-      setNFAtoDFAModel(NFAtoDFAModel);
-      setWhatToShowRightPanel(1);
+      try {
+        NFAtoDFAModel.checkValid();
+        setNFAtoDFAModel(NFAtoDFAModel);
+        setWhatToShowRightPanel(1);
+      } catch (error) {
+        alert(error);
+      }
     });
 
     conversionBus.on(eventTypes.FSAtoRE, (FSAtoREModel) => {
       console.log("FSAView recived conversion model ", FSAtoREModel);
-      FSAtoREModel.alertVerify();
-      setFSAtoREModel(FSAtoREModel);
-      setWhatToShowRightPanel(2);
+      if (FSAtoREModel.alertVerify()) {
+        setFSAtoREModel(FSAtoREModel);
+        setWhatToShowRightPanel(2);
+      }
     });
   }, []);
 

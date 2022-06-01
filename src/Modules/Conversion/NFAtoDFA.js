@@ -18,6 +18,17 @@ export default class NFAtoDFA {
     return this.dstCy.json().elements;
   }
 
+  checkValid() {
+    const srcCy = createHeadlessCy(this.FSAModel.elements);
+
+    const scy = srcCy;
+
+    const initalNode = scy.$("node[?inital]")[0];
+    if (!initalNode) throw new Error("No inital node found");
+
+    return true;
+  }
+
   convert(dstCy) {
     const srcCy = createHeadlessCy(this.FSAModel.elements);
     this.dstCy = dstCy;

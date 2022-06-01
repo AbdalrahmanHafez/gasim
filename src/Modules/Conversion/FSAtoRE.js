@@ -25,7 +25,9 @@ export default class FSAtoRE {
     const cy = createHeadlessCy(this.FSAModel.elements);
     // ther's atlest one final state
     // there's atleast one inital state
-    if (!verifyInitalStateExists(cy) || !verifyAtLeastFinalState(cy)) return;
+    if (!verifyInitalStateExists(cy) || !verifyAtLeastFinalState(cy))
+      return false;
+    return true;
   }
 
   #isConvertable(cy) {
