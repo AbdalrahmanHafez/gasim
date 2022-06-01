@@ -8,7 +8,7 @@
   box-sizing: border-box;
 }
 
-body {
+html, body {
   margin: 0;
   height: 100%;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
@@ -21,6 +21,23 @@ body {
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
+}
+
+#root{
+  height: 100%;
+  /* background-color: greenyellow; */
+}
+
+#App{
+  height: 100%;
+  /* background-color: lightseagreen; */
+  display: flex;
+  flex-direction: column;
+}
+
+.ant-tabs-content.ant-tabs-content-top{
+  /* ant.d Tab Content */
+  height: 100%;
 }
 
 .btnHighlight {
@@ -122,9 +139,11 @@ h1 {
 #rightPaneContainer > #btnCloseSim, #conversionPanel > #btnCloseSim {
   border-radius: 50%;
   position: absolute;
-  top: -15px;
-  right: -15px;
+  top: 0.3em;
+  right: 0.5em;
   cursor: pointer;
+  width: 1.7em;
+  border: 1px solid #949494;
 }
 
 .simCard {

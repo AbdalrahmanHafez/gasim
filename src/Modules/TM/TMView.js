@@ -89,10 +89,8 @@ function TMView({ model }) {
       <FastRunCheckBox stChecked={stFastRunChecked} />
       <SimulateDropDown options={simulationOptions} onClick={handleSimulate} />
 
-      <div style={{ display: "flex" }}>
-        <div style={{ height: "30rem", width: "100%" }}>
-          <TMComponent cyref={cy} model={model} />
-        </div>
+      <div style={{ display: "flex" }} className="bg-red-300 h-full">
+        <TMComponent cyref={cy} model={model} />
 
         {showSim && (
           <RightPanel setShowPanel={setShowSim}>

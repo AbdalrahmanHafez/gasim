@@ -43,7 +43,7 @@ const RenderMachine = ({ info, cyref, reref, grref }) => {
 
   if (info.type === "NFA" || info.type === "DFA") {
     return (
-      <div style={{ height: "25vh" }}>
+      <div style={{ height: "25vh"}}>
         <FSAComponent
           cyref={cyref}
           model={new FSAModel(info.elements)}

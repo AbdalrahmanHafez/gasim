@@ -14,7 +14,7 @@ function App() {
   }, []);
 
   return (
-    <div className="App">
+    <div id="App">
       <h1>Graphical Automata Simulator</h1>
 
       <MenuBar activeTabKey={activeTabKey} setActiveTabKey={setActiveTabKey} />

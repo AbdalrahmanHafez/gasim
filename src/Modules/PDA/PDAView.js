@@ -131,10 +131,8 @@ function PDAView({ model, updateModel }) {
       <FastRunCheckBox stChecked={stFastRunChecked} />
       <SimulateDropDown options={simulationOptions} onClick={handleSimulate} />
 
-      <div style={{ display: "flex" }}>
-        <div style={{ height: "30rem", width: "100%" }}>
-          <PDAComponent cyref={cy} model={model} updateModel={updateModel} />
-        </div>
+      <div style={{ display: "flex" }} className="bg-red-300 h-full">
+        <PDAComponent cyref={cy} model={model} updateModel={updateModel} />
 
         {idxToShow !== null && (
           <RightPanel setShowPanel={() => setIdxToShow(null)}>

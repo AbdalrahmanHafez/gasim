@@ -83,7 +83,7 @@ export default function TabsController({ activeTabKey, setActiveTabKey }) {
           console.log("new nkey", nKey);
           setActiveTabKey(+nKey);
         }}
-        style={{ margin: "0px 7px" }}
+        style={{ margin: "0px 7px", flexGrow: 1 }}
         type="editable-card"
         onEdit={handleTabEdit}
       >
@@ -92,14 +92,17 @@ export default function TabsController({ activeTabKey, setActiveTabKey }) {
           const info = store[index];
 
           return (
-            <TabPane tab={info.title} key={index} closable={true}>
-              <div id={"tab-" + index}>
-                <ContentContainer
-                  tabIdx={index}
-                  tabInfo={info}
-                  setTabInfo={(something) => setInfo(something, index)}
-                />
-              </div>
+            <TabPane
+              tab={info.title}
+              key={index}
+              closable={true}
+              className="h-full"
+            >
+              <ContentContainer
+                tabIdx={index}
+                tabInfo={info}
+                setTabInfo={(something) => setInfo(something, index)}
+              />
             </TabPane>
           );
         })}
