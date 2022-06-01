@@ -144,15 +144,29 @@ h1 {
   /* width: 70vw; */
 }
 
+
 #rightPaneContainer > #btnCloseSim, #conversionPanel > #btnCloseSim {
-  border-radius: 50%;
   position: absolute;
-  top: 0.3em;
-  right: 0.5em;
+  top: 0em;
+  right: 0em;
   cursor: pointer;
-  width: 1.7em;
-  border: 1px solid #949494;
+  width: 2.5em;
+height: 2.0em;
+
+  /* background-color: #f6f6f6; */
+  /* border: 1px solid #949494; */
+  /* border-radius: 50%; */
+
+  /* background-color:  rgb(218, 218, 218); */
 }
+
+#rightPaneContainer > #btnCloseSim:hover, #conversionPanel > #btnCloseSim:hover {
+  background-color: rgb(192, 192, 192);
+  /* color:whitesmoke */
+}
+
+
+
 
 .simCard {
   margin: 5px 0px;

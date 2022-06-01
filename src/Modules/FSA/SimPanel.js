@@ -72,7 +72,7 @@ function SimPanel({ isFastRun, simulation, onStepAll, onReset }) {
     <>
       Simulation Panel
       <br />
-      <div style={{ display: "flex", marginTop: "0.4em" }} ref={parent}>
+      <div style={{ display: "flex", marginTop: "0.8em" }} ref={parent}>
         {isFastRun ? (
           <>
             <button onClick={toggleRunning} className="ui-button icon-button">
