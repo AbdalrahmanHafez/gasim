@@ -77,7 +77,7 @@ export default class FSAtoRE {
     if (r2 === "") r2 = symbols.lamda;
     // if(needsParens(r1)) r1 = addParen(r1);
     // if(needsParens(r2)) r2 = addParen(r2);
-    return r1 + "|" + r2;
+    return r1 + "+" + r2;
   }
 
   #star(r1) {
@@ -179,7 +179,7 @@ export default class FSAtoRE {
         }
 
         if (length === 1) {
-          let label = edges[0].data("label");
+          let label = edges[0].data("label").replace(symbols.epsilon, "");
           edges[0].remove();
 
           for (let i = 1; i < edges.length; i++) {
