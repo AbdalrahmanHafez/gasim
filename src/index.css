@@ -70,6 +70,14 @@ code {
   background-color: #e9e9e9;
 }
 
+.icon-button{
+  /* to center an icon inside a normal button */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+
 h1 {
   opacity: 0.5;
   font-size: 1em;

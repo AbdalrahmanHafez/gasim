@@ -72,10 +72,10 @@ function SimPanel({ isFastRun, simulation, onStepAll, onReset }) {
     <>
       Simulation Panel
       <br />
-      <div style={{ display: "flex" }} ref={parent}>
+      <div style={{ display: "flex", marginTop: "0.4em" }} ref={parent}>
         {isFastRun ? (
           <>
-            <button onClick={toggleRunning} className="ui-button">
+            <button onClick={toggleRunning} className="ui-button icon-button">
               {running ? <PauseOutlined /> : <CaretRightOutlined />}
             </button>
             <Slider
@@ -88,15 +88,19 @@ function SimPanel({ isFastRun, simulation, onStepAll, onReset }) {
           </>
         ) : (
           <button id="testStepAll" onClick={onStepAll} className="ui-button">
-            Step all
+            Step
           </button>
         )}
-        <button onClick={onReset} className="ui-button">
+        <button onClick={onReset} className="ui-button icon-button">
           {/* Reset */}
           <UndoOutlined />
         </button>
       </div>
-      <div ref={parent}>
+      <div
+        className="mt-4"
+        style={{ height: "82vh", overflowY: "scroll" }}
+        ref={parent}
+      >
         {simulation.configs.map((config, index) => (
           <SimCard key={index} simulation={simulation} config={config} />
         ))}
