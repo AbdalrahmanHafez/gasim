@@ -135,7 +135,7 @@ function FSAView({ model, updateModel }) {
 
       case 2:
         return (
-          <div>
+          <div style={{ height: "-webkit-fill-available" }}>
             <label>The resulting Regular Expression</label>
             <ExportButton
               tabObj={{

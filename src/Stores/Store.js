@@ -76,7 +76,7 @@ const Store = ({ children }) => {
   const [store, setStore] = useState(initialState);
 
   const initalSelectedTab = store.length - 1 < 0 ? null : store.length - 1;
-  const forcedSelectedTab = 1;
+  const forcedSelectedTab = 8;
   const [activeTabKey, setActiveTabKey] = useState(forcedSelectedTab);
   // null means is not any tab is selected
 

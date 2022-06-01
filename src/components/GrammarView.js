@@ -288,7 +288,7 @@ const GrammarView = ({ ui, grammar }) => {
     <>
       <button onClick={() => setShowSim(true)}>simulate</button>
       <h5>
-        leave cell empty to indicate 'ε'. First production must start with S
+        First production must start with S. Space in 'To' will insert 'ε'.
       </h5>
       <Space direction="horizontal" align="start" size="large">
         <div style={{ minWidth: "30em" }}>

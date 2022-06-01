@@ -295,8 +295,8 @@ export class GrammarParser {
       console.log("Tick");
       this.#parse();
 
-      if (counter++ === 1000) {
-        alert("Loop protection limit reached");
+      if (counter++ === 10000) {
+        alert("Loop protection limit reached, aborting");
         break;
       }
     }

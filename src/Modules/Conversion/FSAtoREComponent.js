@@ -29,7 +29,7 @@ function FSAtoREComponent({ model }) {
   return (
     <>
       <Input value={inputValue} />
-      <div id={CY_ID} className="cy"></div>;
+      <div id={CY_ID} className="cy"></div>
     </>
   );
 }

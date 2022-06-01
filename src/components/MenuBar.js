@@ -79,7 +79,7 @@ function MenuBar({ activeTabKey, setActiveTabKey }) {
         addTab({
           tabType: tabTypes.GR,
           title: "Grammar",
-          model: new GRModel([]),
+          model: new GRModel([["S", "?"]]),
         });
         break;
       case "RE":

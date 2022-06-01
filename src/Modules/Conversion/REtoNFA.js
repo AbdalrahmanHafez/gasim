@@ -410,7 +410,7 @@ export default class REtoNFA {
         id: "REtoNFA_initial_to_final",
         source: "REtoNFA_intial",
         target: "REtoNFA_final",
-        label: input,
+        label: input.replace("!", "ε"),
       },
     });
 

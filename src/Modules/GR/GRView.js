@@ -258,7 +258,9 @@ function GRView({ model, updateModel }) {
 
   return (
     <div>
-      <Button onClick={handleBtnSimulate}>Simulate</Button>
+      <Button onClick={handleBtnSimulate} className="mb-2">
+        Test Input
+      </Button>
 
       {/* <Button onClick={() => handleTempExamle(grammarExamples.g1)}>g1</Button>
       <Button onClick={() => handleTempExamle(grammarExamples.g2)}>g2</Button>
@@ -273,7 +275,7 @@ function GRView({ model, updateModel }) {
 
       {/* <Button onClick={() => model.isDerivable("ab")}>CNF</Button> */}
       <h5>
-        leave cell empty to indicate 'ε'. First production must start with S
+        First production must start with S. Space in 'To' will insert 'ε'.
       </h5>
 
       <div style={{ display: "flex", flexWrap: "wrap", gap: "12px" }}>
