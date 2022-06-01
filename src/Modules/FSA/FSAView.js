@@ -120,7 +120,7 @@ function FSAView({ model, updateModel }) {
 
       case 1:
         return (
-          <div>
+          <div style={{ height: "-webkit-fill-available" }}>
             <ExportButton
               tabObj={{
                 title: "Result NFAtoDFA",

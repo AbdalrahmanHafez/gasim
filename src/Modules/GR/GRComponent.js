@@ -128,7 +128,7 @@ const EditableTable = (props) => {
       title: "",
       dataIndex: "operation",
       render: (_, record) =>
-        dataSource.length >= 1 ? (
+        dataSource.length >= 1 && editable ? (
           // <Popconfirm
           //   title="Sure to delete?"
           //   onConfirm={() => handleDelete(record.key)}
@@ -277,6 +277,7 @@ const GRTable = ({ dataSource, setDataSource, editable }) => {
               field: "removeBtn",
               headerName: "",
               flex: 1,
+              hide: !editable,
               renderCell: (d) => (
                 <Text
                   style={{ color: "rgb(59 130 246)" }}
