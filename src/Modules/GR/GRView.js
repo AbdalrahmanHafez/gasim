@@ -215,12 +215,19 @@ function GRView({ model, updateModel }) {
     if (idxToShow === 1)
       // TODO: style span the avaible width
       return (
-        <div>
+        <div
+          style={{
+            flexGrow: 1,
+            height: "65vh",
+            width: "30em",
+            // backgroundColor: "red",
+          }}
+        >
           <ExportButton
             tabObj={{ title: "Result GRtoPDA", tabType: tabTypes.PDA }}
             modelEvalFn={() => new PDAModel(GRtoPDAModel.exportResult)}
           />
-          <div style={{ minWidth: "60em" }}>
+          <div style={{ height: "100%" }} className="flex-1">
             <GRtoPDAComponent model={GRtoPDAModel} />
           </div>
         </div>
@@ -268,7 +275,8 @@ function GRView({ model, updateModel }) {
       <h5>
         leave cell empty to indicate 'ε'. First production must start with S
       </h5>
-      <Space direction="horizontal" align="start" size="large">
+
+      <div style={{ display: "flex", flexWrap: "wrap", gap: "12px" }}>
         <div style={{ minWidth: "28em" }}>
           <GRComponent
             model={model}
@@ -282,7 +290,7 @@ function GRView({ model, updateModel }) {
         {idxToShow !== null && (
           <Button onClick={() => setIdxToShow(null)}>&#10005;</Button>
         )}
-      </Space>
+      </div>
     </div>
   );
 }
