@@ -73,7 +73,7 @@ addLabelDataForExampleElements(elmPDAtoGR, tabTypes.PDA);
 const initialState = [
   {
     tabType: tabTypes.FA,
-    title: "NFA example",
+    title: "Finite State Automata",
     model: new FSAModel(elmInital),
   },
 ];

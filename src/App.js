@@ -19,7 +19,7 @@ function App() {
         <h1>Graphical Automata Simulator</h1>
         <a
           className="border rounded-xl mt-1 ml-2 h-6 px-2 border-cyan-400 hover:bg-slate-200 cursor-pointer italic hover:not-italic"
-          href="https://www.google.com"
+          href="https://forms.gle/ttTeornyhx6WnukG7"
           target="_blank"
           rel="noreferrer"
         >
