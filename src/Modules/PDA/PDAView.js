@@ -17,6 +17,7 @@ import { PDAtoGRComponent } from "../Conversion";
 import ExportButton from "../../components/ExportButton";
 import tabTypes from "../../enums/tabTypes";
 import { GRModel } from "../GR";
+import SimplePopup from "../../components/InformationPopups/SimplePopup";
 
 const simulationOptions = [
   steppingStrategies.STEP_BY_STATE,
@@ -131,14 +132,51 @@ function PDAView({ model, updateModel }) {
       <FastRunCheckBox stChecked={stFastRunChecked} />
       <SimulateDropDown options={simulationOptions} onClick={handleSimulate} />
 
-      <div style={{ display: "flex" }} className="bg-red-300 h-full">
-        <PDAComponent cyref={cy} model={model} updateModel={updateModel} />
+      <div
+        style={{
+          height: "100%",
+          display: "flex",
+          flexDirection: "column",
+        }}
+      >
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "end",
+            // background: "green",
+          }}
+        >
+          <SimplePopup
+            options={{
+              steps: [
+                {
+                  title: "Label definition",
+                  intro: `<div>
+              ( a,Z -> K ) Means:
+                <br/>
+                Reads a, Pops Z, pushes K
+              </div>`,
+                },
+                {
+                  title: "PDA Stack",
+                  intro:
+                    "While simulating, the stack is displayed left(bottom most item) to right(top most item).",
+                },
+              ],
+            }}
+          />
+        </div>
 
-        {idxToShow !== null && (
-          <RightPanel setShowPanel={() => setIdxToShow(null)}>
-            {displaySideContent()}
-          </RightPanel>
-        )}
+        <div style={{ display: "flex" }} className="bg-red-300 h-full">
+          <PDAComponent cyref={cy} model={model} updateModel={updateModel} />
+
+          {idxToShow !== null && (
+            <RightPanel setShowPanel={() => setIdxToShow(null)}>
+              {displaySideContent()}
+            </RightPanel>
+          )}
+        </div>
       </div>
     </>
   );

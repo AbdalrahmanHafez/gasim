@@ -83,7 +83,8 @@ export default function TabsController({ activeTabKey, setActiveTabKey }) {
           console.log("new nkey", nKey);
           setActiveTabKey(+nKey);
         }}
-        style={{ margin: "0px 7px", flexGrow: 1 }}
+        id="TABS"
+        style={{ flexGrow: 1 }}
         type="editable-card"
         onEdit={handleTabEdit}
       >

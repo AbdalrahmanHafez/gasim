@@ -12,6 +12,7 @@ import {
   clearHighlighted,
   highlightConfigs,
 } from "../../utils";
+import SimplePopup from "../../components/InformationPopups/SimplePopup";
 
 const simulationOptions = [
   steppingStrategies.STEP_BY_STATE,
@@ -89,19 +90,56 @@ function TMView({ model }) {
       <FastRunCheckBox stChecked={stFastRunChecked} />
       <SimulateDropDown options={simulationOptions} onClick={handleSimulate} />
 
-      <div style={{ display: "flex" }} className="bg-red-300 h-full">
-        <TMComponent cyref={cy} model={model} />
+      <div
+        style={{
+          height: "100%",
+          display: "flex",
+          flexDirection: "column",
+        }}
+      >
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "end",
+            // background: "green",
+          }}
+        >
+          <SimplePopup
+            options={{
+              steps: [
+                {
+                  title: "Label Definition",
+                  intro: `<div>
+                  ( a, b -> R ) Means:
+                  <br/>
+                  Reads 'a' and writes 'b' on the current tape.
+                  <br/>
+                  <br/>
+                  R means it will move next to the right
+                  <br/>
+                  The third option can be one of (R,L,S), Right, Left, Stay.
+                  </div>`,
+                },
+              ],
+            }}
+          />
+        </div>
 
-        {showSim && (
-          <RightPanel setShowPanel={setShowSim}>
-            <SimPanel
-              isFastRun={stFastRunChecked[0]}
-              simulation={simulation.current}
-              onStepAll={hanldeStepAll}
-              onReset={handleResetSimulation}
-            />
-          </RightPanel>
-        )}
+        <div style={{ display: "flex" }} className="bg-red-300 h-full">
+          <TMComponent cyref={cy} model={model} />
+
+          {showSim && (
+            <RightPanel setShowPanel={setShowSim}>
+              <SimPanel
+                isFastRun={stFastRunChecked[0]}
+                simulation={simulation.current}
+                onStepAll={hanldeStepAll}
+                onReset={handleResetSimulation}
+              />
+            </RightPanel>
+          )}
+        </div>
       </div>
     </>
   );

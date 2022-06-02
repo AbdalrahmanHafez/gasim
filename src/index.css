@@ -6,6 +6,8 @@
 *::before,
 *::after {
   box-sizing: border-box;
+  margin:0;
+  padding:0;
 }
 
 html, body {
@@ -77,9 +79,13 @@ code {
   align-items: center;
 }
 
+.popup-container.hide-popup{
+  display: none;
+}
+
 
 h1 {
-  opacity: 0.5;
+  /* opacity: 0.5; */
   font-size: 1em;
   font-weight: bold;
 }

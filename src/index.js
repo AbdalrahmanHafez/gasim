@@ -11,6 +11,7 @@ import Store from "./Stores/Store";
 import AdminStore from "./Stores/AdminStore";
 import TestPage from "./TestPages/index.js";
 import TestRerender from "./TestPages/TestRerender";
+import { getCookie, setCookie } from "./utils";
 
 const store = createStore(model);
 
@@ -40,6 +41,43 @@ const basedOnPath = () => {
       );
   }
 };
+
+setTimeout(() => {
+  if (getCookie("tutorialDone") !== undefined) return;
+
+  window
+    .introJs()
+    .oncomplete(() => {
+      setCookie("tutorialDone", "true", 365);
+    })
+    .setOptions({
+      steps: [
+        {
+          title: "Welcome User 👋",
+          intro: "Click next to start the tutorial",
+        },
+        {
+          title: "New Node",
+          intro: "Double click on the background to create a node.",
+        },
+        {
+          title: "Connect Nodes",
+          intro:
+            "Enable transition -top left-, then drag between nodes to create a new edge.",
+        },
+        {
+          title: "Context Menu",
+          intro:
+            "Right click to explore more optios, such as setting an inital/final node.",
+        },
+        {
+          title: "Rename",
+          intro: "To Rename double click an Edge or Node.",
+        },
+      ],
+    })
+    .start();
+}, 1000);
 
 ReactDOM.render(
   <React.StrictMode>

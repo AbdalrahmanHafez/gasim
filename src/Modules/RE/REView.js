@@ -51,28 +51,42 @@ function REView({ model, updateModel }) {
 
   return (
     <>
-      <Button onClick={handleBtnConvert} style={{ marginBottom: "0.2em" }}>
-        Convert RE to NFA
-      </Button>
+      <h4 className="m-1">Regular Expression</h4>
+      <div className="m-1 flex flex-1 gap-1">
+        <Input
+          value={input}
+          onChange={(e) => setInputValue(e.target.value)}
+          placeholder="Input a regular expression"
+        />
 
-      <Input
-        value={input}
-        onChange={(e) => setInputValue(e.target.value)}
-        placeholder="Input a regular expression"
-      />
-
+        <Button onClick={handleBtnConvert}>Convert to NFA</Button>
+      </div>
+      <div className="m-1 p-2 border rounded-md">
+        <span>
+          <b>+</b> Is the OR symbol.
+        </span>
+        <br />
+        <span>
+          <b>!</b> Represents Epsilon symbol ε, example usage: a(b+!)
+        </span>
+        <br />
+        <span>
+          <b>*</b> Kleene star, zero or more of expression, ex: a*
+        </span>
+      </div>
       {/* <FSAComponent cyref={cy} model={CreatedFSAModel} /> */}
 
       {REtoNFAModel !== null && (
-        <div>
-          <ExportButton
-            tabObj={{ title: "Result REtoNFA", tabType: tabTypes.FA }}
-            modelEvalFn={() => new FSAModel(REtoNFAModel.exportResult)}
-          />
-
+        <div className="m-1 flex flex-col items-end ">
           <div style={{ height: "30rem", width: "100%" }}>
             <REtoNFAComponent model={REtoNFAModel} />
           </div>
+
+          <ExportButton
+            className="mt-1"
+            tabObj={{ title: "Result REtoNFA", tabType: tabTypes.FA }}
+            modelEvalFn={() => new FSAModel(REtoNFAModel.exportResult)}
+          />
         </div>
       )}
     </>

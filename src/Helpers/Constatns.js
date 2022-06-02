@@ -19,6 +19,17 @@ export class machineExamples {
     };
   }
 
+  static get elmInital() {
+    return {
+      nodes: [
+        { data: { id: "q0", name: "q0", inital: true, final: false } },
+        { data: { id: "q1", name: "q1", inital: false, final: false } },
+        { data: { id: "q2", name: "q2", inital: false, final: true } },
+      ],
+      edges: [{ data: { id: "q0q1", source: "q0", target: "q1", label: "a" } }],
+    };
+  }
+
   static get elm0() {
     return {
       nodes: [

@@ -15,6 +15,12 @@ import tabTypes from "../../enums/tabTypes";
 import FSAModel from "./FSAModel";
 import { REModel } from "../RE";
 
+import { Typography } from "antd";
+import { InfoCircleOutlined, InfoOutlined } from "@ant-design/icons";
+import SimplePopup from "../../components/InformationPopups/SimplePopup";
+
+const { Text } = Typography;
+
 const simulationOptions = [
   steppingStrategies.STEP_BY_STATE,
   steppingStrategies.STEP_WITH_CLOSURE,
@@ -173,15 +179,56 @@ function FSAView({ model, updateModel }) {
     <>
       <FastRunCheckBox stChecked={stFastRunChecked} />
       <SimulateDropDown options={simulationOptions} onClick={handleSimulate} />
+      <div
+        style={{
+          height: "100%",
+          display: "flex",
+          flexDirection: "column",
+        }}
+      >
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "end",
+            // background: "green",
+          }}
+        >
+          <SimplePopup
+            options={{
+              steps: [
+                {
+                  title: "New Node",
+                  intro: "Double click on the background to create a node.",
+                },
+                {
+                  title: "Connect Nodes",
+                  intro:
+                    "Enable transition -top left-, then drag between nodes to create a new edge.",
+                },
+                {
+                  title: "Context Menu",
+                  intro:
+                    "Right click to explore more optios, such as setting an inital/final node.",
+                },
+                {
+                  title: "Rename",
+                  intro: "To Rename double click an Edge or Node.",
+                },
+              ],
+            }}
+          />
+        </div>
 
-      <div style={{ display: "flex" }} className="bg-red-300 h-full">
-        <FSAComponent cyref={cy} model={model} updateModel={updateModel} />
+        <div style={{ display: "flex" }} className="bg-red-300 h-full">
+          <FSAComponent cyref={cy} model={model} updateModel={updateModel} />
 
-        {whatToShowRightPanel !== null ? (
-          <RightPanel setShowPanel={() => setWhatToShowRightPanel(null)}>
-            {rightPanelContent()}
-          </RightPanel>
-        ) : null}
+          {whatToShowRightPanel !== null ? (
+            <RightPanel setShowPanel={() => setWhatToShowRightPanel(null)}>
+              {rightPanelContent()}
+            </RightPanel>
+          ) : null}
+        </div>
       </div>
     </>
   );
