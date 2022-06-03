@@ -85,6 +85,7 @@ function GRView({ model, updateModel }) {
     console.log("Started");
     const inputData = simUserInput;
 
+    // console.log("model is ", model.productions);
     setSimRunning(true);
     // const grammar = new GRModel(dataToProductions(data));
     const displayData = model.bruteForceTo(inputData);

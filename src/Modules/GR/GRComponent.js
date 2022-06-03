@@ -342,7 +342,10 @@ const GRTable = ({ dataSource, setDataSource, editable }) => {
                 let newProds = [];
                 const rhsSegs = To.split("|");
                 rhsSegs.forEach((rhs) => {
-                  newProds.push({ ...prod, From: From, To: rhs });
+                  const newRhs = rhs.split("").includes("ε")
+                    ? rhs.replace("ε", "")
+                    : rhs;
+                  newProds.push({ ...prod, From: From, To: newRhs });
                 });
 
                 return newProds;
