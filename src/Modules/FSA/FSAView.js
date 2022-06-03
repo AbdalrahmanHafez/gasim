@@ -18,6 +18,7 @@ import { REModel } from "../RE";
 import { Typography } from "antd";
 import { InfoCircleOutlined, InfoOutlined } from "@ant-design/icons";
 import SimplePopup from "../../components/InformationPopups/SimplePopup";
+import useTracking from "../../Hooks/useTracking";
 
 const { Text } = Typography;
 
@@ -28,6 +29,8 @@ const simulationOptions = [
 ];
 
 function FSAView({ model, updateModel }) {
+  const { trackButtonClick } = useTracking();
+
   const stFastRunChecked = useState(false);
   const [, forceRender] = useState({});
   const [NFAtoDFAModel, setNFAtoDFAModel] = useState(null);
@@ -65,6 +68,8 @@ function FSAView({ model, updateModel }) {
   }, []);
 
   const handleSimulate = (choiceStepping) => {
+    trackButtonClick({ id: "SimulateFSA", choiceStepping });
+
     console.log("clicked start simulation FSA");
     console.log("choosen", choiceStepping);
 
@@ -86,6 +91,8 @@ function FSAView({ model, updateModel }) {
   };
 
   const hanldeStepAll = () => {
+    trackButtonClick({ id: "SimulationStepAll" });
+
     if (cy.current !== getCy()) {
       throw new Error("cy is not the same as the refrence");
     }
@@ -100,6 +107,8 @@ function FSAView({ model, updateModel }) {
   };
 
   const handleResetSimulation = () => {
+    trackButtonClick({ id: "SimulationReset" });
+
     if (cy.current !== getCy()) {
       throw new Error("cy is not the same as the refrence");
     }

@@ -18,6 +18,7 @@ import ExportButton from "../../components/ExportButton";
 import tabTypes from "../../enums/tabTypes";
 import { GRModel } from "../GR";
 import SimplePopup from "../../components/InformationPopups/SimplePopup";
+import useTracking from "../../Hooks/useTracking";
 
 const simulationOptions = [
   steppingStrategies.STEP_BY_STATE,
@@ -26,6 +27,8 @@ const simulationOptions = [
 ];
 
 function PDAView({ model, updateModel }) {
+  const { trackButtonClick } = useTracking();
+
   const stFastRunChecked = useState(false);
   const [, forceRender] = useState({});
 
@@ -52,6 +55,8 @@ function PDAView({ model, updateModel }) {
   }, []);
 
   const handleSimulate = (choiceStepping) => {
+    trackButtonClick({ id: "SimulatePDA", choiceStepping });
+
     console.log("clicked start simulation PDA");
     console.log("choosen", choiceStepping);
 
@@ -73,6 +78,8 @@ function PDAView({ model, updateModel }) {
   };
 
   const hanldeStepAll = () => {
+    trackButtonClick({ id: "SimulationStepAll" });
+
     if (cy.current !== getCy()) {
       throw new Error("cy is not the same as the refrence");
     }
@@ -87,6 +94,8 @@ function PDAView({ model, updateModel }) {
   };
 
   const handleResetSimulation = () => {
+    trackButtonClick({ id: "SimulationReset" });
+
     if (cy.current !== getCy()) {
       throw new Error("cy is not the same as the refrence");
     }

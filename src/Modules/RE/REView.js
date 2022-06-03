@@ -7,11 +7,13 @@ import { conversionBus, eventTypes } from "../../Events";
 import REModel from "./REModel";
 import ExportButton from "../../components/ExportButton";
 import tabTypes from "../../enums/tabTypes";
+import useTracking from "../../Hooks/useTracking";
 
 // const CY_ID = "RE-to-NFA-CY";
 
 // MAYBE: missing ! empty string inputs supported by jflap
 function REView({ model, updateModel }) {
+  const { trackInput } = useTracking();
   const [input, setInput] = useState(model?.inputRegex || "");
 
   const [REtoNFAModel, setREtoNFAModel] = useState(null);
@@ -25,9 +27,11 @@ function REView({ model, updateModel }) {
     // Conversion event from menu bar
     conversionBus.on(eventTypes.REtoNFA, (REtoNFAModel) => {
       console.log("REView recived conversion model ", REtoNFAModel);
-
       // Verify inputs
       const input = REtoNFAModel.REModel.inputRegex;
+
+      trackInput({ regex: input });
+
       if (typeof input !== "string" && input.trim() === "") {
         alert("Please enter a none empty regular expression");
         return;

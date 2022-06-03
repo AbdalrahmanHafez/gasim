@@ -18,6 +18,7 @@ import tabTypes from "../../enums/tabTypes";
 import { PDAModel } from "../PDA";
 import { StoreContext } from "../../Stores/Store";
 import { grammarExamples } from "../../Helpers/Constatns";
+import useTracking from "../../Hooks/useTracking";
 
 const { Text, Link } = Typography;
 
@@ -28,7 +29,7 @@ const dataToProductions = (data) =>
 
 function GRView({ model, updateModel }) {
   const [, forceRender] = useState({});
-
+  const { trackInput } = useTracking();
   // const [showSim, setShowSim] = useState(false);
   const [simRunning, setSimRunning] = useState(false);
   const [simData, setSimData] = useState([]);
@@ -54,6 +55,7 @@ function GRView({ model, updateModel }) {
 
   const handleOnchagneStringInput = (e) => {
     const inputString = e.target.value.trim();
+    trackInput({ type: "CYKInputChange", string: inputString });
 
     setSimUserInput(inputString);
 
@@ -72,11 +74,14 @@ function GRView({ model, updateModel }) {
         setCykIsDerivable(isDerivable);
       } catch (error) {
         alert(error);
+        throw new Error(error);
       }
     }
   };
 
   const handleBtnBruteforce = () => {
+    trackInput({ type: "BruteForceBtn", input: simUserInput });
+
     console.log("Started");
     const inputData = simUserInput;
 
@@ -237,7 +242,16 @@ function GRView({ model, updateModel }) {
   }
 
   const handleBtnSimulate = () => {
+    trackInput({ GRModel: model });
     // Verify model values are correct
+
+    for (let [From, To] of model.productions) {
+      if (To.split("").includes("?")) {
+        alert("Please replace '?' with a correct value");
+        return;
+      }
+    }
+
     console.log("Model productions", model.productions);
     setIdxToShow(0);
   };

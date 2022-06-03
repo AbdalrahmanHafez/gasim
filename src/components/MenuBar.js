@@ -16,11 +16,14 @@ import NFAtoDFA from "../Modules/Conversion/NFAtoDFA";
 import { conversionBus, eventTypes } from "../Events";
 import { GRtoPDA, FSAtoRE, PDAtoGR, REtoNFA } from "../Modules/Conversion";
 import { tabTypeToConversionOptions } from "../utils";
+import useTracking from "../Hooks/useTracking";
 
 const openMenuClasses =
   "rounded-sm border-white-500 hover:bg-gray-200 px-2 mx-1";
 
 function MenuBar({ activeTabKey, setActiveTabKey }) {
+  const { trackContextMenuClick } = useTracking();
+
   const {
     store,
     setStore,
@@ -32,6 +35,8 @@ function MenuBar({ activeTabKey, setActiveTabKey }) {
 
   const handleNewMenu = (e) => {
     const { value } = e;
+    trackContextMenuClick({ type: "New", data: value });
+
     switch (value) {
       case "FSA":
         addTab({
@@ -98,6 +103,8 @@ function MenuBar({ activeTabKey, setActiveTabKey }) {
   };
 
   const handleConvertMenu = ({ value }) => {
+    trackContextMenuClick({ type: "Convert", data: value });
+
     switch (value) {
       case "ignore":
         return;
@@ -169,6 +176,8 @@ function MenuBar({ activeTabKey, setActiveTabKey }) {
   };
 
   const handleExamplesMenu = ({ value }) => {
+    trackContextMenuClick({ type: "Examples", data: value });
+
     switch (value) {
       case "NFA1": {
         let elm1 = machineExamples.elm1;

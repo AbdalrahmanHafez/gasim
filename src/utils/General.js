@@ -57,3 +57,20 @@ export function getCookie(cName) {
   });
   return res;
 }
+
+function determineEnviroment() {
+  if (!process.env.NODE_ENV || process.env.NODE_ENV === "development") {
+    // dev code
+    return "development";
+  } else {
+    // production code
+    return "production";
+  }
+}
+
+export const isProduction = () => {
+  return determineEnviroment() === "production";
+};
+export const isDevelopement = () => {
+  return determineEnviroment() === "development";
+};

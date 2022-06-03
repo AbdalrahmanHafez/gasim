@@ -7,6 +7,7 @@ import { StoreContext } from "../Stores/Store";
 import "antd/dist/antd.css";
 
 import { Tabs } from "antd";
+import useTracking from "../Hooks/useTracking";
 const { TabPane } = Tabs;
 
 const $ = window.jQuery;
@@ -37,6 +38,8 @@ const $ = window.jQuery;
 //   }
 // }
 export default function TabsController({ activeTabKey, setActiveTabKey }) {
+  const { trackChangeTab, trackEditTabs } = useTracking();
+
   const {
     store,
     setstore,
@@ -69,6 +72,9 @@ export default function TabsController({ activeTabKey, setActiveTabKey }) {
 
   const handleTabEdit = (targetTabNr, action) => {
     // Adding a tab, happens directly from menueBar, to the store directly
+
+    trackEditTabs({ type: action, tabNumber: targetTabNr });
+
     if (action === "remove") removeTab(targetTabNr);
     else
       throw new Error("unknown action in handleTabEdit() inside tabController");
@@ -81,6 +87,7 @@ export default function TabsController({ activeTabKey, setActiveTabKey }) {
         activeKey={activeTabKey === null ? null : activeTabKey.toString()}
         onChange={(nKey) => {
           console.log("new nkey", nKey);
+          trackChangeTab({ from: activeTabKey, to: +nKey });
           setActiveTabKey(+nKey);
         }}
         id="TABS"

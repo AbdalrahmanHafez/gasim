@@ -5,6 +5,7 @@ import contextMenus from "cytoscape-context-menus";
 import "cytoscape-context-menus/cytoscape-context-menus.css";
 import tabTypes from "../enums/tabTypes";
 import { parseExampleLabels } from "../Helpers/GraphLabel";
+import { trackButtonClick } from "../Stores/TrackingStore";
 
 cytoscape.use(edgehandles);
 cytoscape.use(contextMenus);
@@ -873,6 +874,7 @@ cytoscape("core", "toolbar", function (eh, options) {
       button.append(icon);
 
       button.onclick = () => {
+        trackButtonClick({ id: "toggleTransitionBtn", was: eh.drawMode });
         // toolbarData.canConnect = true;
         // console.log("new data is", eh);
         console.log("was ", eh.drawMode);

@@ -1,7 +1,10 @@
 import React from "react";
 import { InfoCircleOutlined, InfoOutlined } from "@ant-design/icons";
+import useTracking from "../../Hooks/useTracking";
 
 function SimplePopup({ options }) {
+  const { trackButtonClick } = useTracking();
+
   return (
     <InfoCircleOutlined
       style={{
@@ -10,6 +13,7 @@ function SimplePopup({ options }) {
       }}
       onClick={() => {
         // window.introJs().start();
+        trackButtonClick("SimplePopup");
         window.introJs().setOptions(options).start();
       }}
     />

@@ -13,6 +13,7 @@ import {
   highlightConfigs,
 } from "../../utils";
 import SimplePopup from "../../components/InformationPopups/SimplePopup";
+import useTracking from "../../Hooks/useTracking";
 
 const simulationOptions = [
   steppingStrategies.STEP_BY_STATE,
@@ -20,6 +21,8 @@ const simulationOptions = [
 ];
 
 function TMView({ model }) {
+  const { trackButtonClick } = useTracking();
+
   const stFastRunChecked = useState(false);
   const [showSim, setShowSim] = useState(false);
   const [, forceRender] = useState({});
@@ -30,6 +33,8 @@ function TMView({ model }) {
   const getCy = () => cy.current;
 
   const handleSimulate = (choiceStepping) => {
+    trackButtonClick({ id: "SimulateTM", choiceStepping });
+
     console.log("clicked start simulation TM");
     console.log("choosen", choiceStepping);
 
@@ -55,6 +60,8 @@ function TMView({ model }) {
   };
 
   const hanldeStepAll = () => {
+    trackButtonClick({ id: "SimulationStepAll" });
+
     if (cy.current !== getCy()) {
       throw new Error("cy is not the same as the refrence");
     }
@@ -69,6 +76,8 @@ function TMView({ model }) {
   };
 
   const handleResetSimulation = () => {
+    trackButtonClick({ id: "SimulationReset" });
+
     if (cy.current !== getCy()) {
       throw new Error("cy is not the same as the refrence");
     }
