@@ -136,13 +136,16 @@ const RenderContent = ({
   content,
   updateChoice,
   updateText,
-  updateMachine,
+  updateQuestion,
+  updateAnswer,
   updateQuestionType,
 }) => {
   console.log("[RenderContent] rerendered");
   const { type } = content;
-  const cyref = useRef(null);
-  const reref = useRef(null);
+  const cyrefA = useRef(null);
+  const cyrefB = useRef(null);
+  const rerefA = useRef(null);
+  const rerefB = useRef(null);
   const grref = useRef(null);
 
   switch (type) {
@@ -174,18 +177,33 @@ const RenderContent = ({
             updateQuestionType={updateQuestionType}
           />
 
+          <RenderMachine
+            reref={rerefA}
+            cyref={cyrefA}
+            info={content.question}
+          />
+          <Button
+            onClick={() => {
+              if (content.question.type === "RE") {
+                updateQuestion(rerefA.current.input.value);
+              } else updateQuestion(cyrefA.current.json().elements);
+            }}
+          >
+            Update Question
+          </Button>
+
           <Collapse defaultActiveKey={["1"]}>
             <Panel header="Answer" key="1">
               <RenderMachine
-                reref={reref}
-                cyref={cyref}
+                reref={rerefB}
+                cyref={cyrefB}
                 info={content.answer}
               />
               <Button
                 onClick={() => {
                   if (content.answer.type === "RE") {
-                    updateMachine(reref.current.input.value);
-                  } else updateMachine(cyref.current.json().elements);
+                    updateAnswer(rerefB.current.input.value);
+                  } else updateAnswer(cyrefB.current.json().elements);
                 }}
               >
                 Update Answer
@@ -199,23 +217,23 @@ const RenderContent = ({
       return (
         <div>
           <RenderMachine
-            reref={reref}
-            cyref={cyref}
+            reref={rerefA}
+            cyref={cyrefA}
             grref={grref}
             info={content.machine}
           />
           <Button
             onClick={() => {
               if (content.machine.type === "GR") {
-                updateMachine(grref.current.productions);
+                updateAnswer(grref.current.productions);
               } else if (
                 content.machine.type === "NFA" ||
                 content.machine.type === "DFA" ||
                 content.machine.type === "PDA"
               )
-                updateMachine(cyref.current.json().elements);
+                updateAnswer(cyrefA.current.json().elements);
               else if (content.machine.type === "RE") {
-                updateMachine(reref.current.input.value);
+                updateAnswer(rerefA.current.input.value);
               }
             }}
           >
@@ -248,7 +266,47 @@ const BlockView = ({ content, updateContent }) => {
     });
   };
 
-  const updateMachine = (newElements) => {
+  const updateQuestion = (newElements) => {
+    // updateContent({ ...content, value: newText });
+    const { type } = content;
+    if (type === "equivalence") {
+      // then we're updating the answer
+      if (content.question.type === "NFA" || content.question.type === "DFA") {
+        updateContent({
+          ...content,
+          question: { ...content.question, elements: newElements },
+        });
+      } else if (content.question.type === "RE") {
+        updateContent({
+          ...content,
+          question: { ...content.question, string: newElements },
+        });
+      }
+    } else if (type === "stringAcceptance") {
+      if (content.machine.type === "GR") {
+        updateContent({
+          ...content,
+          machine: { ...content.machine, productions: newElements },
+        });
+      } else if (
+        content.machine.type === "NFA" ||
+        content.machine.type === "DFA" ||
+        content.machine.type === "PDA"
+      ) {
+        updateContent({
+          ...content,
+          machine: { ...content.machine, elements: newElements },
+        });
+      } else if (content.machine.type === "RE") {
+        updateContent({
+          ...content,
+          machine: { ...content.machine, string: newElements },
+        });
+      }
+    }
+  };
+
+  const updateAnswer = (newElements) => {
     // updateContent({ ...content, value: newText });
     const { type } = content;
     if (type === "equivalence") {
@@ -297,7 +355,8 @@ const BlockView = ({ content, updateContent }) => {
         content={content}
         updateChoice={updateChoice}
         updateText={updateText}
-        updateMachine={updateMachine}
+        updateAnswer={updateAnswer}
+        updateQuestion={updateQuestion}
         updateQuestionType={updateQuestionType}
       />
     </div>
