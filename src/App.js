@@ -5,6 +5,7 @@ import MenuBar from "./components/MenuBar";
 import { StoreContext, UserViews } from "./Stores/Store";
 import ExList from "./Modules/Exercises/User/ExList";
 import ExerciseSolve from "./Modules/Exercises/User/ExerciseSolve";
+import ExSolveStore from "./Stores/Exercise/ExSolveStore";
 
 function App() {
   console.log("[APP] render");
@@ -72,7 +73,9 @@ function App() {
 
       {view.type === UserViews.EX_SOLVE && (
         <div>
-          <ExerciseSolve ex={exData[view.key]} />
+          <ExSolveStore>
+            <ExerciseSolve ex={exData[view.key]} />
+          </ExSolveStore>
         </div>
       )}
     </div>

@@ -13,6 +13,9 @@ import { PDAModel, PDAComponent } from "../../PDA";
 import { GRComponent, GRModel } from "../../GR";
 import { InputNumber, Collapse } from "antd";
 import { StoreContext, UserViews } from "../../../Stores/Store";
+import { ExSolveStoreCtx } from "../../../Stores/Exercise/ExSolveStore";
+import axios from "axios";
+import axResource from "../../../utils/httpCommon";
 const { Panel } = Collapse;
 
 const GrammarBlock = ({ info, grref }) => {
@@ -138,7 +141,8 @@ const ChoiceBlock = ({ item }) => {
 };
 
 const RenderQuestion = ({ item, mref }) => {
-  console.log("[RenderMachine] rerendered");
+  console.log("[RenderQuestion] rerendered");
+
   // const question = item.value.question;
   const { type } = item.value.question;
 
@@ -167,7 +171,7 @@ const RenderQuestion = ({ item, mref }) => {
       <div>
         <GRComponent
           model={new GRModel(item.value.question.productions)}
-          updateModel={(newModel) => (mref.current = newModel)}
+          updateModel={() => {}}
           editable={true}
         />
       </div>
@@ -180,7 +184,7 @@ const RenderQuestion = ({ item, mref }) => {
         <PDAComponent
           cyref={mref}
           model={new PDAModel(item.value.question.elements)}
-          updateModel={(newModel) => (mref.current = newModel)}
+          updateModel={() => {}}
         />
       </div>
     );
@@ -189,10 +193,10 @@ const RenderQuestion = ({ item, mref }) => {
   return <div className="bg-red-500">Unexpected Question Type</div>;
 };
 
-const RenderAnswer = ({ item, mref }) => {
-  console.log("[RenderMachine] rerendered");
-  // const question = item.value.question;
-  const { type } = item.value.answer;
+const RenderAnswer = ({ item, mref, updateAnswer }) => {
+  console.log("[RenderAnswer] rerendered");
+
+  const { type } = item.value.question;
 
   if (type === "NFA" || type === "DFA") {
     return (
@@ -200,7 +204,10 @@ const RenderAnswer = ({ item, mref }) => {
         <FSAComponent
           cyref={mref}
           model={new FSAModel([])}
-          updateModel={(newModel) => (mref.current = newModel)}
+          updateModel={(newModel) => {
+            mref.current = newModel;
+            updateAnswer({ type: type, elements: newModel.elements });
+          }}
         />
       </div>
     );
@@ -213,6 +220,7 @@ const RenderAnswer = ({ item, mref }) => {
           ref={mref}
           onChange={(e) => {
             mref.current = e.target.value;
+            updateAnswer({ type: type, string: e.target.value });
           }}
         />
       </div>
@@ -224,7 +232,10 @@ const RenderAnswer = ({ item, mref }) => {
       <div>
         <GRComponent
           model={new GRModel([["S", ""]])}
-          updateModel={(newModel) => (mref.current = newModel)}
+          updateModel={(newModel) => {
+            mref.current = newModel;
+            updateAnswer({ type: type, productions: newModel.productions });
+          }}
           editable={true}
         />
       </div>
@@ -237,7 +248,10 @@ const RenderAnswer = ({ item, mref }) => {
         <PDAComponent
           cyref={mref}
           model={new PDAModel([])}
-          updateModel={(newModel) => (mref.current = newModel)}
+          updateModel={(newModel) => {
+            mref.current = newModel;
+            updateAnswer({ type: type, elements: newModel.elements });
+          }}
         />
       </div>
     );
@@ -246,25 +260,18 @@ const RenderAnswer = ({ item, mref }) => {
   return <div className="bg-red-500">Unexpected Answer Type</div>;
 };
 
-const EquivalenceBlock = ({ item }) => {
+const EquivalenceBlock = ({ item, updateAnswer }) => {
   const mref = useRef(null);
 
   return (
     <div>
-      <RenderQuestion mref={mref} item={item} />
       <span>your answer:</span>
-      <RenderAnswer mref={mref} item={item} />
+      <RenderAnswer mref={mref} item={item} updateAnswer={updateAnswer} />
     </div>
   );
 };
 
-const RenderItem = ({
-  item,
-  updateChoice,
-  updateText,
-  updateMachine,
-  updateQuestionType,
-}) => {
+const RenderItem = ({ item, updateAnswer }) => {
   console.log("[RenderItem] rerendered");
   const { type } = item.value;
 
@@ -283,10 +290,25 @@ const RenderItem = ({
         </div>
       );
 
+    case "NFA":
+      return <RenderMachine mref={cyref} info={item.value} />;
+
+    case "DFA":
+      return <RenderMachine mref={cyref} info={item.value} />;
+
+    case "RE":
+      return <RenderMachine mref={cyref} info={item.value} />;
+
+    case "GR":
+      return <RenderMachine mref={cyref} info={item.value} />;
+
+    case "PDA":
+      return <RenderMachine mref={cyref} info={item.value} />;
+
     case "equivalence":
       return (
         <div>
-          <EquivalenceBlock item={item} />
+          <EquivalenceBlock item={item} updateAnswer={updateAnswer} />
         </div>
       );
 
@@ -302,15 +324,15 @@ const RenderItem = ({
           <Button
             onClick={() => {
               if (item.machine.type === "GR") {
-                updateMachine(grref.current.productions);
+                updateAnswer(grref.current.productions);
               } else if (
                 item.machine.type === "NFA" ||
                 item.machine.type === "DFA" ||
                 item.machine.type === "PDA"
               )
-                updateMachine(cyref.current.json().elements);
+                updateAnswer(cyref.current.json().elements);
               else if (item.machine.type === "RE") {
-                updateMachine(reref.current.input.value);
+                updateAnswer(reref.current.input.value);
               }
             }}
           >
@@ -324,337 +346,42 @@ const RenderItem = ({
   }
 };
 
-const BlockView = ({ item, updateItem }) => {
+const BlockView = ({ item, updateAnswer }) => {
   console.log("[BLockView] rerendered");
-
-  const updateMachine = (newElements) => {
-    // updateContent({ ...content, value: newText });
-    const { type } = item;
-    if (type === "equivalence") {
-      // then we're updating the answer
-      if (item.answer.type === "NFA" || item.answer.type === "DFA") {
-        updateItem({
-          ...item,
-          answer: { ...item.answer, elements: newElements },
-        });
-      } else if (item.answer.type === "RE") {
-        updateItem({
-          ...item,
-          answer: { ...item.answer, string: newElements },
-        });
-      }
-    } else if (type === "stringAcceptance") {
-      if (item.machine.type === "GR") {
-        updateItem({
-          ...item,
-          machine: { ...item.machine, productions: newElements },
-        });
-      } else if (
-        item.machine.type === "NFA" ||
-        item.machine.type === "DFA" ||
-        item.machine.type === "PDA"
-      ) {
-        updateItem({
-          ...item,
-          machine: { ...item.machine, elements: newElements },
-        });
-      } else if (item.machine.type === "RE") {
-        updateItem({
-          ...item,
-          machine: { ...item.machine, string: newElements },
-        });
-      }
-    }
-  };
 
   return (
     <div className="m-4">
-      <RenderItem item={item} />
+      <RenderItem item={item} updateAnswer={updateAnswer} />
     </div>
   );
 };
 
-const FreeInput = ({ onChange }) => {
-  const [value, setvalue] = useState("");
-  return (
-    <Input
-      value={value}
-      onChange={(e) => {
-        setvalue(e.target.value);
-        onChange();
-      }}
-    />
-  );
-};
-
-function RenderNewBlock({ blockType, setSaveObject }) {
-  const [textValue, setTextValue] = useState("");
-
-  const [numberChoices, setNumberChoices] = useState(2);
-  const [selectedChoice, setSelectedChoice] = useState(0);
-  const radref = useRef(null);
-
-  const [questionType, setquestionType] = useState("DFA");
-  const [answerType, setanswerType] = useState("DFA");
-  const [answer, setanswer] = useState(null);
-  const cyref = useRef(null);
-  const [inputValue, setInputValue] = useState("");
-
-  const [machineType, setMachineType] = useState("DFA");
-  const [grmodel, setgrmodel] = useState(new GRModel([["S", ""]]));
-
-  switch (blockType) {
-    case "text":
-      return (
-        <div>
-          <h3>Enter the text </h3>
-          <Input
-            value={textValue}
-            onChange={(e) => {
-              setTextValue(e.target.value);
-              setSaveObject(e.target.value);
-            }}
-          />
-        </div>
-      );
-
-    case "choice":
-      const saveChoices = () => {
-        const options = [];
-
-        [...radref.current.querySelectorAll('input[type="text"]')]
-          .map((e) => e.value)
-          .forEach((v) => options.push(v));
-
-        const finalObject = {
-          type: "choice",
-          options,
-          answer: options[selectedChoice],
-        };
-
-        setSaveObject(finalObject);
-        // [...temp1.current.querySelectorAll('input[type="radio"]')].map(e=>e.checked)
-        // [...temp1.current.querySelectorAll('input[type="text"]')].map(e=>e.value)
-
-        // radref.current.querySelectorAll('input[type="radio"]')
-        // setSaveObject()
-      };
-
-      return (
-        <div>
-          <InputNumber
-            min={2}
-            value={numberChoices}
-            onChange={(nc) => setNumberChoices(nc)}
-          />
-
-          <Radio.Group
-            ref={radref}
-            value={selectedChoice}
-            onChange={(e) => {
-              setSelectedChoice(e.target.value);
-              saveChoices();
-            }}
-          >
-            {new Array(numberChoices).fill(0).map((_, i) => (
-              <Radio key={i} value={i}>
-                <FreeInput onChange={saveChoices} />
-              </Radio>
-            ))}
-          </Radio.Group>
-        </div>
-      );
-
-    case "equivalence":
-      const saveData = () => {
-        const finalObject = {
-          type: "equivalence",
-          question: {
-            type: questionType,
-          },
-          answer: {
-            type: answerType,
-            [answerType === "RE" ? "string" : "elements"]:
-              answerType === "RE"
-                ? inputValue
-                : cyref.current?.json?.().elements,
-          },
-        };
-        setSaveObject(finalObject);
-      };
-
-      saveData();
-
-      return (
-        <div>
-          <div className="flex">
-            <div className="w-1/2">
-              <h3>Question Type</h3>
-              <Radio.Group
-                value={questionType}
-                onChange={(e) => {
-                  setquestionType(e.target.value);
-                  saveData();
-                }}
-              >
-                <Radio value="DFA"> DFA </Radio>
-                <Radio value="NFA"> NFA </Radio>
-                <Radio value="RE"> RE </Radio>
-              </Radio.Group>
-            </div>
-
-            <div className="w-1/2">
-              <h3>Answer Type</h3>
-              <Radio.Group
-                value={answerType}
-                onChange={(e) => {
-                  setanswerType(e.target.value);
-                  saveData();
-                }}
-              >
-                <Radio value="DFA"> DFA </Radio>
-                <Radio value="NFA"> NFA </Radio>
-                <Radio value="RE"> RE </Radio>
-              </Radio.Group>
-            </div>
-          </div>
-
-          <div className="h-40">
-            <h3>The answer</h3>
-            {answerType === "NFA" || answerType === "DFA" ? (
-              <div style={{ height: "25vh" }}>
-                <FSAComponent
-                  cyref={cyref}
-                  model={new FSAModel([])}
-                  updateModel={() => saveData()}
-                />
-              </div>
-            ) : answerType === "RE" ? (
-              <div>
-                <Input
-                  value={inputValue}
-                  onChange={(e) => {
-                    setInputValue(e.target.value);
-                    saveData();
-                  }}
-                />
-              </div>
-            ) : (
-              "Select a type"
-            )}
-          </div>
-        </div>
-      );
-
-    case "stringAcceptance": {
-      const saveData = () => {
-        const finalObject = {
-          type: "stringAcceptance",
-          machine: {
-            type: machineType,
-            [machineType === "RE"
-              ? "string"
-              : machineType === "GR"
-              ? "productions"
-              : "elements"]:
-              machineType === "RE"
-                ? cyref.current
-                : machineType === "GR"
-                ? cyref.current.productions
-                : cyref.current?.json?.().elements,
-          },
-        };
-        setSaveObject(finalObject);
-      };
-      return (
-        <div>
-          <h3>Choose the type</h3>
-          <Radio.Group
-            value={machineType}
-            onChange={(e) => {
-              setMachineType(e.target.value);
-              saveData();
-            }}
-          >
-            <Radio value="DFA"> DFA </Radio>
-            <Radio value="NFA"> NFA </Radio>
-            <Radio value="RE"> RE </Radio>
-            <Radio value="PDA"> PDA </Radio>
-            <Radio value="GR"> Grammar </Radio>
-          </Radio.Group>
-
-          {machineType === "NFA" || machineType === "DFA" ? (
-            <div style={{ height: "25vh" }}>
-              <FSAComponent
-                cyref={cyref}
-                model={new FSAModel([])}
-                updateModel={() => saveData()}
-              />
-            </div>
-          ) : machineType === "PDA" ? (
-            <div style={{ height: "25vh" }}>
-              <PDAComponent
-                cyref={cyref}
-                model={new PDAModel([])}
-                updateModel={() => saveData()}
-              />
-            </div>
-          ) : machineType === "RE" ? (
-            <div>
-              <Input
-                value={inputValue}
-                onChange={(e) => {
-                  setInputValue(e.target.value);
-                  cyref.current = e.target.value;
-                  saveData();
-                }}
-              />
-            </div>
-          ) : machineType === "GR" ? (
-            <GRComponent
-              model={grmodel}
-              updateModel={(newModel) => {
-                setgrmodel(newModel);
-                cyref.current = newModel;
-                saveData();
-              }}
-              editable={true}
-            />
-          ) : (
-            "Select a type"
-          )}
-        </div>
-      );
-    }
-
-    default:
-      return null;
-  }
-}
-
-function ExerciseSolve({ ex, updateEx }) {
+function ExerciseSolve({ ex }) {
   console.log("[ExerciseSolve] rerendered");
   const { setView } = useContext(StoreContext);
+  const { answers, setAnswers } = useContext(ExSolveStoreCtx);
+
+  const updateAnswer = (item, answer) => {
+    setAnswers((answers) => answers.set(item._id, answer));
+  };
+
+  const submitAnswers = () => {
+    let finalAnswers = [];
+    for (let [key, value] of answers.entries())
+      finalAnswers.push({ item_id: key, answer: value });
+
+    console.log("final answers are ", finalAnswers);
+
+    axResource.post("/solve_exercise", finalAnswers).then((res) => {
+      console.log("RES is ", res);
+    });
+  };
 
   const BackButton = () => {
     return (
       <Button onClick={() => setView({ type: UserViews.EX_LIST })}>Back</Button>
     );
   };
-
-  const updateItem = (newItem, i) => {
-    // i is the key
-    // const newEx = { ...ex };
-    // newEx.items[i] = newItem;
-    // updateEx(newEx);
-    // TODO: update the item inside the exersice
-  };
-
-  // const addBlockToEx = (addedContent) => {
-  //   const newEx = { ...ex };
-  //   newEx.content.push(addedContent);
-  //   updateEx(newEx);
-  // };
 
   return (
     <div>
@@ -666,13 +393,13 @@ function ExerciseSolve({ ex, updateEx }) {
       {ex.items.map((item, i) => (
         <BlockView
           key={item._id}
-          updateContent={(newItem) => updateItem(newItem, i)}
+          updateAnswer={(answer) => updateAnswer(item, answer)}
           item={item}
         />
       ))}
 
       <div className="m-4">
-        <Button block type="primary" onClick={() => {}}>
+        <Button block type="primary" onClick={() => submitAnswers()}>
           Submit Answers
         </Button>
       </div>

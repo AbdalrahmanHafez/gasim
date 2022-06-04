@@ -163,7 +163,7 @@ const TestPage = () => {
         Check string in PDA
       </Button>
 
-      <div style={{ display: "flex" }}>
+      <div style={{ display: "flex", height: "100vh" }}>
         <FSAComponent
           model={modelA}
           cyref={cya}

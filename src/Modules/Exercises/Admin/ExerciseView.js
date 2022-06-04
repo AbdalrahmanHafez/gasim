@@ -169,6 +169,21 @@ const RenderContent = ({
         </div>
       );
 
+    case "NFA":
+      return <RenderMachine reref={rerefA} cyref={cyrefA} info={content} />;
+
+    case "DFA":
+      return <RenderMachine reref={rerefA} cyref={cyrefA} info={content} />;
+
+    case "RE":
+      return <RenderMachine reref={rerefA} cyref={cyrefA} info={content} />;
+
+    case "GR":
+      return <RenderMachine reref={rerefA} cyref={cyrefA} info={content} />;
+
+    case "PDA":
+      return <RenderMachine reref={rerefA} cyref={cyrefA} info={content} />;
+
     case "equivalence":
       return (
         <div>
@@ -177,7 +192,7 @@ const RenderContent = ({
             updateQuestionType={updateQuestionType}
           />
 
-          <RenderMachine
+          {/* <RenderMachine
             reref={rerefA}
             cyref={cyrefA}
             info={content.question}
@@ -190,7 +205,7 @@ const RenderContent = ({
             }}
           >
             Update Question
-          </Button>
+          </Button> */}
 
           <Collapse defaultActiveKey={["1"]}>
             <Panel header="Answer" key="1">

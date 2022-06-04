@@ -38,11 +38,21 @@ function FSAComponent({ cyref, model, updateModel }) {
       // cyref.current.on("add remove", (e) => {
       console.log("Updating the model", e);
       // console.log(e);
-      updateModel(new FSAModel(e.cy.json().elements));
+      updateModel(new FSAModel(addNameToNodes(e.cy.json().elements)));
     });
   }, []);
 
   return <div id={CY_ID} className="cy"></div>;
 }
+
+const addNameToNodes = (elementsObj) => {
+  // for some reason cy.json().elments strips out the name property from the nodes
+
+  elementsObj.nodes?.forEach((node) => {
+    node.data.name = node.data.label;
+  });
+
+  return elementsObj;
+};
 
 export default FSAComponent;

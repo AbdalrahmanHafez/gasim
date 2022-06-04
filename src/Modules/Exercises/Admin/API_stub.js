@@ -50,29 +50,32 @@ const ExercisesStub = [
         value: "Please Convert the following NFA into it's equivalent DFA",
       },
       {
+        type: "NFA",
+        elements: {
+          nodes: [
+            {
+              data: { id: "a", name: "a", inital: true, final: false },
+            },
+            {
+              data: { id: "b", name: "b", inital: false, final: false },
+            },
+            {
+              data: { id: "s", name: "s", inital: false, final: false },
+            },
+            { data: { id: "f", name: "f", inital: false, final: true } },
+          ],
+          edges: [
+            { data: { id: "ab", source: "a", target: "b", label: "a" } },
+            { data: { id: "bf", source: "b", target: "f", label: "b" } },
+            { data: { id: "as", source: "a", target: "s", label: "ε" } },
+            { data: { id: "sb", source: "s", target: "b", label: "ε" } },
+          ],
+        },
+      },
+      {
         type: "equivalence",
         question: {
-          type: "NFA",
-          elements: {
-            nodes: [
-              {
-                data: { id: "a", name: "a", inital: true, final: false },
-              },
-              {
-                data: { id: "b", name: "b", inital: false, final: false },
-              },
-              {
-                data: { id: "s", name: "s", inital: false, final: false },
-              },
-              { data: { id: "f", name: "f", inital: false, final: true } },
-            ],
-            edges: [
-              { data: { id: "ab", source: "a", target: "b", label: "a" } },
-              { data: { id: "bf", source: "b", target: "f", label: "b" } },
-              { data: { id: "as", source: "a", target: "s", label: "ε" } },
-              { data: { id: "sb", source: "s", target: "b", label: "ε" } },
-            ],
-          },
+          type: "DFA",
         },
         answer: {
           type: "DFA",
