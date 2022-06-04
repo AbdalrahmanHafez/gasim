@@ -26,12 +26,13 @@ function AdminApp() {
   const Content = () => {
     const { type } = view;
     switch (type) {
-      case AdminViews.LIST_ALL:
+      case AdminViews.LIST_ALL: {
         const handleExSelection = (key) => {
           // console.log("selected exId:", key);
           setView({ type: AdminViews.VIEW_EXE, key: key });
         };
         return <ExList list={exData} onSelect={handleExSelection} />;
+      }
 
       case AdminViews.ADD_EXE:
         return <div>ADDINGN a new EXCERISE</div>;
@@ -39,7 +40,7 @@ function AdminApp() {
       case AdminViews.EDIT_EXE:
         return <div>Edit an Excersice</div>;
 
-      case AdminViews.VIEW_EXE:
+      case AdminViews.VIEW_EXE: {
         const { key } = view;
         const updateEx = (newExercise) => {
           const newExData = [...exData];
@@ -48,6 +49,7 @@ function AdminApp() {
         };
 
         return <ExerciseView ex={exData[key]} updateEx={updateEx} />;
+      }
 
       default:
         return <div>Invalid Excersice State {JSON.stringify(view)} </div>;

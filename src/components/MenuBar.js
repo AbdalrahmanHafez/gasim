@@ -5,7 +5,7 @@ import "@szhsin/react-menu/dist/transitions/slide.css";
 import { Space, Divider } from "antd";
 import FSAModel from "../Modules/FSA/FSAModel";
 import { grammarExamples, machineExamples } from "../Helpers/Constatns";
-import { StoreContext, UtilityContext } from "../Stores/Store";
+import { StoreContext, UserViews, UtilityContext } from "../Stores/Store";
 import tabTypes from "../enums/tabTypes";
 import { parseExampleLabels } from "../Helpers/GraphLabel";
 import { TMModel } from "../Modules/TM";
@@ -28,6 +28,7 @@ function MenuBar({ activeTabKey, setActiveTabKey }) {
     store,
     setStore,
     storeActions: { addTab },
+    setView,
   } = useContext(StoreContext);
 
   // If no tab selectd, currentTabInfo is null
@@ -332,6 +333,13 @@ function MenuBar({ activeTabKey, setActiveTabKey }) {
         <MenuItem value="GR1">Grammar</MenuItem>
         <MenuItem value="RE">Regular Expression</MenuItem>
       </Menu>
+
+      <button
+        onClick={() => setView({ type: UserViews.EX_LIST })}
+        className={openMenuClasses}
+      >
+        See Excersices
+      </button>
     </div>
   );
 }

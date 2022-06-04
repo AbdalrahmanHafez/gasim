@@ -12,6 +12,7 @@ import { FSAComponent, FSAModel } from "../../FSA";
 import { PDAModel, PDAComponent } from "../../PDA";
 import { GRComponent, GRModel } from "../../GR";
 import { InputNumber, Collapse } from "antd";
+import { StoreContext, UserViews } from "../../../Stores/Store";
 const { Panel } = Collapse;
 
 const GrammarBlock = ({ info, grref }) => {
@@ -31,73 +32,59 @@ const GrammarBlock = ({ info, grref }) => {
   );
 };
 
-const RenderMachine = ({ info, cyref, reref, grref }) => {
-  // const cyrefFSA = useRef(null);
-  // const cyrefPDA = useRef(null);
-  const [inputValue, setInputValue] = useState(info.string || "");
-
+const RenderMachine = ({ item, mref }) => {
   console.log("[RenderMachine] rerendered");
+  const question = item.value.question;
 
-  if (!info.type) return <div>Invalid Machine Description</div>;
-
-  if (info.type === "NFA" || info.type === "DFA") {
+  if (question.type === "NFA" || question.type === "DFA") {
     return (
       <div style={{ height: "25vh" }}>
         <FSAComponent
-          cyref={cyref}
-          model={new FSAModel(info.elements)}
+          cyref={mref}
+          model={new FSAModel([])}
           updateModel={() => {}}
         />
       </div>
     );
   }
 
-  if (info.type === "RE") {
+  if (question.type === "RE") {
     return (
       <div>
-        <Input
-          ref={reref}
-          value={inputValue}
-          onChange={(e) => setInputValue(e.target.value)}
+        <Input ref={mref} onChange={(e) => (mref.current = e.target.value)} />
+      </div>
+    );
+  }
+
+  if (question.type === "GR") {
+    return (
+      <div>
+        <GRComponent
+          model={new GRModel([])}
+          updateModel={(newModel) => (mref.current = newModel)}
+          editable={true}
         />
       </div>
     );
   }
 
-  if (info.type === "GR") {
-    return <GrammarBlock grref={grref} info={info} />;
-  }
-
-  if (info.type === "PDA") {
+  if (question.type === "PDA") {
     return (
       <div style={{ height: "25vh" }}>
         <PDAComponent
-          cyref={cyref}
-          model={new PDAModel(info.elements)}
-          updateModel={() => {}}
+          cyref={mref}
+          model={new PDAModel([])}
+          updateModel={(newModel) => (mref.current = newModel)}
         />
       </div>
     );
   }
 
-  return <div className="bg-red-500">Unexpected</div>;
+  return <div className="bg-red-500">Unexpected Question Type</div>;
 };
 
-const TextBlock = ({ content, updateText }) => {
-  const [inputValue, setInputValue] = useState(content.value || null);
-  const [visiable, setVisiable] = useState(false);
-  return (
-    <div>
-      <Input
-        value={inputValue}
-        onChange={(e) => {
-          if (!visiable) setVisiable(true);
-          setInputValue(e.target.value);
-        }}
-      />
-      {visiable && <Button onClick={() => updateText(inputValue)}>Save</Button>}
-    </div>
-  );
+const TextBlock = ({ item }) => {
+  return <h3>{item.value.value}</h3>;
 };
 
 const QuestionType = ({ content, updateQuestionType }) => {
@@ -132,66 +119,58 @@ const QuestionType = ({ content, updateQuestionType }) => {
   );
 };
 
-const RenderContent = ({
-  content,
+const ChoiceBlock = ({ item }) => {
+  const [choice, setchoice] = useState("");
+  return (
+    <Radio.Group
+      buttonStyle="solid"
+      value={choice}
+      onChange={(e) => setchoice(e.target.value)}
+    >
+      {item.value.options.map((op, i) => (
+        <Radio.Button key={i} value={op}>
+          {op}
+        </Radio.Button>
+      ))}
+    </Radio.Group>
+  );
+};
+
+const EquivalenceBlock = ({ item }) => {
+  const mref = useRef(null);
+
+  return <RenderMachine mref={mref} item={item} />;
+};
+
+const RenderItem = ({
+  item,
   updateChoice,
   updateText,
   updateMachine,
   updateQuestionType,
 }) => {
-  console.log("[RenderContent] rerendered");
-  const { type } = content;
+  console.log("[RenderItem] rerendered");
+  const { type } = item.value;
+
   const cyref = useRef(null);
   const reref = useRef(null);
   const grref = useRef(null);
 
   switch (type) {
     case "text":
-      return <TextBlock content={content} updateText={updateText} />;
+      return <TextBlock item={item} />;
 
     case "choice":
       return (
         <div>
-          <Radio.Group
-            buttonStyle="solid"
-            value={content.answer}
-            onChange={updateChoice}
-          >
-            {content.options.map((op, i) => (
-              <Radio.Button key={i} value={op}>
-                {op}
-              </Radio.Button>
-            ))}
-          </Radio.Group>
+          <ChoiceBlock item={item} />
         </div>
       );
 
     case "equivalence":
       return (
         <div>
-          <QuestionType
-            content={content}
-            updateQuestionType={updateQuestionType}
-          />
-
-          <Collapse defaultActiveKey={["1"]}>
-            <Panel header="Answer" key="1">
-              <RenderMachine
-                reref={reref}
-                cyref={cyref}
-                info={content.answer}
-              />
-              <Button
-                onClick={() => {
-                  if (content.answer.type === "RE") {
-                    updateMachine(reref.current.input.value);
-                  } else updateMachine(cyref.current.json().elements);
-                }}
-              >
-                Update Answer
-              </Button>
-            </Panel>
-          </Collapse>
+          <EquivalenceBlock item={item} />
         </div>
       );
 
@@ -202,19 +181,19 @@ const RenderContent = ({
             reref={reref}
             cyref={cyref}
             grref={grref}
-            info={content.machine}
+            info={item.machine}
           />
           <Button
             onClick={() => {
-              if (content.machine.type === "GR") {
+              if (item.machine.type === "GR") {
                 updateMachine(grref.current.productions);
               } else if (
-                content.machine.type === "NFA" ||
-                content.machine.type === "DFA" ||
-                content.machine.type === "PDA"
+                item.machine.type === "NFA" ||
+                item.machine.type === "DFA" ||
+                item.machine.type === "PDA"
               )
                 updateMachine(cyref.current.json().elements);
-              else if (content.machine.type === "RE") {
+              else if (item.machine.type === "RE") {
                 updateMachine(reref.current.input.value);
               }
             }}
@@ -229,77 +208,52 @@ const RenderContent = ({
   }
 };
 
-const BlockView = ({ content, updateContent }) => {
+const BlockView = ({ item, updateItem }) => {
   console.log("[BLockView] rerendered");
-
-  const updateChoice = (e) => {
-    const newChoice = e.target.value;
-    updateContent({ ...content, answer: newChoice });
-  };
-
-  const updateText = (newText) => {
-    updateContent({ ...content, value: newText });
-  };
-
-  const updateQuestionType = (newType) => {
-    updateContent({
-      ...content,
-      question: { ...content.question, type: newType },
-    });
-  };
 
   const updateMachine = (newElements) => {
     // updateContent({ ...content, value: newText });
-    const { type } = content;
+    const { type } = item;
     if (type === "equivalence") {
       // then we're updating the answer
-      if (content.answer.type === "NFA" || content.answer.type === "DFA") {
-        updateContent({
-          ...content,
-          answer: { ...content.answer, elements: newElements },
+      if (item.answer.type === "NFA" || item.answer.type === "DFA") {
+        updateItem({
+          ...item,
+          answer: { ...item.answer, elements: newElements },
         });
-      } else if (content.answer.type === "RE") {
-        updateContent({
-          ...content,
-          answer: { ...content.answer, string: newElements },
+      } else if (item.answer.type === "RE") {
+        updateItem({
+          ...item,
+          answer: { ...item.answer, string: newElements },
         });
       }
     } else if (type === "stringAcceptance") {
-      if (content.machine.type === "GR") {
-        updateContent({
-          ...content,
-          machine: { ...content.machine, productions: newElements },
+      if (item.machine.type === "GR") {
+        updateItem({
+          ...item,
+          machine: { ...item.machine, productions: newElements },
         });
       } else if (
-        content.machine.type === "NFA" ||
-        content.machine.type === "DFA" ||
-        content.machine.type === "PDA"
+        item.machine.type === "NFA" ||
+        item.machine.type === "DFA" ||
+        item.machine.type === "PDA"
       ) {
-        updateContent({
-          ...content,
-          machine: { ...content.machine, elements: newElements },
+        updateItem({
+          ...item,
+          machine: { ...item.machine, elements: newElements },
         });
-      } else if (content.machine.type === "RE") {
-        updateContent({
-          ...content,
-          machine: { ...content.machine, string: newElements },
+      } else if (item.machine.type === "RE") {
+        updateItem({
+          ...item,
+          machine: { ...item.machine, string: newElements },
         });
       }
     }
   };
 
   return (
-    <div className="m-4  relative">
-      <h3 className="absolute right-2 top-px text-slate-400 z-10">
-        {capitalizeFirst(content.type)}
-      </h3>
-      <RenderContent
-        content={content}
-        updateChoice={updateChoice}
-        updateText={updateText}
-        updateMachine={updateMachine}
-        updateQuestionType={updateQuestionType}
-      />
+    <div className="m-4">
+      <RenderItem item={item} />
     </div>
   );
 };
@@ -562,116 +516,29 @@ function RenderNewBlock({ blockType, setSaveObject }) {
   }
 }
 
-const AddBlock = ({ addBlockToEx }) => {
-  const [bool, setbool] = useState(true);
-  const [blockType, setBlockType] = useState(null);
-
-  const savedObject = useRef(null);
-
-  const resetState = () => {
-    setbool(true);
-    setBlockType(null);
-  };
-
-  const handleSaveBlock = () => {
-    switch (blockType) {
-      case "text":
-        addBlockToEx({
-          type: blockType,
-          value: savedObject.current,
-        });
-        break;
-
-      case "choice":
-        addBlockToEx(savedObject.current);
-        break;
-
-      case "equivalence":
-        addBlockToEx(savedObject.current);
-        break;
-
-      case "stringAcceptance":
-        addBlockToEx(savedObject.current);
-        break;
-
-      default:
-        break;
-    }
-
-    resetState();
-  };
-
-  const setSaveObject = (saveObject) => {
-    savedObject.current = saveObject;
-  };
-
-  if (blockType) {
-    return (
-      <div>
-        <RenderNewBlock blockType={blockType} setSaveObject={setSaveObject} />
-        <Button onClick={() => handleSaveBlock()}> Save Block</Button>
-        <Button onClick={() => resetState()}>Cancel</Button>
-      </div>
-    );
-  }
-
-  return (
-    <div className="h-40 m-4">
-      {bool ? (
-        <Button block type="primary" onClick={() => setbool(false)}>
-          Add Block
-        </Button>
-      ) : (
-        <div className="flex items-baseline w-full justify-evenly">
-          <h3>Select block type</h3>
-
-          <div>
-            <Button onClick={() => setBlockType("text")}>Text</Button>
-            <Button onClick={() => setBlockType("choice")}>Choice</Button>
-            <Button onClick={() => setBlockType("equivalence")}>
-              Equivalence
-            </Button>
-            <Button onClick={() => setBlockType("stringAcceptance")}>
-              String Acceptance
-            </Button>
-          </div>
-
-          <button
-            className="italic text-slate-500"
-            onClick={() => resetState()}
-          >
-            Cancel
-          </button>
-        </div>
-      )}
-    </div>
-  );
-};
-
-function ExerciseView({ ex, updateEx }) {
-  const { setView } = useContext(AdminStoreCtx);
-  console.log("[ExerciseView] rerendered");
+function ExerciseSolve({ ex, updateEx }) {
+  console.log("[ExerciseSolve] rerendered");
+  const { setView } = useContext(StoreContext);
 
   const BackButton = () => {
     return (
-      <Button onClick={() => setView({ type: AdminViews.LIST_ALL })}>
-        Back
-      </Button>
+      <Button onClick={() => setView({ type: UserViews.EX_LIST })}>Back</Button>
     );
   };
 
-  const updateContent = (newContent, i) => {
+  const updateItem = (newItem, i) => {
     // i is the key
-    const newEx = { ...ex };
-    newEx.content[i] = newContent;
-    updateEx(newEx);
+    // const newEx = { ...ex };
+    // newEx.items[i] = newItem;
+    // updateEx(newEx);
+    // TODO: update the item inside the exersice
   };
 
-  const addBlockToEx = (addedContent) => {
-    const newEx = { ...ex };
-    newEx.content.push(addedContent);
-    updateEx(newEx);
-  };
+  // const addBlockToEx = (addedContent) => {
+  //   const newEx = { ...ex };
+  //   newEx.content.push(addedContent);
+  //   updateEx(newEx);
+  // };
 
   return (
     <div>
@@ -680,21 +547,23 @@ function ExerciseView({ ex, updateEx }) {
         {ex.title} - {ex.description}
       </h3>
 
-      {ex.content.map((content, i) => (
+      {ex.items.map((item, i) => (
         <BlockView
-          key={content.id}
-          updateContent={(newContent) => {
-            updateContent(newContent, i);
-          }}
-          content={content}
+          key={item._id}
+          updateContent={(newItem) => updateItem(newItem, i)}
+          item={item}
         />
       ))}
 
-      <AddBlock addBlockToEx={addBlockToEx} />
+      <div className="m-4">
+        <Button block type="primary" onClick={() => {}}>
+          Submit Answers
+        </Button>
+      </div>
     </div>
   );
 }
 
-export default ExerciseView;
+export default ExerciseSolve;
 
 // TODO: add a way for admin to add images, or pure graphs

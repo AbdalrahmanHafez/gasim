@@ -81,8 +81,17 @@ const initialState = [
 export const StoreContext = React.createContext();
 export const UtilityContext = React.createContext();
 
+export const UserViews = {
+  SIMVIEW: "Simulation View",
+  EX_LIST: "Exercise List",
+  EX_VIEW: "Exercise View",
+  EX_SOLVE: "Exercise Solve",
+};
+
 const Store = ({ children }) => {
   const [store, setStore] = useState(initialState);
+  const [view, setView] = useState({ type: UserViews.SIMVIEW });
+  const [exData, setExData] = useState([]);
 
   const initalSelectedTab = store.length - 1 < 0 ? null : store.length - 1;
   const forcedSelectedTab = 0;
@@ -124,7 +133,17 @@ const Store = ({ children }) => {
 
   return (
     <StoreContext.Provider
-      value={{ activeTabKey, setActiveTabKey, store, setStore, storeActions }}
+      value={{
+        activeTabKey,
+        setActiveTabKey,
+        store,
+        setStore,
+        storeActions,
+        view,
+        setView,
+        exData,
+        setExData,
+      }}
     >
       {/* <UtilityContext.Provider value={{ addTab }}> */}
       {children}
