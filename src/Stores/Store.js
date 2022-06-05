@@ -29,54 +29,54 @@ addLabelDataForExampleElements(elmTM3, tabTypes.TM);
 let elmPDAtoGR = machineExamples.elmPDAtoGR;
 addLabelDataForExampleElements(elmPDAtoGR, tabTypes.PDA);
 
-// const initialState = [
-//   {
-//     title: "RegEx STUB",
-//     tabType: tabTypes.RE,
-//     model: new REModel("ab*(c)"),
-//   },
-//   {
-//     title: "Grammar g1 STUB",
-//     tabType: tabTypes.GR,
-//     model: new GRModel(grammarExamples.g5),
-//   },
-//   { title: "TM 1 STUB", tabType: tabTypes.TM, model: new TMModel(elmTM, 2) },
-//   { title: "TM 2 STUB", tabType: tabTypes.TM, model: new TMModel(elmTM2, 1) },
-//   { title: "TM 3 STUB", tabType: tabTypes.TM, model: new TMModel(elmTM3, 2) },
-//   {
-//     tabType: tabTypes.PDA,
-//     title: "PDAtoGR STUB",
-//     model: new PDAModel(elmPDAtoGR),
-//   },
-//   {
-//     tabType: tabTypes.PDA,
-//     title: "PDA STUB",
-//     model: new PDAModel(elmPDA),
-//   },
-//   {
-//     tabType: tabTypes.FA,
-//     title: "NFA STUB",
-//     model: new FSAModel(elm0),
-//   },
-//   {
-//     tabType: tabTypes.FA,
-//     title: "NFA 2 STUB",
-//     model: new FSAModel(elm1),
-//   },
-//   {
-//     tabType: tabTypes.FA,
-//     title: "FSAtoRE STUB",
-//     model: new FSAModel(machineExamples.elmFSAtoRE),
-//   },
-// ];
-
 const initialState = [
   {
+    title: "RegEx STUB",
+    tabType: tabTypes.RE,
+    model: new REModel("ab*(c)"),
+  },
+  {
+    title: "Grammar g1 STUB",
+    tabType: tabTypes.GR,
+    model: new GRModel(grammarExamples.g5),
+  },
+  { title: "TM 1 STUB", tabType: tabTypes.TM, model: new TMModel(elmTM, 2) },
+  { title: "TM 2 STUB", tabType: tabTypes.TM, model: new TMModel(elmTM2, 1) },
+  { title: "TM 3 STUB", tabType: tabTypes.TM, model: new TMModel(elmTM3, 2) },
+  {
+    tabType: tabTypes.PDA,
+    title: "PDAtoGR STUB",
+    model: new PDAModel(elmPDAtoGR),
+  },
+  {
+    tabType: tabTypes.PDA,
+    title: "PDA STUB",
+    model: new PDAModel(elmPDA),
+  },
+  {
     tabType: tabTypes.FA,
-    title: "Finite State Automata",
-    model: new FSAModel(elmInital),
+    title: "NFA STUB",
+    model: new FSAModel(elm0),
+  },
+  {
+    tabType: tabTypes.FA,
+    title: "NFA 2 STUB",
+    model: new FSAModel(elm1),
+  },
+  {
+    tabType: tabTypes.FA,
+    title: "FSAtoRE STUB",
+    model: new FSAModel(machineExamples.elmFSAtoRE),
   },
 ];
+
+// const initialState = [
+//   {
+//     tabType: tabTypes.FA,
+//     title: "Finite State Automata",
+//     model: new FSAModel(elmInital),
+//   },
+// ];
 
 export const StoreContext = React.createContext();
 export const UtilityContext = React.createContext();
@@ -94,7 +94,7 @@ const Store = ({ children }) => {
   const [exData, setExData] = useState([]);
 
   const initalSelectedTab = store.length - 1 < 0 ? null : store.length - 1;
-  const forcedSelectedTab = 0;
+  const forcedSelectedTab = 6;
   const [activeTabKey, setActiveTabKey] = useState(forcedSelectedTab);
   // null means is not any tab is selected
 

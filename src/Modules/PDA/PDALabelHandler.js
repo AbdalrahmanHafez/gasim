@@ -39,12 +39,21 @@ export default class PDALabelHandler extends LabelHandler {
       .filter((v) => v !== undefined);
     // .filter(Boolean);
     // values are not nessisarly 3, if not value enterd by the user, values =  []
-    // console.log("values are ", values);
 
-    assert(values.length >= 3, "PDA Label values must be 3");
+    console.log("values are ", values);
 
-    values = values.map((v) => str_substitute_empty(v, "ε"));
-    const data = { symbol: values[0], pop: values[1], push: values[2] };
+    assert(values.length >= 3, "PDA Label values must be at least 3");
+
+    values = values.map((v, i) => {
+      if (i <= 2) return str_substitute_empty(v, "ε");
+      return v;
+    });
+
+    const data = {
+      symbol: values[0],
+      pop: values[1],
+      push: values.splice(2).join(""),
+    };
     const updatedValues = {
       label: formatLabel(data, tabTypes.PDA),
       labelData: data,
@@ -54,7 +63,7 @@ export default class PDALabelHandler extends LabelHandler {
   }
 
   createIMask() {
-    const maskOptions = { mask: "*{,}*{→}*", placeholderChar: "_" };
+    const maskOptions = { mask: "*{,}*{→}*{*}", placeholderChar: "_" };
 
     var mask = IMask(document.createElement("input"), maskOptions);
     mask.on("accept", () => {
