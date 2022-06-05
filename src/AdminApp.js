@@ -6,6 +6,7 @@ import { AdminStoreCtx, AdminViews } from "./Stores/AdminStore";
 import { ExercisesStub } from "./Modules/Exercises/Admin/API_stub";
 import ExList from "./Modules/Exercises/Admin/ExList";
 import ExerciseView from "./Modules/Exercises/Admin/ExerciseView";
+import axResource from "./utils/httpCommon";
 
 function AdminApp() {
   console.log("[AdminApp] render");
@@ -15,8 +16,14 @@ function AdminApp() {
   useEffect(() => {
     console.log("[AdminApp] useEffect");
 
-    // https://stackoverflow.com/questions/35469836/detecting-production-vs-development-react-at-runtime
-    setExData(ExercisesStub);
+    axResource.get("/AdminGetExercises").then((res) => {
+      const data = res.data;
+      console.log("fetched exercise list is ", data);
+
+      setExData(data);
+    });
+
+    // setExData(ExercisesStub);
   }, []);
 
   if (!exData) {

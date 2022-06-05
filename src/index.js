@@ -16,62 +16,62 @@ import TestRerender from "./TestPages/TestRerender";
 import { isProduction, isDevelopement, getCookie, setCookie } from "./utils";
 import Test2 from "./TestPages/Test2";
 
-Sentry.init({
-  dsn: "https://51e31f1df6d44bd08775274cd21e773f@o1273072.ingest.sentry.io/6467203",
-  integrations: [new BrowserTracing()],
+// Sentry.init({
+//   dsn: "https://51e31f1df6d44bd08775274cd21e773f@o1273072.ingest.sentry.io/6467203",
+//   integrations: [new BrowserTracing()],
 
-  // Set tracesSampleRate to 1.0 to capture 100%
-  // of transactions for performance monitoring.
-  // We recommend adjusting this value in production
-  tracesSampleRate: 1.0,
-});
+//   // Set tracesSampleRate to 1.0 to capture 100%
+//   // of transactions for performance monitoring.
+//   // We recommend adjusting this value in production
+//   tracesSampleRate: 1.0,
+// });
 
-const trackingUrl = isProduction()
-  ? "https://gasim-server.herokuapp.com/track"
-  : "http://localhost:8080/track";
-window.addEventListener("error", (e) => {
-  if (
-    e.message ===
-      "Uncaught EvalError: Possible side-effect in debug-evaluate" ||
-    e.message === "Uncaught SyntaxError: Unexpected end of input" ||
-    e.message.includes("Uncaught SyntaxError:")
-  ) {
-    return;
-  }
-  if (e.error.hasBeenCaught !== undefined) {
-    return false;
-  }
-  e.error.hasBeenCaught = true;
-  // Save every cyinst elments
-  const cyinst = window.cyinst?.map((cy) => cy.json().elements);
+// const trackingUrl = isProduction()
+//   ? "https://gasim-server.herokuapp.com/track"
+//   : "http://localhost:8080/track";
+// window.addEventListener("error", (e) => {
+//   if (
+//     e.message ===
+//       "Uncaught EvalError: Possible side-effect in debug-evaluate" ||
+//     e.message === "Uncaught SyntaxError: Unexpected end of input" ||
+//     e.message.includes("Uncaught SyntaxError:")
+//   ) {
+//     return;
+//   }
+//   if (e.error.hasBeenCaught !== undefined) {
+//     return false;
+//   }
+//   e.error.hasBeenCaught = true;
+//   // Save every cyinst elments
+//   const cyinst = window.cyinst?.map((cy) => cy.json().elements);
 
-  console.log("error occured and caught by me");
-  console.log(e);
+//   console.log("error occured and caught by me");
+//   console.log(e);
 
-  // fetch("http://localhost:8080/")
-  //   .then((response) => response.text())
-  //   .then((data) => console.log(data));
+//   // fetch("http://localhost:8080/")
+//   //   .then((response) => response.text())
+//   //   .then((data) => console.log(data));
 
-  let trackingObject = {
-    error: { message: e.error.message, stack: e.error.stack },
-    history: window.trackHistory || [],
-    timestamp: new Date().toString(),
-  };
+//   let trackingObject = {
+//     error: { message: e.error.message, stack: e.error.stack },
+//     history: window.trackHistory || [],
+//     timestamp: new Date().toString(),
+//   };
 
-  if (cyinst !== undefined) {
-    trackingObject.cyinst = cyinst;
-  }
+//   if (cyinst !== undefined) {
+//     trackingObject.cyinst = cyinst;
+//   }
 
-  fetch(trackingUrl, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(trackingObject),
-  })
-    .then((res) => res.text())
-    .then((data) => console.log(data));
-});
+//   fetch(trackingUrl, {
+//     method: "POST",
+//     headers: {
+//       "Content-Type": "application/json",
+//     },
+//     body: JSON.stringify(trackingObject),
+//   })
+//     .then((res) => res.text())
+//     .then((data) => console.log(data));
+// });
 
 const store = createStore(model);
 
