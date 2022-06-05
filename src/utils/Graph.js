@@ -511,7 +511,7 @@ export const injectEmptyCy = (cyId, options = {}) => {
     menuItems: [
       {
         id: "setFinalState",
-        content: "Final",
+        content: "Toggle Final",
         tooltipText: "Toggle State as Final",
         selector: "node",
         onClickFunction: function (event) {
@@ -522,7 +522,7 @@ export const injectEmptyCy = (cyId, options = {}) => {
       },
       {
         id: "setInitalState",
-        content: "Inital",
+        content: "Toggle Inital",
         tooltipText: "Toggle State as Inital",
         selector: "node",
         onClickFunction: function (event) {
@@ -607,21 +607,51 @@ export const injectEmptyCy = (cyId, options = {}) => {
             ],
           },
           {
-            id: "color-green",
-            content: "green",
-            tooltipText: "green",
+            id: "color-black",
+            content: "black",
+            tooltipText: "black",
             onClickFunction: function (event) {
               let target = event.target || event.cyTarget;
-              target.style("background-color", "green");
+              target.style("background-color", "black");
             },
           },
           {
-            id: "color-red",
-            content: "red",
-            tooltipText: "red",
+            id: "color-maginta",
+            content: "maginta",
+            tooltipText: "maginta",
             onClickFunction: function (event) {
               let target = event.target || event.cyTarget;
-              target.style("background-color", "red");
+              target.style("background-color", "#aa47d1");
+            },
+          },
+          {
+            id: "color-cyan",
+            content: "cyan",
+            tooltipText: "cyan",
+            onClickFunction: function (event) {
+              let target = event.target || event.cyTarget;
+              target.style("background-color", "#17c2b1");
+            },
+          },
+
+          {
+            id: "color-orange",
+            content: "orange",
+            tooltipText: "orange",
+            onClickFunction: function (event) {
+              let target = event.target || event.cyTarget;
+              target.style("background-color", "#f78725");
+            },
+          },
+          {
+            id: "color-none",
+            content: "none",
+            tooltipText: "remove color",
+            onClickFunction: function (event) {
+              let target = event.target || event.cyTarget;
+              // target.style("background-color", "none");
+              // target.style("background-color", "")
+              target.style("background-color", null);
             },
           },
         ],
