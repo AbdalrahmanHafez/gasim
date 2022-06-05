@@ -17,6 +17,12 @@ export default class LabelHandler {
         let div = document.createElement("div");
         div.classList.add("popperInputContainer");
         div.addEventListener("focusout", (event) => {
+          if (div.contains(event.relatedTarget)) {
+            // don't react to this
+            console.log("EXITING");
+            return;
+          }
+
           console.log("focusout event triggered", event);
           console.log("this is ", this);
           this.handleInputOutFocus();
