@@ -290,6 +290,9 @@ const GRTable = ({ dataSource, setDataSource, editable }) => {
               ),
             },
           ]}
+          onProcessRowUpdateError={(error) => {
+            console.log("GRComponent error", error);
+          }}
           processRowUpdate={(newRow, oldRow) => {
             // model.productions = model.productions.flatMap((prod) => {
             //   const [from, to] = prod;

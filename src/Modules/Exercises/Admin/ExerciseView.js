@@ -81,7 +81,7 @@ const RenderMachine = ({
         <div style={{ height: "25vh" }}>
           <FSAComponent
             cyref={cyref}
-            model={new FSAModel(info.elements)}
+            model={new FSAModel(info.elements || [])}
             updateModel={() => {}}
           />
         </div>
@@ -118,7 +118,7 @@ const RenderMachine = ({
         <div style={{ height: "25vh" }}>
           <PDAComponent
             cyref={cyref}
-            model={new PDAModel(info.elements)}
+            model={new PDAModel(info.elements || [])}
             updateModel={() => {}}
           />
         </div>
@@ -188,7 +188,7 @@ const QuestionType = ({ item, updateItem }) => {
   );
 };
 
-const RenderContent = ({ item, updateItem, updateAnswer }) => {
+const RenderContent = ({ item, updateItem }) => {
   console.log("[RenderContent] rerendered");
 
   const { type } = item.value;
@@ -260,6 +260,7 @@ const RenderContent = ({ item, updateItem, updateAnswer }) => {
         <RenderMachine
           reref={rerefA}
           cyref={cyrefA}
+          grref={grref}
           info={item.value}
           updateItem={updateItem}
         />
@@ -291,8 +292,20 @@ const RenderContent = ({ item, updateItem, updateAnswer }) => {
               <Button
                 onClick={() => {
                   if (item.value.answer.type === "RE") {
-                    updateAnswer(rerefB.current.input.value);
-                  } else updateAnswer(cyrefB.current.json().elements);
+                    const newItem = { ...item };
+                    newItem.value.answer = {
+                      type: "RE",
+                      string: rerefB.current.input.value,
+                    };
+                    updateItem(newItem.value);
+                  } else {
+                    const newItem = { ...item };
+                    newItem.value.answer = {
+                      type: newItem.value.answer.type,
+                      elements: cyrefB.current.json().elements,
+                    };
+                    updateItem(newItem.value);
+                  }
                 }}
               >
                 Update Answer
@@ -314,17 +327,42 @@ const RenderContent = ({ item, updateItem, updateAnswer }) => {
           />
           <Button
             onClick={() => {
-              if (item.value.machine.type === "GR") {
-                updateAnswer(grref.current.productions);
+              // if (item.value.machine.type === "GR") {
+              //   updateAnswer(grref.current.productions);
+              // } else if (
+              //   item.value.machine.type === "NFA" ||
+              //   item.value.machine.type === "DFA" ||
+              //   item.value.machine.type === "PDA"
+              // )
+              //   updateAnswer(cyrefA.current.json().elements);
+              // else if (item.value.machine.type === "RE") {
+              //   updateAnswer(rerefA.current.input.value);
+              // }
+              const newItem = { ...item };
+              if (newItem.value.machine.type === "GR") {
+                newItem.value.machine = {
+                  type: "GR",
+                  productions: grref.current.productions,
+                };
+                // updateAnswer(grref.current.productions);
               } else if (
-                item.value.machine.type === "NFA" ||
-                item.value.machine.type === "DFA" ||
-                item.value.machine.type === "PDA"
+                newItem.value.machine.type === "NFA" ||
+                newItem.value.machine.type === "DFA" ||
+                newItem.value.machine.type === "PDA"
               )
-                updateAnswer(cyrefA.current.json().elements);
-              else if (item.value.machine.type === "RE") {
-                updateAnswer(rerefA.current.input.value);
+                // updateAnswer(cyrefA.current.json().elements);
+                newItem.value.machine = {
+                  type: newItem.value.machine.type,
+                  elements: cyrefA.current.json().elements,
+                };
+              else if (newItem.value.machine.type === "RE") {
+                // updateAnswer(rerefA.current.input.value);
+                newItem.value.machine = {
+                  type: "RE",
+                  string: rerefA.current.input.value,
+                };
               }
+              updateItem(item.value);
             }}
           >
             Update Answer
@@ -451,11 +489,7 @@ const BlockView = ({ item, updateItem, deleteItem }) => {
       <RenderContent
         item={item}
         updateItem={updateItem}
-        updateChoice={updateChoice}
-        updateText={updateText}
         updateAnswer={updateAnswer}
-        updateQuestion={updateQuestion}
-        updateQuestionType={updateQuestionType}
       />
       <h3 className="ml-auto">
         <Button
@@ -503,6 +537,7 @@ function RenderNewBlock({ blockType, setSavedItem }) {
   const cyref = useRef(null);
   const [inputValue, setInputValue] = useState("");
   const [fsamodel, setfsamodel] = useState(new FSAModel([]));
+  const [pdamodel, setpdamodel] = useState(new PDAModel([]));
 
   const [machineType, setMachineType] = useState("DFA");
   const [grmodel, setgrmodel] = useState(new GRModel([["S", ""]]));
@@ -577,34 +612,58 @@ function RenderNewBlock({ blockType, setSavedItem }) {
       );
 
     case "NFA": {
+      const save = () => {
+        setSavedItem({
+          type: "NFA",
+          elements:
+            Object.keys(fsamodel.elements).length !== 0
+              ? fsamodel.elements
+              : { nodes: [], edges: [] },
+        });
+      };
+      save();
       return (
         <div style={{ height: "25vh" }}>
           <FSAComponent
             cyref={cyref}
-            model={new FSAModel([])}
-            updateModel={(nmodel) =>
-              setSavedItem({
-                type: "NFA",
-                elements: nmodel.elements,
-              })
-            }
+            model={fsamodel}
+            updateModel={(nmodel) => {
+              setfsamodel(nmodel);
+              // setSavedItem({
+              //   type: "NFA",
+              //   elements: nmodel.elements,
+              // });
+              save();
+            }}
           />
         </div>
       );
     }
 
     case "DFA": {
+      const save = () => {
+        setSavedItem({
+          type: "DFA",
+          elements:
+            Object.keys(fsamodel.elements).length !== 0
+              ? fsamodel.elements
+              : { nodes: [], edges: [] },
+        });
+      };
+      save();
       return (
         <div style={{ height: "25vh" }}>
           <FSAComponent
             cyref={cyref}
-            model={new FSAModel([])}
-            updateModel={(nmodel) =>
-              setSavedItem({
-                type: "DFA",
-                elements: nmodel.elements,
-              })
-            }
+            model={fsamodel}
+            updateModel={(nmodel) => {
+              setfsamodel(nmodel);
+              // setSavedItem({
+              //   type: "DFA",
+              //   elements: nmodel.elements,
+              // })
+              save();
+            }}
           />
         </div>
       );
@@ -623,23 +682,43 @@ function RenderNewBlock({ blockType, setSavedItem }) {
     }
 
     case "PDA": {
+      const save = () => {
+        setSavedItem({
+          type: "PDA",
+          elements:
+            Object.keys(pdamodel.elements).length !== 0
+              ? pdamodel.elements
+              : { nodes: [], edges: [] },
+        });
+      };
+      save();
       return (
         <div style={{ height: "25vh" }}>
           <PDAComponent
             cyref={cyref}
-            model={new PDAModel([])}
-            updateModel={(nmodel) =>
-              setSavedItem({
-                type: "PDA",
-                elements: nmodel.elements,
-              })
-            }
+            model={pdamodel}
+            updateModel={(nmodel) => {
+              setpdamodel(nmodel);
+              //   setSavedItem({
+              //     type: "PDA",
+              //     elements: nmodel.elements,
+              //   })
+              save();
+            }}
           />
         </div>
       );
     }
 
     case "GR":
+      const save = () => {
+        setSavedItem({
+          type: "GR",
+          productions: grmodel.productions,
+        });
+        console.log("inside save() elements is", grmodel.productions);
+      };
+      save();
       return (
         <GRComponent
           model={grmodel}
@@ -851,6 +930,13 @@ const AddBlock = ({ addItemToEx }) => {
           loading={loading}
           onClick={() => {
             console.log("tobesavedObject is", tobesavedObject.current);
+            if (
+              tobesavedObject.current === null ||
+              Object.keys(tobesavedObject.current).length === 0
+            ) {
+              alert("please provide values");
+              return;
+            }
             setLoading(true);
             addItemToEx(tobesavedObject.current)
               .then(() => {
@@ -861,7 +947,6 @@ const AddBlock = ({ addItemToEx }) => {
             // resetState();
           }}
         >
-          {" "}
           Save Block
         </Button>
         <Button onClick={() => resetState()}>Cancel</Button>
