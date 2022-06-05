@@ -25,8 +25,14 @@ export default class FSAtoRE {
     const cy = createHeadlessCy(this.FSAModel.elements);
     // ther's atlest one final state
     // there's atleast one inital state
-    if (!verifyInitalStateExists(cy) || !verifyAtLeastFinalState(cy))
+    if (!verifyInitalStateExists(cy) || !verifyAtLeastFinalState(cy)) {
+      console.log("alert verify is false");
+      console.log("elements are ", this.FSAModel.elements);
       return false;
+    }
+
+    console.log("alert verify is true");
+    console.log("elements are ", this.FSAModel.elements);
     return true;
   }
 
