@@ -13,6 +13,8 @@ import { PDAModel, PDAComponent } from "../../PDA";
 import { GRComponent, GRModel } from "../../GR";
 import { InputNumber, Collapse } from "antd";
 import axResource from "../../../utils/httpCommon";
+import TMComponent from "../../TM/TMComponent";
+import { TMModel } from "../../TM";
 const { Panel } = Collapse;
 
 const GrammarBlock = ({ info, grref }) => {
@@ -119,6 +121,22 @@ const RenderMachine = ({
           <PDAComponent
             cyref={cyref}
             model={new PDAModel(info.elements || [])}
+            updateModel={() => {}}
+          />
+        </div>
+        <SaveBtn />
+      </div>
+    );
+  }
+
+
+  if (info.type === "TM") {
+    return (
+      <div>
+        <div style={{ height: "25vh" }}>
+          <TMComponent
+            cyref={cyref}
+            model={new TMModel(info.elements || [], 1)}
             updateModel={() => {}}
           />
         </div>
@@ -276,6 +294,17 @@ const RenderContent = ({ item, updateItem }) => {
         />
       );
 
+
+      case "TM":
+        return (
+          <RenderMachine
+            reref={rerefA}
+            cyref={cyrefA}
+            info={item.value}
+            updateItem={updateItem}
+          />
+        );
+
     case "equivalence":
       return (
         <div>
@@ -379,118 +408,12 @@ const BlockView = ({ item, updateItem, deleteItem }) => {
   console.log("[BLockView] rerendered");
   const [loading, setloading] = useState(false);
 
-  const updateChoice = (e) => {
-    const newChoice = e.target.value;
-    updateItem({ ...item, answer: newChoice });
-  };
-
-  const updateText = (newText) => {
-    updateItem({ ...item, value: newText });
-  };
-
-  const updateQuestionType = (newType) => {
-    updateItem({
-      ...item,
-      question: { ...item.value.question, type: newType },
-    });
-  };
-
-  const updateQuestion = (newElements) => {
-    // updateContent({ ...content, value: newText });
-    const { type } = item.value;
-    if (type === "equivalence") {
-      // then we're updating the answer
-      if (
-        item.value.question.type === "NFA" ||
-        item.value.question.type === "DFA"
-      ) {
-        updateItem({
-          ...item,
-          question: { ...item.value.question, elements: newElements },
-        });
-      } else if (item.value.question.type === "RE") {
-        updateItem({
-          ...item,
-          question: { ...item.value.question, string: newElements },
-        });
-      }
-    } else if (type === "stringAcceptance") {
-      if (item.value.machine.type === "GR") {
-        updateItem({
-          ...item,
-          machine: { ...item.value.machine, productions: newElements },
-        });
-      } else if (
-        item.value.machine.type === "NFA" ||
-        item.value.machine.type === "DFA" ||
-        item.value.machine.type === "PDA"
-      ) {
-        updateItem({
-          ...item,
-          machine: { ...item.value.machine, elements: newElements },
-        });
-      } else if (item.value.machine.type === "RE") {
-        updateItem({
-          ...item,
-          machine: { ...item.value.machine, string: newElements },
-        });
-      }
-    }
-  };
-
-  const updateAnswer = (newElements) => {
-    // updateContent({ ...content, value: newText });
-    const { type } = item;
-    if (type === "equivalence") {
-      // then we're updating the answer
-      if (
-        item.value.answer.type === "NFA" ||
-        item.value.answer.type === "DFA"
-      ) {
-        updateItem({
-          ...item,
-          answer: { ...item.value.answer, elements: newElements },
-        });
-      } else if (item.value.answer.type === "RE") {
-        updateItem({
-          ...item,
-          answer: { ...item.value.answer, string: newElements },
-        });
-      }
-    } else if (type === "stringAcceptance") {
-      if (item.value.machine.type === "GR") {
-        updateItem({
-          ...item,
-          machine: { ...item.value.machine, productions: newElements },
-        });
-      } else if (
-        item.value.machine.type === "NFA" ||
-        item.value.machine.type === "DFA" ||
-        item.value.machine.type === "PDA"
-      ) {
-        updateItem({
-          ...item,
-          machine: { ...item.value.machine, elements: newElements },
-        });
-      } else if (item.value.machine.type === "RE") {
-        updateItem({
-          ...item,
-          machine: { ...item.value.machine, string: newElements },
-        });
-      }
-    }
-  };
-
   return (
     <div className="m-4 relative flex flex-col">
       <h3 className="absolute right-2 top-px text-slate-400 z-10">
         {capitalizeFirst(item.value.type)}
       </h3>
-      <RenderContent
-        item={item}
-        updateItem={updateItem}
-        updateAnswer={updateAnswer}
-      />
+      <RenderContent item={item} updateItem={updateItem} />
       <h3 className="ml-auto">
         <Button
           loading={loading}
@@ -538,6 +461,7 @@ function RenderNewBlock({ blockType, setSavedItem }) {
   const [inputValue, setInputValue] = useState("");
   const [fsamodel, setfsamodel] = useState(new FSAModel([]));
   const [pdamodel, setpdamodel] = useState(new PDAModel([]));
+  const [tmmodel, settmmodel] = useState(new TMModel([],1));
 
   const [machineType, setMachineType] = useState("DFA");
   const [grmodel, setgrmodel] = useState(new GRModel([["S", ""]]));
@@ -724,6 +648,32 @@ function RenderNewBlock({ blockType, setSavedItem }) {
         />
       );
 
+    case "TM": {
+      const save = () => {
+        setSavedItem({
+          type: "TM",
+          elements: cyref.current?.json().elements,
+        });
+      };
+      save();
+      return (
+        <div style={{ height: "25vh" }}>
+          <TMComponent
+            cyref={cyref}
+            model={tmmodel}
+            updateModel={(nmodel) => {
+              settmmodel(nmodel);
+              //   setSavedItem({
+              //     type: "PDA",
+              //     elements: nmodel.elements,
+              //   })
+              save();
+            }}
+          />
+        </div>
+      );
+    }
+
     case "equivalence":
       const finalItem = {
         type: "equivalence",
@@ -840,9 +790,8 @@ function RenderNewBlock({ blockType, setSavedItem }) {
               saveData();
             }}
           >
-            <Radio value="DFA"> DFA </Radio>
-            <Radio value="NFA"> NFA </Radio>
-            <Radio value="RE"> RE </Radio>
+            {/* <Radio value="DFA"> DFA </Radio>
+            <Radio value="NFA"> NFA </Radio> */}
             <Radio value="PDA"> PDA </Radio>
             <Radio value="GR"> Grammar </Radio>
           </Radio.Group>
@@ -963,7 +912,7 @@ const AddBlock = ({ addItemToEx }) => {
             <Button onClick={() => setBlockType("PDA")}>PDA</Button>
             <Button onClick={() => setBlockType("RE")}>RegEx</Button>
             <Button onClick={() => setBlockType("GR")}>Grammar</Button>
-            {/* <Button onClick={() => setBlockType("TM")}>TM</Button> */}
+            <Button onClick={() => setBlockType("TM")}>TM</Button>
             <Button onClick={() => setBlockType("equivalence")}>
               Equivalence
             </Button>

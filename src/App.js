@@ -10,7 +10,7 @@ import ExSolveStore from "./Stores/Exercise/ExSolveStore";
 function App() {
   console.log("[APP] render");
 
-  const { activeTabKey, setActiveTabKey, view, setView, exData } =
+  const { activeTabKey, setActiveTabKey, view, setView, exData, setExData } =
     useContext(StoreContext);
 
   useEffect(() => {
@@ -27,6 +27,12 @@ function App() {
       </button>
     </div>
   );
+
+  const updateEx = (newExercise) => {
+    const newExData = [...exData];
+    newExData[view.key] = newExercise;
+    setExData(newExData);
+  };
 
   return (
     <div id="App">
@@ -74,7 +80,7 @@ function App() {
       {view.type === UserViews.EX_SOLVE && (
         <div>
           <ExSolveStore>
-            <ExerciseSolve ex={exData[view.key]} />
+            <ExerciseSolve ex={exData[view.key]} updateEx={updateEx} />
           </ExSolveStore>
         </div>
       )}

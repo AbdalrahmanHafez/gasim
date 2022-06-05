@@ -117,7 +117,7 @@ const TestPage = () => {
   };
 
   const checkStringInPDA = () => {
-    let elmPDAtoGR = machineExamples.elmPDAtoGR;
+    let elmPDAtoGR = machineExamples.elmPDAtoGR2;
     addLabelDataForExampleElements(elmPDAtoGR, tabTypes.PDA);
     const model = new PDAModel(elmPDAtoGR);
     const converter = new PDAtoGR(model);
@@ -127,7 +127,10 @@ const TestPage = () => {
     console.log("pda model is ", model);
     console.log("result GR model is ", resultGRmodel);
 
-    console.log("is Derivable =", resultGRmodel.isDerivable("akc"));
+    // console.log("is Derivable =", resultGRmodel.isDerivable("ac"));
+    // console.log("is Derivable =", resultGRmodel.isDerivable("akc"));
+
+    console.log("is Derivable =", resultGRmodel.isDerivable("ab"));
   };
 
   return (

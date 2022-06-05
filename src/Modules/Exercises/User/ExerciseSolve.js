@@ -16,6 +16,8 @@ import { StoreContext, UserViews } from "../../../Stores/Store";
 import { ExSolveStoreCtx } from "../../../Stores/Exercise/ExSolveStore";
 import axios from "axios";
 import axResource from "../../../utils/httpCommon";
+import TMComponent from "../../TM/TMComponent";
+import { TMModel } from "../../TM";
 const { Panel } = Collapse;
 
 const GrammarBlock = ({ info, grref }) => {
@@ -78,6 +80,18 @@ const RenderMachine = ({ info, mref }) => {
         <PDAComponent
           cyref={mref}
           model={new PDAModel(info.elements)}
+          updateModel={(newModel) => (mref.current = newModel)}
+        />
+      </div>
+    );
+  }
+
+  if (type === "TM") {
+    return (
+      <div style={{ height: "25vh" }}>
+        <TMComponent
+          cyref={mref}
+          model={new TMModel(info.elements, 1)}
           updateModel={(newModel) => (mref.current = newModel)}
         />
       </div>
@@ -263,6 +277,9 @@ const RenderItem = ({ item, updateAnswer }) => {
     case "PDA":
       return <RenderMachine mref={cyref} info={item.value} />;
 
+    case "TM":
+      return <RenderMachine mref={cyref} info={item.value} />;
+
     case "equivalence":
       return (
         <div>
@@ -273,7 +290,7 @@ const RenderItem = ({ item, updateAnswer }) => {
     case "stringAcceptance":
       return (
         <div>
-          Write a string and see if it is accepted by the machine:
+          Write a string that is accepted by the machine:
           <Input
             value={stringvalue}
             onChange={(e) => {
@@ -295,15 +312,33 @@ const RenderItem = ({ item, updateAnswer }) => {
 
 const BlockView = ({ item, updateAnswer }) => {
   console.log("[BLockView] rerendered");
+  const { isCorrect, value } = item;
+
+  let needsAnswer = false;
+  if (
+    item.value.type === "stringAcceptance" ||
+    item.value.type === "equivalence" ||
+    item.value.type === "choice"
+  ) {
+    needsAnswer = true;
+  }
 
   return (
-    <div className="m-4">
+    <div
+      className={`m-4 ${
+        isCorrect === undefined || !needsAnswer
+          ? ""
+          : isCorrect
+          ? "border-green-300 border-2 rounded-md"
+          : "border-red-300 border-2 rounded-md"
+      }`}
+    >
       <RenderItem item={item} updateAnswer={updateAnswer} />
     </div>
   );
 };
 
-function ExerciseSolve({ ex }) {
+function ExerciseSolve({ ex, updateEx }) {
   console.log("[ExerciseSolve] rerendered");
   const { setView } = useContext(StoreContext);
   const { answers, setAnswers } = useContext(ExSolveStoreCtx);
@@ -324,11 +359,25 @@ function ExerciseSolve({ ex }) {
     }
     console.log("final answers are ", finalAnswers);
 
-    console.log("NOT POSINT YET");
-    // axResource.post("/solve_exercise", finalAnswers).then((res) => {
-    //   console.log("RES is ", res);
-    // });
+    // console.log("NOT POSTING YET");
+
+    axResource.post("/solve_exercise", finalAnswers).then((res) => {
+      console.log("RES is ", res);
+      for (let { item_id, isCorrect } of res.data) {
+        console.log(
+          `item ${item_id} is ${isCorrect ? "correct" : "incorrect"}`
+        );
+      }
+
+      const newEx = { ...ex };
+      newEx.items = newEx.items.map((item, i) => {
+        item.isCorrect = res.data[i].isCorrect;
+        return item;
+      });
+      updateEx(newEx);
+    });
   };
+
   const BackButton = () => {
     return (
       <Button onClick={() => setView({ type: UserViews.EX_LIST })}>Back</Button>

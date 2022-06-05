@@ -16,8 +16,7 @@ function ExerciseItem({ title, description, onClick }) {
 function ExList() {
   const { exData, setExData, setView } = useContext(StoreContext);
 
-  useEffect(() => {
-    console.log("[ExList] useEffect");
+  const fetchExercises = () => {
     axResource.get("/getExercises").then((res) => {
       const data = res.data;
       console.log("fetched exercise list is ", data);
@@ -30,20 +29,12 @@ function ExList() {
 
       setExData(data);
     });
-    // setExData([
-    //   {
-    //     title: "Exerceise 1",
-    //     description: "This is the first exercise",
-    //   },
-    //   {
-    //     title: "Exerceise 2",
-    //     description: "This is the second exercise",
-    //   },
-    //   {
-    //     title: "Exerceise 3",
-    //     description: "This is the third exercise",
-    //   },
-    // ]);
+  };
+
+  useEffect(() => {
+    console.log("[ExList] useEffect");
+
+    fetchExercises();
   }, []);
 
   const handleExSelection = (key) => {

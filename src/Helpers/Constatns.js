@@ -382,7 +382,28 @@ export class machineExamples {
       ],
     };
   }
+
+
+  static get elmPDAtoGR2() {
+    return {
+      nodes: [
+        {
+          data: { id: "a", name: "a", inital: true, final: false },
+        },
+        {
+          data: { id: "b", name: "b", inital: false, final: false },
+        },
+        { data: { id: "c", name: "c", inital: false, final: true } },
+      ],
+      edges: [
+        { data: { id: "ab", source: "a", target: "b", label: "aZX" } },
+        { data: { id: "bc", source: "b", target: "c", label: "bXε" } },
+      ],
+    };
+  }
 }
+
+
 
 export class grammarExamples {
   static get g1() {
