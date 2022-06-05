@@ -212,7 +212,7 @@ function MenuBar({ activeTabKey, setActiveTabKey }) {
       case "TM1": {
         let elmTM2 = machineExamples.elmTM2;
         addLabelDataForExampleElements(elmTM2, tabTypes.TM);
-        const model = new TMModel(elmTM2, 2);
+        const model = new TMModel(elmTM2, 1);
         addTab({
           tabType: tabTypes.TM,
           title: "Turing Machine example 1",
@@ -223,7 +223,7 @@ function MenuBar({ activeTabKey, setActiveTabKey }) {
       case "TM2": {
         let elmTM = machineExamples.elmTM;
         addLabelDataForExampleElements(elmTM, tabTypes.TM);
-        const model = new TMModel(elmTM, 1);
+        const model = new TMModel(elmTM, 2);
         addTab({
           tabType: tabTypes.TM,
           title: "Multi tape TM example",

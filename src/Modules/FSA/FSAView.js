@@ -127,7 +127,7 @@ function FSAView({ model, updateModel }) {
 
   // TODO: when the right side panel opens excute a fit command, beacuse resize event fit automatically i disabled it
 
-  function rightPanelContent() {
+  function RightPanelContent() {
     switch (whatToShowRightPanel) {
       case 0:
         return (
@@ -233,8 +233,12 @@ function FSAView({ model, updateModel }) {
           <FSAComponent cyref={cy} model={model} updateModel={updateModel} />
 
           {whatToShowRightPanel !== null ? (
-            <RightPanel setShowPanel={() => setWhatToShowRightPanel(null)}>
-              {rightPanelContent()}
+            <RightPanel
+              setShowPanel={() => {
+                setWhatToShowRightPanel(null);
+              }}
+            >
+              <RightPanelContent />
             </RightPanel>
           ) : null}
         </div>
