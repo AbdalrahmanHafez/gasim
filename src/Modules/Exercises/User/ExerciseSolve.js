@@ -55,7 +55,7 @@ const RenderMachine = ({ info, mref }) => {
   if (type === "RE") {
     return (
       <div>
-        <Input ref={mref} onChange={(e) => (mref.current = e.target.value)} />
+        <Input ref={mref} value={info.string} />
       </div>
     );
   }
@@ -64,9 +64,9 @@ const RenderMachine = ({ info, mref }) => {
     return (
       <div>
         <GRComponent
-          model={new GRModel([])}
+          model={new GRModel(info.productions)}
           updateModel={(newModel) => (mref.current = newModel)}
-          editable={true}
+          editable={false}
         />
       </div>
     );
@@ -77,7 +77,7 @@ const RenderMachine = ({ info, mref }) => {
       <div style={{ height: "25vh" }}>
         <PDAComponent
           cyref={mref}
-          model={new PDAModel([])}
+          model={new PDAModel(info.elements)}
           updateModel={(newModel) => (mref.current = newModel)}
         />
       </div>
@@ -123,13 +123,16 @@ const QuestionType = ({ content, updateQuestionType }) => {
   );
 };
 
-const ChoiceBlock = ({ item }) => {
+const ChoiceBlock = ({ item, updateAnswer }) => {
   const [choice, setchoice] = useState("");
   return (
     <Radio.Group
       buttonStyle="solid"
       value={choice}
-      onChange={(e) => setchoice(e.target.value)}
+      onChange={(e) => {
+        setchoice(e.target.value);
+        updateAnswer({ type: "choice", value: e.target.value });
+      }}
     >
       {item.value.options.map((op, i) => (
         <Radio.Button key={i} value={op}>
@@ -140,133 +143,89 @@ const ChoiceBlock = ({ item }) => {
   );
 };
 
-const RenderQuestion = ({ item, mref }) => {
-  console.log("[RenderQuestion] rerendered");
-
-  // const question = item.value.question;
-  const { type } = item.value.question;
-
-  if (type === "NFA" || type === "DFA") {
-    return (
-      <div style={{ height: "25vh" }}>
-        <FSAComponent
-          cyref={mref}
-          model={new FSAModel(item.value.question.elements)}
-          updateModel={() => {}}
-        />
-      </div>
-    );
-  }
-
-  if (type === "RE") {
-    return (
-      <div>
-        <Input ref={mref} value={item.value.question.string} />
-      </div>
-    );
-  }
-
-  if (type === "GR") {
-    return (
-      <div>
-        <GRComponent
-          model={new GRModel(item.value.question.productions)}
-          updateModel={() => {}}
-          editable={true}
-        />
-      </div>
-    );
-  }
-
-  if (type === "PDA") {
-    return (
-      <div style={{ height: "25vh" }}>
-        <PDAComponent
-          cyref={mref}
-          model={new PDAModel(item.value.question.elements)}
-          updateModel={() => {}}
-        />
-      </div>
-    );
-  }
-
-  return <div className="bg-red-500">Unexpected Question Type</div>;
-};
-
-const RenderAnswer = ({ item, mref, updateAnswer }) => {
-  console.log("[RenderAnswer] rerendered");
-
-  const { type } = item.value.question;
-
-  if (type === "NFA" || type === "DFA") {
-    return (
-      <div style={{ height: "25vh" }}>
-        <FSAComponent
-          cyref={mref}
-          model={new FSAModel([])}
-          updateModel={(newModel) => {
-            mref.current = newModel;
-            updateAnswer({ type: type, elements: newModel.elements });
-          }}
-        />
-      </div>
-    );
-  }
-
-  if (type === "RE") {
-    return (
-      <div>
-        <Input
-          ref={mref}
-          onChange={(e) => {
-            mref.current = e.target.value;
-            updateAnswer({ type: type, string: e.target.value });
-          }}
-        />
-      </div>
-    );
-  }
-
-  if (type === "GR") {
-    return (
-      <div>
-        <GRComponent
-          model={new GRModel([["S", ""]])}
-          updateModel={(newModel) => {
-            mref.current = newModel;
-            updateAnswer({ type: type, productions: newModel.productions });
-          }}
-          editable={true}
-        />
-      </div>
-    );
-  }
-
-  if (type === "PDA") {
-    return (
-      <div style={{ height: "25vh" }}>
-        <PDAComponent
-          cyref={mref}
-          model={new PDAModel([])}
-          updateModel={(newModel) => {
-            mref.current = newModel;
-            updateAnswer({ type: type, elements: newModel.elements });
-          }}
-        />
-      </div>
-    );
-  }
-
-  return <div className="bg-red-500">Unexpected Answer Type</div>;
-};
-
 const EquivalenceBlock = ({ item, updateAnswer }) => {
   const mref = useRef(null);
 
+  const Content = () => {
+    console.log("[EquivalenceBlock] rerendered");
+
+    const { type } = item.value.question;
+
+    if (type === "NFA" || type === "DFA") {
+      return (
+        <div style={{ height: "25vh" }}>
+          <FSAComponent
+            cyref={mref}
+            model={new FSAModel([])}
+            updateModel={(newModel) => {
+              mref.current = newModel;
+              updateAnswer(
+                Object.keys(newModel.elements).length === 0
+                  ? null
+                  : { type: type, elements: newModel.elements }
+              );
+            }}
+          />
+        </div>
+      );
+    }
+
+    if (type === "RE") {
+      return (
+        <div>
+          <Input
+            ref={mref}
+            onChange={(e) => {
+              mref.current = e.target.value;
+              updateAnswer({ type: type, string: e.target.value });
+            }}
+          />
+        </div>
+      );
+    }
+
+    if (type === "GR") {
+      return (
+        <div>
+          <GRComponent
+            model={new GRModel([["S", ""]])}
+            updateModel={(newModel) => {
+              mref.current = newModel;
+              updateAnswer({ type: type, productions: newModel.productions });
+            }}
+            editable={true}
+          />
+        </div>
+      );
+    }
+
+    if (type === "PDA") {
+      return (
+        <div style={{ height: "25vh" }}>
+          <PDAComponent
+            cyref={mref}
+            model={new PDAModel([])}
+            updateModel={(newModel) => {
+              mref.current = newModel;
+              updateAnswer(
+                Object.keys(newModel.elements).length === 0
+                  ? null
+                  : { type: type, elements: newModel.elements }
+              );
+            }}
+          />
+        </div>
+      );
+    }
+
+    return <div className="bg-red-500">Unexpected Answer Type</div>;
+  };
+
   return (
     <div>
-      <span>your answer:</span>
-      <RenderAnswer mref={mref} item={item} updateAnswer={updateAnswer} />
+      <span>answer should be of type {item.value.question.type}</span>
+
+      <Content />
     </div>
   );
 };
@@ -276,8 +235,7 @@ const RenderItem = ({ item, updateAnswer }) => {
   const { type } = item.value;
 
   const cyref = useRef(null);
-  const reref = useRef(null);
-  const grref = useRef(null);
+  const [stringvalue, setstringvalue] = useState("");
 
   switch (type) {
     case "text":
@@ -286,7 +244,7 @@ const RenderItem = ({ item, updateAnswer }) => {
     case "choice":
       return (
         <div>
-          <ChoiceBlock item={item} />
+          <ChoiceBlock item={item} updateAnswer={updateAnswer} />
         </div>
       );
 
@@ -315,29 +273,18 @@ const RenderItem = ({ item, updateAnswer }) => {
     case "stringAcceptance":
       return (
         <div>
-          <RenderMachine
-            reref={reref}
-            cyref={cyref}
-            grref={grref}
-            info={item.machine}
-          />
-          <Button
-            onClick={() => {
-              if (item.machine.type === "GR") {
-                updateAnswer(grref.current.productions);
-              } else if (
-                item.machine.type === "NFA" ||
-                item.machine.type === "DFA" ||
-                item.machine.type === "PDA"
-              )
-                updateAnswer(cyref.current.json().elements);
-              else if (item.machine.type === "RE") {
-                updateAnswer(reref.current.input.value);
-              }
+          Write a string and see if it is accepted by the machine:
+          <Input
+            value={stringvalue}
+            onChange={(e) => {
+              setstringvalue(e.target.value);
+              updateAnswer({
+                type: "stringAcceptance",
+                string: e.target.value,
+              });
             }}
-          >
-            Update Answer
-          </Button>
+          />
+          <RenderMachine mref={cyref} info={item.value.machine} />
         </div>
       );
 
@@ -367,16 +314,21 @@ function ExerciseSolve({ ex }) {
 
   const submitAnswers = () => {
     let finalAnswers = [];
-    for (let [key, value] of answers.entries())
-      finalAnswers.push({ item_id: key, answer: value });
-
+    for (let item of ex.items) {
+      // for (let [key, value] of answers.entries())
+      if (answers.has(item._id)) {
+        finalAnswers.push({ item_id: item._id, answer: answers.get(item._id) });
+      } else {
+        finalAnswers.push({ item_id: item._id, answer: null });
+      }
+    }
     console.log("final answers are ", finalAnswers);
 
-    axResource.post("/solve_exercise", finalAnswers).then((res) => {
-      console.log("RES is ", res);
-    });
+    console.log("NOT POSINT YET");
+    // axResource.post("/solve_exercise", finalAnswers).then((res) => {
+    //   console.log("RES is ", res);
+    // });
   };
-
   const BackButton = () => {
     return (
       <Button onClick={() => setView({ type: UserViews.EX_LIST })}>Back</Button>

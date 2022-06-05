@@ -615,10 +615,7 @@ function RenderNewBlock({ blockType, setSavedItem }) {
       const save = () => {
         setSavedItem({
           type: "NFA",
-          elements:
-            Object.keys(fsamodel.elements).length !== 0
-              ? fsamodel.elements
-              : { nodes: [], edges: [] },
+          elements: cyref.current?.json().elements,
         });
       };
       save();
@@ -644,10 +641,7 @@ function RenderNewBlock({ blockType, setSavedItem }) {
       const save = () => {
         setSavedItem({
           type: "DFA",
-          elements:
-            Object.keys(fsamodel.elements).length !== 0
-              ? fsamodel.elements
-              : { nodes: [], edges: [] },
+          elements: cyref.current?.json().elements,
         });
       };
       save();
@@ -685,10 +679,7 @@ function RenderNewBlock({ blockType, setSavedItem }) {
       const save = () => {
         setSavedItem({
           type: "PDA",
-          elements:
-            Object.keys(pdamodel.elements).length !== 0
-              ? pdamodel.elements
-              : { nodes: [], edges: [] },
+          elements: cyref.current?.json().elements,
         });
       };
       save();
@@ -1051,13 +1042,19 @@ function ExerciseView({ ex, updateEx }) {
   const addItemToEx = async (addedItem) => {
     // TODO: UPDATE ITEM ID FROM DATABASE, after adding it to the DB
 
-    const oldEx = { ...ex };
-
     const newItem = {
       value: addedItem,
     };
 
-    const promis = axResource
+    // console.log("New item will be", newItem);
+    // console.log("NOT POSITNG");
+    // return new Promise((resolve, reject) => {
+    //   setTimeout(() => {
+    //     resolve("FAKERESOLVE!");
+    //   }, 250);
+    // });
+
+    return axResource
       .post("/AdminAddExecersiceItem", {
         exercise_id: ex._id,
         newItem: newItem,
@@ -1078,8 +1075,6 @@ function ExerciseView({ ex, updateEx }) {
         alert("Couldn't add item", error);
         // updateEx(oldEx);
       });
-
-    return promis;
   };
 
   return (
