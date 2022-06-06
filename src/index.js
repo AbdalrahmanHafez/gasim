@@ -13,7 +13,14 @@ import TrackingStore from "./Stores/TrackingStore";
 import AdminStore from "./Stores/AdminStore";
 import TestPage from "./TestPages/index.js";
 import TestRerender from "./TestPages/TestRerender";
-import { isProduction, isDevelopement, getCookie, setCookie } from "./utils";
+import {
+  isProduction,
+  isDevelopement,
+  getCookie,
+  setCookie,
+  localGetItem,
+  localSetItem,
+} from "./utils";
 import Test2 from "./TestPages/Test2";
 
 // Sentry.init({
@@ -103,12 +110,12 @@ const basedOnPath = () => {
 };
 
 setTimeout(() => {
-  if (getCookie("tutorialDone") !== undefined) return;
+  if (localGetItem("tutorialDone") !== null) return;
 
   window
     .introJs()
     .oncomplete(() => {
-      setCookie("tutorialDone", "true", 365);
+      localSetItem("tutorialDone", true);
     })
     .setOptions({
       steps: [

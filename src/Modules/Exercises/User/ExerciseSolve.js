@@ -290,7 +290,13 @@ const RenderItem = ({ item, updateAnswer }) => {
     case "stringAcceptance":
       return (
         <div>
-          Write a string that is accepted by the machine:
+          Write a string that is{" "}
+          {item.value.machine.type === "GR"
+            ? "generated"
+            : item.value.machine.type === "PDA"
+            ? "accepted"
+            : "UNKOWN MACHINE TYPE"}{" "}
+          by the following {item.value.machine.type}:
           <Input
             value={stringvalue}
             onChange={(e) => {

@@ -58,6 +58,14 @@ export function getCookie(cName) {
   return res;
 }
 
+export function localSetItem(itemKey, itemValue) {
+  localStorage.setItem(itemKey, JSON.stringify(itemValue));
+}
+
+export function localGetItem(itemKey) {
+  return JSON.parse(localStorage.getItem(itemKey));
+}
+
 function determineEnviroment() {
   if (!process.env.NODE_ENV || process.env.NODE_ENV === "development") {
     // dev code

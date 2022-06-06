@@ -58,10 +58,6 @@ function ExList() {
           onClick={() => handleExSelection(key)}
         />
       ))}
-
-      <Space className="mt-4" dir="horizontal">
-        <Button>Add New</Button>
-      </Space>
     </div>
   );
 }
