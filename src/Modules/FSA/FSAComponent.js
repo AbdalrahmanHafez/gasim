@@ -49,7 +49,8 @@ const addNameToNodes = (elementsObj) => {
   // for some reason cy.json().elments strips out the name property from the nodes
 
   elementsObj.nodes?.forEach((node) => {
-    node.data.name = node.data.label;
+    if (node.data.name) return;
+    node.data.name = node.data.id;
   });
 
   return elementsObj;

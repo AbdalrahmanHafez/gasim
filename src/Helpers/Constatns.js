@@ -26,7 +26,11 @@ export class machineExamples {
         { data: { id: "q1", name: "q1", inital: false, final: false } },
         { data: { id: "q2", name: "q2", inital: false, final: true } },
       ],
-      edges: [{ data: { id: "q0q1", source: "q0", target: "q1", label: "a" } }],
+      edges: [
+        { data: { id: "q0q1", source: "q0", target: "q1", label: "a" } },
+
+        { data: { id: "q1q2", source: "q1", target: "q2", label: "b" } },
+      ],
     };
   }
 
@@ -383,7 +387,6 @@ export class machineExamples {
     };
   }
 
-
   static get elmPDAtoGR2() {
     return {
       nodes: [
@@ -402,8 +405,6 @@ export class machineExamples {
     };
   }
 }
-
-
 
 export class grammarExamples {
   static get g1() {
