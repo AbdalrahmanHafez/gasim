@@ -10,7 +10,6 @@ import { Tabs } from "antd";
 import useTracking from "../Hooks/useTracking";
 const { TabPane } = Tabs;
 
-const $ = window.jQuery;
 // function mapTabIdxToInfo(tabIdx) {
 //   // TODO: dynamic tabs
 //   switch (tabIdx) {

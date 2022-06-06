@@ -9,7 +9,7 @@ import SimPanel from "./SimPanel";
 import { clearHighlighted, highlightConfigs } from "../../utils";
 import { conversionBus, eventTypes } from "../../Events";
 import NFAtoDFAComponent from "../Conversion/NFAtoDFAComponent";
-import { FSAtoREComponent } from "../Conversion";
+import { FSAtoRE, FSAtoREComponent } from "../Conversion";
 import ExportButton from "../../components/ExportButton";
 import tabTypes from "../../enums/tabTypes";
 import FSAModel from "./FSAModel";
@@ -127,6 +127,22 @@ function FSAView({ model, updateModel }) {
 
   // TODO: when the right side panel opens excute a fit command, beacuse resize event fit automatically i disabled it
 
+  const RenderFSAtoRE = () => {
+    return (
+      <div style={{ height: "-webkit-fill-available" }}>
+        <label>The resulting Regular Expression</label>
+        <ExportButton
+          tabObj={{
+            title: "Result NFAtoRE",
+            tabType: tabTypes.RE,
+          }}
+          modelEvalFn={() => new REModel(FSAtoREModel.exportResult)}
+        />
+        <FSAtoREComponent model={FSAtoREModel} />
+      </div>
+    );
+  };
+
   function RightPanelContent() {
     switch (whatToShowRightPanel) {
       case 0:
@@ -155,19 +171,7 @@ function FSAView({ model, updateModel }) {
         );
 
       case 2:
-        return (
-          <div style={{ height: "-webkit-fill-available" }}>
-            <label>The resulting Regular Expression</label>
-            <ExportButton
-              tabObj={{
-                title: "Result NFAtoRE",
-                tabType: tabTypes.RE,
-              }}
-              modelEvalFn={() => new REModel(FSAtoREModel.exportResult)}
-            />
-            <FSAtoREComponent model={FSAtoREModel} />
-          </div>
-        );
+        return <RenderFSAtoRE />;
 
       default:
         throw new Error("unknown right panel content");
