@@ -5,8 +5,6 @@ export const AdminStoreCtx = React.createContext();
 export const AdminViews = {
   LIST_ALL: "View list of all Exercises",
   VIEW_EXE: "View a single Exercises",
-  ADD_EXE: "Add Exercise",
-  EDIT_EXE: "Edit Exercise",
 };
 
 const initalAdminView = {
@@ -14,7 +12,7 @@ const initalAdminView = {
 };
 
 const AdminStore = ({ children }) => {
-  const [exData, setExData] = useState([]);
+  const [exData, setExData] = useState(undefined);
   const [view, setView] = useState(initalAdminView);
 
   return (

@@ -91,7 +91,7 @@ export const UserViews = {
 const Store = ({ children }) => {
   const [store, setStore] = useState(initialState);
   const [view, setView] = useState({ type: UserViews.SIMVIEW });
-  const [exData, setExData] = useState([]);
+  const [exData, setExData] = useState(undefined);
 
   const initalSelectedTab = store.length - 1 < 0 ? null : store.length - 1;
   const forcedSelectedTab = 0;

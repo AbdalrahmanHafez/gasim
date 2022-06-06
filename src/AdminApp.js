@@ -13,9 +13,7 @@ function AdminApp() {
 
   const { exData, setExData, view, setView } = useContext(AdminStoreCtx);
 
-  useEffect(() => {
-    console.log("[AdminApp] useEffect");
-
+  const updateExercises = () =>
     axResource.get("/AdminGetExercises").then((res) => {
       const data = res.data;
       console.log("fetched exercise list is ", data);
@@ -23,12 +21,10 @@ function AdminApp() {
       setExData(data);
     });
 
-    // setExData(ExercisesStub);
+  useEffect(() => {
+    console.log("[AdminApp] useEffect");
+    updateExercises();
   }, []);
-
-  if (!exData) {
-    return <div>Loading...</div>;
-  }
 
   const Content = () => {
     const { type } = view;
@@ -38,14 +34,15 @@ function AdminApp() {
           // console.log("selected exId:", key);
           setView({ type: AdminViews.VIEW_EXE, key: key });
         };
-        return <ExList list={exData} onSelect={handleExSelection} />;
+        return (
+          <ExList
+            exData={exData}
+            onSelect={handleExSelection}
+            setExData={setExData}
+            updateExercises={updateExercises}
+          />
+        );
       }
-
-      case AdminViews.ADD_EXE:
-        return <div>ADDINGN a new EXCERISE</div>;
-
-      case AdminViews.EDIT_EXE:
-        return <div>Edit an Excersice</div>;
 
       case AdminViews.VIEW_EXE: {
         const { key } = view;

@@ -129,7 +129,6 @@ const RenderMachine = ({
     );
   }
 
-
   if (info.type === "TM") {
     return (
       <div>
@@ -294,16 +293,15 @@ const RenderContent = ({ item, updateItem }) => {
         />
       );
 
-
-      case "TM":
-        return (
-          <RenderMachine
-            reref={rerefA}
-            cyref={cyrefA}
-            info={item.value}
-            updateItem={updateItem}
-          />
-        );
+    case "TM":
+      return (
+        <RenderMachine
+          reref={rerefA}
+          cyref={cyrefA}
+          info={item.value}
+          updateItem={updateItem}
+        />
+      );
 
     case "equivalence":
       return (
@@ -461,7 +459,7 @@ function RenderNewBlock({ blockType, setSavedItem }) {
   const [inputValue, setInputValue] = useState("");
   const [fsamodel, setfsamodel] = useState(new FSAModel([]));
   const [pdamodel, setpdamodel] = useState(new PDAModel([]));
-  const [tmmodel, settmmodel] = useState(new TMModel([],1));
+  const [tmmodel, settmmodel] = useState(new TMModel([], 1));
 
   const [machineType, setMachineType] = useState("DFA");
   const [grmodel, setgrmodel] = useState(new GRModel([["S", ""]]));
@@ -1029,7 +1027,7 @@ function ExerciseView({ ex, updateEx }) {
   return (
     <div>
       <BackButton />
-      <h3>
+      <h3 className="ml-4 mt-2">
         {ex.title} - {ex.description}
       </h3>
 
