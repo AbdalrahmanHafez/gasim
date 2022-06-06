@@ -20,7 +20,7 @@ const simulationOptions = [
   steppingStrategies.RANDOM,
 ];
 
-function TMView({ model }) {
+function TMView({ model, updateModel }) {
   const { trackButtonClick } = useTracking();
 
   const stFastRunChecked = useState(false);
@@ -136,7 +136,7 @@ function TMView({ model }) {
         </div>
 
         <div style={{ display: "flex" }} className="bg-red-300 h-full">
-          <TMComponent cyref={cy} model={model} />
+          <TMComponent cyref={cy} model={model} updateModel={updateModel} />
 
           {showSim && (
             <RightPanel setShowPanel={setShowSim}>

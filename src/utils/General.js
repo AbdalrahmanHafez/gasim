@@ -79,6 +79,7 @@ function determineEnviroment() {
 export const isProduction = () => {
   return determineEnviroment() === "production";
 };
+
 export const isDevelopement = () => {
   return determineEnviroment() === "development";
 };

@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useRef } from "react";
 import { Menu, MenuItem, MenuButton, SubMenu } from "@szhsin/react-menu";
 import "@szhsin/react-menu/dist/index.css";
 import "@szhsin/react-menu/dist/transitions/slide.css";
@@ -23,6 +23,7 @@ const openMenuClasses =
 
 function MenuBar({ activeTabKey, setActiveTabKey }) {
   const { trackContextMenuClick } = useTracking();
+  const refinputfile = useRef(null);
 
   const {
     store,
@@ -33,6 +34,77 @@ function MenuBar({ activeTabKey, setActiveTabKey }) {
 
   // If no tab selectd, currentTabInfo is null
   const currentTabInfo = activeTabKey === null ? null : store[activeTabKey];
+
+  useEffect(() => {
+    const loadMachineFromInputFile = () => {
+      console.log("loadMachineFromInputFile()");
+      const file = document.getElementById("loadfile").files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          try {
+            const data = e.target.result;
+            const tabData = JSON.parse(data);
+            console.log("tabData is ", tabData);
+            let model = null;
+            switch (tabData.tabType) {
+              case tabTypes.FA:
+                model = new FSAModel(tabData.model.elements);
+                break;
+              case tabTypes.PDA:
+                model = new PDAModel(tabData.model.elements);
+                break;
+              case tabTypes.TM:
+                model = new TMModel(
+                  tabData.model.elements,
+                  tabData.model.tapesCount
+                );
+                break;
+              case tabTypes.GR:
+                model = new GRModel(tabData.model.productions);
+                break;
+              case tabTypes.RE:
+                model = new REModel(tabData.model.inputRegex);
+                break;
+
+              default:
+                throw new Error(
+                  "Failed to load model, the file seems to be invalid"
+                );
+            }
+            const newTabDescription = {
+              tabType: tabData.tabType,
+              title: tabData.title,
+              model,
+            };
+            console.log("NEW TAB DESCRIPTION : ", newTabDescription);
+            addTab({
+              tabType: tabData.tabType,
+              title: tabData.title,
+              model,
+            });
+            setActiveTabKey(store.length);
+          } catch (error) {
+            console.log("Error while loading", error);
+            alert("Error while loading " + error);
+          }
+        };
+        reader.readAsText(file);
+      } else {
+        console.log("No file selected");
+      }
+    };
+
+    const inputFile = refinputfile.current;
+    if (inputFile) {
+      inputFile.addEventListener("change", loadMachineFromInputFile);
+    }
+    return () => {
+      if (inputFile) {
+        inputFile.removeEventListener("change", loadMachineFromInputFile);
+      }
+    };
+  }, [refinputfile, addTab, store, setActiveTabKey]);
 
   const handleNewMenu = (e) => {
     const { value } = e;
@@ -268,6 +340,39 @@ function MenuBar({ activeTabKey, setActiveTabKey }) {
     setActiveTabKey(store.length);
   };
 
+  const handleFileMenu = ({ value }) => {
+    switch (value) {
+      case "save": {
+        console.log("SAVE a machine");
+        const tabData = JSON.stringify(currentTabInfo);
+        const blob = new Blob([tabData], { type: "text/plain" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `${currentTabInfo.title}.json`;
+        a.click();
+
+        break;
+      }
+      case "load": {
+        console.log("LOAD a machine");
+        document.getElementById("loadfile").value = "";
+        // document
+        //   .getElementById("loadfile")
+        //   .removeEventListener("change", loadMachineFromInputFile);
+
+        // document
+        //   .getElementById("loadfile")
+        //   .addEventListener("change", loadMachineFromInputFile);
+        document.getElementById("loadfile").click();
+
+        break;
+      }
+      default:
+        console.log("Unknown menu item inside FILE menu");
+    }
+  };
+
   return (
     <div className="flex bg-gradient-to-t from-gray-100">
       <Menu
@@ -340,6 +445,22 @@ function MenuBar({ activeTabKey, setActiveTabKey }) {
       >
         See Excersices
       </button>
+
+      <Menu
+        menuButton={<MenuButton className={openMenuClasses}>Tab</MenuButton>}
+        onItemClick={handleFileMenu}
+      >
+        {currentTabInfo !== null && <MenuItem value="save">Save</MenuItem>}
+        <MenuItem value="load">Load</MenuItem>
+      </Menu>
+
+      <input
+        ref={refinputfile}
+        id="loadfile"
+        type="file"
+        accept=".json"
+        style={{ opacity: 0, position: "fixed", top: "-100em" }}
+      />
     </div>
   );
 }

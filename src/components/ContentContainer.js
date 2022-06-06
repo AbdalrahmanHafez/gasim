@@ -44,7 +44,7 @@ function ContentContainer({ tabInfo }) {
 
   if (tabType === tabTypes.TM) {
     const model = tabInfo.model;
-    return <TMView model={model} />;
+    return <TMView model={model} updateModel={updateModel} />;
   }
 
   if (tabType === tabTypes.GR) {
