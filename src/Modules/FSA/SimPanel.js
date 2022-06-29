@@ -8,7 +8,11 @@ import {
 } from "@ant-design/icons";
 import "antd/dist/antd.css";
 import tabTypes from "../../enums/tabTypes.js";
-import { getNodeFromId } from "../../utils/Graph.js";
+import {
+  clearHighlighted,
+  getNodeFromId,
+  highlightConfigs,
+} from "../../utils/Graph.js";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
 
 const DEFAULT_PLAY_SPEED = 20;
@@ -32,13 +36,21 @@ const SimCard = ({ config, simulation }) => {
   );
 };
 
-function SimPanel({ isFastRun, simulation, onStepAll, onReset }) {
+function SimPanel({ cyref, isFastRun, simulation, onStepAll, onReset }) {
   const [running, toggleRunning, setRunInterval] = useFastrun(
     onStepAll,
     DEFAULT_PLAY_SPEED
   );
 
   const [parent] = useAutoAnimate(/* optional config */);
+
+  useEffect(() => {
+    // intial heighlight of the first config
+    highlightConfigs(cyref.current, simulation.configs);
+    return () => {
+      clearHighlighted(cyref.current);
+    };
+  }, []);
 
   // const [items, setItems] = useState([0, 1]);
   // const add = () => setItems([...items, items.length]);

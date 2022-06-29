@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import useFastrun from "../../Hooks/useFastrun.js";
 import { Slider, Space, Divider } from "antd";
 import {
@@ -8,6 +8,7 @@ import {
 } from "@ant-design/icons";
 import "antd/dist/antd.css";
 import tabTypes from "../../enums/tabTypes.js";
+import { clearHighlighted, highlightConfigs } from "../../utils/Graph.js";
 
 const DEFAULT_PLAY_SPEED = 20;
 
@@ -31,13 +32,21 @@ const SimCard = ({ config, simulation }) => {
   );
 };
 
-function SimPanel({ isFastRun, simulation, onStepAll, onReset }) {
+function SimPanel({ cyref, isFastRun, simulation, onStepAll, onReset }) {
   const [running, toggleRunning, setRunInterval] = useFastrun(
     onStepAll,
     DEFAULT_PLAY_SPEED
   );
 
   console.log("[SimPanel] Rendered");
+
+  useEffect(() => {
+    // intial heighlight of the first config
+    highlightConfigs(cyref.current, simulation.configs);
+    return () => {
+      clearHighlighted(cyref.current);
+    };
+  }, []);
 
   return (
     <>

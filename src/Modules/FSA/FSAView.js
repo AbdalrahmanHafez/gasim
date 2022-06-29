@@ -152,6 +152,7 @@ function FSAView({ model, updateModel }) {
             simulation={simulation.current}
             onStepAll={hanldeStepAll}
             onReset={handleResetSimulation}
+            cyref={cy}
           />
         );
 
