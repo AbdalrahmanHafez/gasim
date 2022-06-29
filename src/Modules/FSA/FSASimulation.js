@@ -98,8 +98,9 @@ export default class FSASimulation extends Simulation {
     return [choosenConfig];
   }
 
-  setWinState(node) {
-    if (node.data("final")) return 1;
+  setWinState(node, config) {
+    // if (node.data("final")) return 1;
+    if (node.data("final") && config.strRem.length === 0) return 1;
     return 0;
   }
   getNextConfigs(config) {
@@ -137,7 +138,7 @@ export default class FSASimulation extends Simulation {
     // winning Logic
     // if no more possiable routes you have to choose a winning state
     if (nextConfigs.length === 0) {
-      config.winstate = this.setWinState(node);
+      config.winstate = this.setWinState(node, config);
       config.takenEdges = [];
       return config;
     }
@@ -146,7 +147,7 @@ export default class FSASimulation extends Simulation {
 
     // limitation: that may create duplicates in the configs
     if (config.strRem.length === 0) {
-      config.winstate = this.setWinState(node);
+      config.winstate = this.setWinState(node, config);
       config.takenEdges = [];
       // if (config.winstate === 1) return [config]; // FixFor: to not continue with epsilon transition if this state is win state
       if (config.winstate === 1) return [config, ...nextConfigs];
