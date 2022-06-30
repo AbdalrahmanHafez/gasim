@@ -507,4 +507,15 @@ export class grammarExamples {
       ["B", "a"],
     ];
   }
+
+
+  static get g11() {
+    return [
+      ["S", "X010X"],
+      ["X", "0X"],
+      ["X", "1X"],
+      ["X", ""],
+    ];
+  }
+
 }

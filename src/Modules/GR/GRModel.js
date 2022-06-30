@@ -590,17 +590,35 @@ export default class GRModel {
           // debugger;
           const hasEpsilon = whoHasEpsion(cfg);
           if (!hasEpsilon) return;
-          // console.log(`hasEpsilon is ${hasEpsilon}`);
+          console.log(`hasEpsilon is ${hasEpsilon}`);
 
           // on cfg replace rules with epsilon
           for (let [key, arr] of Object.entries(cfg)) {
-            for (let str of arr) {
-              if (str.includes(hasEpsilon)) {
-                const toAdd = str.replace(hasEpsilon, "");
+            // debugger;
+            for (let k = 0; k < arr.length; k++) {
+              const str = arr[k];
+              let times = (str.match(new RegExp(hasEpsilon, "g")) || []).length;
+              console.log("times is ", times, "arr length", arr.length);
+              for (let i = 0; i < times; i++) {
+                // if (str.includes(hasEpsilon)) {
+                // Replace the i-th occurence of has epsilon with ''
+                let t = 0;
+                const toAdd = str.replace(
+                  new RegExp(hasEpsilon, "g"),
+                  (match) => (t++ === i ? "" : match)
+                );
+
+                // const toAdd = str.replace(hasEpsilon, ""); //replace onec
+
                 if (str.length === 1) {
                   // A -> C ; C is hasEpsilon; then the rule A-> C --> A -> epsilon
-                  arr.push("ε");
+                  console.log("A toAdd is ", toAdd);
+                  console.log("array ", arr);
+
+                  if (key !== "$") arr.push("ε");
+                  break;
                 } else {
+                  console.log("B toAdd is ", toAdd);
                   if (!arr.includes(toAdd)) arr.push(toAdd);
                 }
               }
