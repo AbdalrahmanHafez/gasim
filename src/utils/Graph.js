@@ -425,25 +425,35 @@ export const injectEmptyCy = (cyId, options = {}) => {
 
       // TODO: addnode function is the same  thhein the context menue down
 
-      const nodesCount = cy.nodes().length;
-      const nodeName = "q" + nodesCount;
-      var data = {
-        group: "nodes",
-        id: nodeName,
-        label: nodeName,
-        inital: false,
-        final: false,
+      let nodesCount = cy.nodes().length;
+
+      const addNewNode = () => {
+        const nodeName = "q" + nodesCount;
+        var data = {
+          group: "nodes",
+          id: nodeName,
+          label: nodeName,
+          inital: false,
+          final: false,
+        };
+        var pos = event.position || event.cyPosition;
+        try {
+          cy.add({
+            data: data,
+            position: {
+              x: pos.x,
+              y: pos.y,
+            },
+          });
+        } catch (error) {
+          if (error.message.includes("Can not create second element with ID")) {
+            nodesCount++;
+            addNewNode();
+          }
+        }
       };
 
-      var pos = event.position || event.cyPosition;
-
-      cy.add({
-        data: data,
-        position: {
-          x: pos.x,
-          y: pos.y,
-        },
-      });
+      addNewNode();
     } else {
       // console.log("dclick on node");
       // Clicked on a Node
