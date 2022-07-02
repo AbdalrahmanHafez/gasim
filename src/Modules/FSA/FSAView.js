@@ -143,7 +143,7 @@ function FSAView({ model, updateModel }) {
     );
   };
 
-  function RightPanelContent() {
+  function rightPanelContent() {
     switch (whatToShowRightPanel) {
       case 0:
         return (
@@ -243,7 +243,7 @@ function FSAView({ model, updateModel }) {
                 setWhatToShowRightPanel(null);
               }}
             >
-              <RightPanelContent />
+              {rightPanelContent()}
             </RightPanel>
           ) : null}
         </div>
