@@ -1,70 +1,60 @@
-# Getting Started with Create React App
+# Graphical Automata Simulator
+The Graphical Automata Simulator is an interactive web application designed to help users visualize and simulate various theoretical computer science machines, such as finite state automata, Turing machines, pushdown automata, and regular expressions. This tool allows users to step through the operations of these machines, making it an excellent educational resource for understanding computational concepts.
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Technologies Used
+* Frontend: React.js for the user interface, providing a dynamic and responsive experience.
+* State Management: React state for managing the simulation and user inputs.
 
-## Available Scripts
+## Running Steps
 
-In the project directory, you can run:
+1. Clone the repository
+	```bash
+	git clone https://github.com/AbdalrahmanHafez/Edugate-platform
+	```
 
-### `yarn start`
+2. Install the required dependencies:
+	```bash
+	npm install
+	```
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+3. Run the development server
+	```bash
+	npm start
+	```
+3. Open the website in your browser at http://localhost:3000
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
 
-### `yarn test`
+## Features
+* __Step-by-Step Simulation__: Visualize and track each step as the machine operates, showing the current state and transition paths.  
+* __State Tracking__: Highlight the active node and show the transitions taken to reach it during simulation.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+https://github.com/user-attachments/assets/0c688f93-5731-460d-a16a-189718d6f0f0
 
-### `yarn build`
+https://github.com/user-attachments/assets/1bd57d1e-b9fc-4c60-9e4a-41ed73e55bac
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+* __Graph Builder__: An intuitive interface to easily construct automata graphs by adding nodes and defining transitions with labels.  
 
-### `yarn eject`
+https://github.com/user-attachments/assets/1611d8a0-1458-47c7-a9af-d8f7cc2410f2
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+* __Type Conversion__: Convert between different types of theoretical machines (e.g., convert a finite automaton to a regular expression) and simulate the results.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
 
-## Learn More
+https://github.com/user-attachments/assets/3e0e2835-df51-485f-97ee-1eaae30ee157
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+* __Save and Restore__: Save your created graphs to a file and restore them later for continued work.
+* __Pre-built Examples__: Access a collection of pre-built examples to quickly explore different automata types.
+* __Educational Tool__: Designed to provide a clear and engaging way to learn about computational theory and automata theory.
 
-### Code Splitting
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
 
-### Analyzing the Bundle Size
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
 
-### Making a Progressive Web App
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
 
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `yarn build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+## Contributing
+Feel free to fork the repository, open issues, and submit pull requests if you'd like to contribute to improving the platform.
