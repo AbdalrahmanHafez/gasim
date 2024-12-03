@@ -1,6 +1,7 @@
 # Graphical Automata Simulator
 The Graphical Automata Simulator is an interactive web application designed to help users visualize and simulate various theoretical computer science machines, such as finite state automata, Turing machines, pushdown automata, and regular expressions. This tool allows users to step through the operations of these machines, making it an excellent educational resource for understanding computational concepts.
-
+* LIVE demo at https://gasim.vercel.app
+  
 ## Technologies Used
 * Frontend: React.js for the user interface, providing a dynamic and responsive experience.
 * State Management: React state for managing the simulation and user inputs.
